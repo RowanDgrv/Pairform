@@ -1046,6 +1046,9 @@ table.cbill td{padding:10px 9px;border-bottom:1px solid var(--line)}
 .club-ath-m{font-size:11.5px;color:var(--muted);font-family:var(--font-data)}
 .club-ath-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--panel-2);color:var(--muted)}
 .club-ath-tag.hyrox{background:rgba(255,138,61,.14);color:#FF8A3D}
+.club-ath-vid{display:inline-block;margin-top:5px;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:99px;
+  cursor:pointer;background:var(--panel-2);color:var(--muted);border:1px solid var(--line);user-select:none}
+.club-ath-vid.on{background:rgba(70,194,216,.14);color:var(--accent);border-color:rgba(70,194,216,.5)}
 
 /* présences */
 .presence-summary{display:flex;flex-direction:column;gap:12px}
@@ -2508,6 +2511,15 @@ function renderSidebar(){
         <div class="score" style="color:${readinessAdvice(readinessScore()).c}">${readinessScore()}%</div>
       </div>
       <div class="coach-connect" style="margin-top:14px">
+        <div class="cc-t"><b>⭐ Abonnement Sillance</b></div>
+        ${window.__pf_subscribed
+          ? `<div class="cc-s" style="color:#39e6a3">✓ Ton abonnement Sillance est actif. Merci !</div>
+             <button class="cc-btn" id="coachManageBtn">Gérer mon abonnement</button>`
+          : `<div class="cc-s">Débloque ton espace coach complet.</div>
+             <div class="cc-price"><b>29 €</b><small>/mois</small></div>
+             <button class="cc-btn" id="coachSubscribeBtn">S'abonner à Sillance</button>`}
+      </div>
+      <div class="coach-connect" style="margin-top:14px">
         <div class="cc-t"><b>💳 Fais-toi payer</b></div>
         <div class="cc-s">Relie ton compte Stripe pour facturer tes athlètes.</div>
         <div class="cc-price">Tarif du suivi : <b id="coachPriceVal">${COACH_OFFER.price} €</b><small>/mois</small> · <a href="#" id="coachPriceEdit">modifier</a></div>
@@ -2519,6 +2531,16 @@ function renderSidebar(){
     if(ccb) ccb.onclick=()=>{
       if(window.PF?.user) PF.connectCoachStripe().catch(e=>{console.warn(e);toast('Stripe indisponible');});
       else toast('Connecte ton espace coach (badge ☁︎) pour relier Stripe');
+    };
+    const csb=document.getElementById('coachSubscribeBtn');
+    if(csb) csb.onclick=()=>{
+      if(window.PF?.user){ toast('Redirection vers le paiement…'); PF.startCheckout('coach').catch(e=>{console.warn(e);toast('Paiement indisponible');}); }
+      else toast('Connecte ton espace coach (badge ☁︎) pour t\'abonner');
+    };
+    const cmb=document.getElementById('coachManageBtn');
+    if(cmb) cmb.onclick=()=>{
+      if(window.PF?.user) PF.openBillingPortal().catch(e=>{console.warn(e);toast('Portail indisponible');});
+      else toast('Connecte ton espace coach (badge ☁︎)');
     };
     const cpe=document.getElementById('coachPriceEdit');
     if(cpe) cpe.onclick=(ev)=>{
@@ -3605,6 +3627,7 @@ function renderClubAthletes(filter){
         <div class="club-ath-m">membre depuis ${a.since} · ${nbInscr} créneau${nbInscr>1?'x':''}</div>
         ${g?`<span class="club-ath-grp" style="background:${g.color}">${g.name}</span>`:''}
         <span class="club-ath-offer co-${a.offer}" data-aid="${a.id}" title="Cliquer pour changer de formule">${clubOffer(a.offer).name}${a.offer==='coach'&&a.coach?` · ${a.coach}`:''}</span>
+        <span class="club-ath-vid ${a.videos?'on':''}" data-vaid="${a.id}" title="Débloquer les vidéos d'exercices pour cet athlète (facturé par athlète)">🎬 Vidéos${a.videos?' ✓':''}</span>
       </div>
       <span class="club-ath-tag ${a.disc==='hyrox'?'hyrox':''}">${a.disc==='hyrox'?'Hyrox':'Tri'}</span>
     </div>`;
@@ -3617,6 +3640,15 @@ function renderClubAthletes(filter){
     toast(`${a.name} → ${clubOffer(a.offer).name}`);
     if(window.PF?.user && window.__pf_clubId && (a.offer==='sub'||a.offer==='coach')){
       PF.subscribeToClubOffer(window.__pf_clubId, a.id, a.offer).catch(e=>{console.warn('subscribe',e);toast('Paiement indisponible (démo)');});
+    }
+  });
+  box.querySelectorAll('.club-ath-vid').forEach(el=>el.onclick=()=>{
+    const a=CLUB_ATHLETES.find(x=>x.id===el.dataset.vaid); if(!a) return;
+    a.videos=!a.videos;
+    renderClubAthletes(filter);
+    toast(a.videos?`Vidéos activées pour ${a.name}`:`Vidéos coupées pour ${a.name}`);
+    if(window.PF?.user){
+      PF.setAthleteVideos(a.id, a.videos).catch(e=>{console.warn('videos',e);toast('Option vidéos indisponible (démo)');});
     }
   });
 }
