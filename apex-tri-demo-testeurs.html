@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PairForm — Coaching triathlon</title>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<title>Sillance — Coaching triathlon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   PairForm — système de design
+   Sillance — système de design
    Palette : nuit de course + 3 disciplines
    ============================================================ */
 :root{
@@ -1455,7 +1456,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 <div class="welcome-overlay" id="welcomeOverlay">
   <div class="welcome-box">
     <div class="welcome-mark" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 88 88" fill="none"><g transform="rotate(-18 44 44)"><circle cx="44" cy="44" r="25" stroke="rgba(168,182,210,.55)" stroke-width="5"/><circle cx="44" cy="19" r="7.5" fill="#3B82F6"/><circle cx="44" cy="69" r="7.5" fill="#fff"/></g></svg></div>
-    <h2>Bienvenue sur <b>PairForm</b></h2>
+    <h2>Bienvenue sur <b>Sillance</b></h2>
     <p class="welcome-sub">La démo de ma plateforme de coaching triathlon, Hyrox &amp; clubs. Tu peux tout explorer librement.</p>
     <div class="welcome-grid">
       <div class="wel-item"><span>☀️</span><div><b>Ton point du jour</b><small>fraîcheur, risque, nutrition, coucher</small></div></div>
@@ -1475,7 +1476,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     <div class="brand">
       <div class="brand-mark" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 88 88" fill="none"><g transform="rotate(-18 44 44)"><circle cx="44" cy="44" r="25" stroke="rgba(168,182,210,.55)" stroke-width="5"/><circle cx="44" cy="19" r="7.5" fill="#3B82F6"/><circle cx="44" cy="69" r="7.5" fill="#fff"/></g></svg></div>
       <div>
-        <h1>Pair<span></span>Form</h1>
+        <h1>Sill<span></span>ance</h1>
         <small>Plan d'entraînement</small>
       </div>
     </div>
@@ -1850,7 +1851,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
           <div class="invite-title">Lien d'invitation du club</div>
           <div class="invite-sub">Partage ce lien à tes athlètes : ils demandent à rejoindre le club, puis tu les affectes au bon groupe.</div>
           <div class="invite-linkrow">
-            <input type="text" id="inviteLink" readonly value="https://pairform.app/rejoindre/muret-goat-squad">
+            <input type="text" id="inviteLink" readonly value="https://sillance.app/rejoindre/muret-goat-squad">
             <button class="btn invite-copy" id="inviteCopy"><i class="ic ic-clipboard"></i>Copier</button>
           </div>
           <div class="invite-share">
@@ -2168,10 +2169,10 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 
 <div class="tooltip" id="tooltip"></div>
 
-<script src="./pairform-fit.js"></script>
+<script src="./sillance-fit.js"></script>
 <script>
 /* ============================================================
-   PairForm — logique
+   Sillance — logique
    ============================================================ */
 const DISC = {
   swim:     {label:'Natation', ico:'🌊', color:'var(--swim)', gear:['maillot de bain','bonnet','lunettes']},
@@ -2648,7 +2649,7 @@ function renderSidebar(){
 
 /* Édition des références physiologiques de l'athlète.
    Met à jour ATHLETE_REF en place (les calculs de zones du builder s'en
-   servent), persiste via PairForm cloud si connecté, puis re-render. */
+   servent), persiste via Sillance cloud si connecté, puis re-render. */
 function saveMyRefs(){
   document.querySelectorAll('#refsBlock input[data-ref]').forEach(inp=>{
     const v = inp.value.trim();
@@ -2680,7 +2681,7 @@ function submitCheckin(){
   const score = readinessScore();
   const low = score < CHECKIN_THRESHOLD;
   const urgent = score < CHECKIN_URGENT;
-  // Persistance backend (PairForm cloud) — non bloquant, ignoré en mode démo.
+  // Persistance backend (Sillance cloud) — non bloquant, ignoré en mode démo.
   if(window.PF?.user){
     PF.saveCheckin({ sommeil:checkin.sommeil, fatigue:checkin.fatigue,
       motivation:checkin.motivation, readiness:score })
@@ -2834,7 +2835,7 @@ function buildMorningPreview(){
       btn.classList.add('on');
       if('Notification' in window){
         Notification.requestPermission().then(p=>{
-          if(p==='granted'){ new Notification('PairForm — '+m.title, {body:'🎒 '+m.gear.join(', ')}); }
+          if(p==='granted'){ new Notification('Sillance — '+m.title, {body:'🎒 '+m.gear.join(', ')}); }
         });
       }
     });
@@ -2854,9 +2855,9 @@ function buildMorningPreview(){
       toast(`Activité reçue 🔄 Pense à prendre : ${reminder}`);
       if('Notification' in window){
         if(Notification.permission==='granted'){
-          new Notification('PairForm — Récupération 🍽', {body:`Pense à prendre : ${reminder}. ${n.post}`});
+          new Notification('Sillance — Récupération 🍽', {body:`Pense à prendre : ${reminder}. ${n.post}`});
         } else if(Notification.permission!=='denied'){
-          Notification.requestPermission().then(p=>{ if(p==='granted') new Notification('PairForm — Récupération 🍽', {body:`Pense à prendre : ${reminder}`}); });
+          Notification.requestPermission().then(p=>{ if(p==='granted') new Notification('Sillance — Récupération 🍽', {body:`Pense à prendre : ${reminder}`}); });
         }
       }
     });
@@ -2990,7 +2991,7 @@ function importActivityFile(file){
 }
 
 function connectStrava(){
-  // RÉEL (connecté à PairForm cloud) → OAuth Strava ; sinon démo.
+  // RÉEL (connecté à Sillance cloud) → OAuth Strava ; sinon démo.
   if(window.PF?.user){
     const btn=document.getElementById('stravaConnectBtn');
     if(btn){ btn.textContent='Redirection vers Strava…'; btn.disabled=true; }
@@ -3734,7 +3735,7 @@ document.getElementById('inviteCopy').onclick=()=>{
 };
 document.getElementById('inviteWhatsapp').onclick=()=>{
   const link=document.getElementById('inviteLink').value;
-  const msg=`Rejoins le club Muret Goat Squad sur PairForm : ${link}`;
+  const msg=`Rejoins le club Muret Goat Squad sur Sillance : ${link}`;
   window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
 };
 document.getElementById('inviteSimulate').onclick=()=>{
@@ -3914,9 +3915,9 @@ renderSidebar();
 render();
 updateVideolibVisibility();
 
-/* ---- Hook d'intégration backend (PairForm cloud) — non destructif ----
+/* ---- Hook d'intégration backend (Sillance cloud) — non destructif ----
    Expose les globales et les fonctions de rendu pour que la couche
-   d'intégration (pairform-integration.js) puisse hydrater l'app depuis
+   d'intégration (sillance-integration.js) puisse hydrater l'app depuis
    Supabase. Si rien ne se connecte, ce hook ne fait rien et l'app reste
    en mode démo avec ses données en dur. ------------------------------- */
 window.__pf_app = {
@@ -6894,8 +6895,8 @@ window.loadStravaData = function(data){
 };
 </script>
 
-<!-- PairForm cloud : couche d'intégration Supabase (auth + sync).
-     Importe pairform-client.js. Si non connecté → app en mode démo. -->
-<script type="module" src="./pairform-integration.js"></script>
+<!-- Sillance cloud : couche d'intégration Supabase (auth + sync).
+     Importe sillance-client.js. Si non connecté → app en mode démo. -->
+<script type="module" src="./sillance-integration.js"></script>
 </body>
 </html>

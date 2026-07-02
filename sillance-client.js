@@ -1,9 +1,9 @@
 /* =============================================================================
- *  PairForm — client navigateur (pont vers Supabase)
+ *  Sillance — client navigateur (pont vers Supabase)
  *  À inclure dans tes fichiers HTML :
  *
  *    <script type="module">
- *      import { PF } from './pairform-client.js';
+ *      import { PF } from './sillance-client.js';
  *      window.PF = PF;            // pratique pour tester depuis la console
  *      await PF.init();
  *    </script>
@@ -95,7 +95,7 @@ export const PF = {
     const notExpired = !data.current_period_end || new Date(data.current_period_end) > new Date();
     return live && notExpired;
   },
-  // Active l'add-on IA → redirige vers le checkout Stripe (produit PairForm).
+  // Active l'add-on IA → redirige vers le checkout Stripe (produit Sillance).
   async subscribeAiAddon() {
     const { url } = await this._invoke("ai-addon-subscribe", {});
     window.location.href = url;
@@ -352,7 +352,7 @@ export const PF = {
     return data ?? [];
   },
   // Démarre l'onboarding Stripe Connect du club (gérant) → redirige Stripe.
-  // Tant que non complété, club-subscribe encaisse côté PairForm (fallback démo).
+  // Tant que non complété, club-subscribe encaisse côté Sillance (fallback démo).
   async connectClubStripe(clubId) {
     const { url } = await this._invoke("club-connect", { club_id: clubId });
     window.location.href = url;
