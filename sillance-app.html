@@ -3963,6 +3963,8 @@ window.__pf_app = {
   replaceArray(arr, items){ arr.length = 0; for(const x of items) arr.push(x); },
   assignObj(obj, src){ for(const k in src){ if(src[k]!==undefined && src[k]!==null) obj[k]=src[k]; } },
   clearObj(obj){ for(const k of Object.keys(obj)) delete obj[k]; },
+  // Remplace le matériel (démo → réel Supabase) et redessine la section.
+  setGear(items){ if(typeof GEAR!=='undefined'){ GEAR = items.slice(); renderGear(); } },
 };
 
 /* écran d'accueil testeur (le bouton a aussi un onclick inline de secours) */
@@ -6769,7 +6771,7 @@ function renderGear(){
   }).join('') || '<p class="club-hint">Aucun équipement. Ajoute tes chaussures pour suivre leur usure.</p>';
   box.querySelectorAll('.gear-card').forEach(card=>{
     const g=GEAR.find(x=>x.id===card.dataset.id);
-    card.querySelector('[data-act="del"]').onclick=()=>{ GEAR=GEAR.filter(x=>x.id!==g.id); renderGear(); };
+    card.querySelector('[data-act="del"]').onclick=()=>{ GEAR=GEAR.filter(x=>x.id!==g.id); renderGear(); if(window.PF?.user) window.PF.retireGear(g.id).catch(e=>console.warn('retireGear',e)); };
     const addBtn=card.querySelector('[data-act="add10"]');
     if(addBtn) addBtn.onclick=()=>{ addGearKm(g, 50); };
   });
@@ -6815,6 +6817,11 @@ document.getElementById('gearSave').onclick=()=>{
   // marque comme déjà notifiés les paliers déjà dépassés à l'ajout
   if(g.type==='shoe') SHOE_MILESTONES.forEach(m=>{ if(g.km>=m) g.notified.push(m); });
   GEAR.push(g);
+  // persiste côté backend si connecté (sinon reste en démo local)
+  if(window.PF?.user){
+    window.PF.addGear({type:g.type,name:g.name,km:g.km,max_km:g.max,notified:g.notified})
+      .then(row=>{ if(row&&row.id) g.id=row.id; }).catch(e=>console.warn('addGear',e));
+  }
   gearOverlay.classList.remove('open');
   renderGear();
   toast('Équipement ajouté ✓');
