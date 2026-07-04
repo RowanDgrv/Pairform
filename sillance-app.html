@@ -355,7 +355,7 @@ body.grid-on .cal-guides{opacity:1}
 /* ---------- Modal séance ---------- */
 .overlay{
   position:fixed;inset:0;background:rgba(4,6,11,.7);backdrop-filter:blur(6px);
-  display:none;place-items:center;z-index:50;padding:20px;
+  display:none;justify-items:center;align-items:safe center;overflow-y:auto;z-index:50;padding:20px;
 }
 .overlay.open{display:grid}
 .modal{
@@ -1476,7 +1476,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
   .draw{stroke-dashoffset:0}
 }
 /* ---------- Écran d'accueil testeur ---------- */
-.welcome-overlay{position:fixed;inset:0;z-index:200;background:rgba(7,9,15,.82);backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px;animation:fadeIn .3s ease}
+.welcome-overlay{position:fixed;inset:0;z-index:200;background:rgba(7,9,15,.82);backdrop-filter:blur(8px);display:grid;justify-items:center;align-items:safe center;overflow-y:auto;padding:20px;animation:fadeIn .3s ease}
 .welcome-overlay.hidden{display:none}
 .welcome-box{width:min(520px,100%);background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line-strong);border-radius:20px;padding:32px 30px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:popIn .35s ease}
 .welcome-mark{width:58px;height:58px;margin:0 auto 16px;border-radius:16px;background:#0E1421;border:1px solid rgba(150,165,200,.18);display:grid;place-items:center;box-shadow:var(--shadow-2)}
