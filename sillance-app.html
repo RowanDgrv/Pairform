@@ -5566,17 +5566,20 @@ function aiPaywallHtml(){
     <button class="ai-cta" id="aiActivate">Activer l’assistant IA</button>
   </div>`;
 }
-function aiResultHtml(s, b, r){
+function aiResultHtml(s, b, r, isDemo){
   const v=aiVerdictMeta(r.tenu);
   const ico=st=>st==='ok'?'<span style="color:var(--good)"><i class="ic ic-check"></i></span>':st==='warn'?'<span style="color:var(--bike)"><i class="ic ic-alert-triangle"></i></span>':'<span style="color:var(--run)"><i class="ic ic-x"></i></span>';
   const bul=r.bullets.map(x=>`<div><span class="ai-ico">${ico(x.s)}</span><span>${x.t}</span></div>`).join('');
   const recos=r.recos.length?`<div class="ai-recobox"><h6>Recommandations</h6><ul>${r.recos.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:'';
+  const foot=isDemo
+    ? 'Généré à partir des données réelles de la séance (zones FC, découplage, pics). En production : rédigé par Claude via l’add-on IA.'
+    : 'Rédigé par Claude à partir du bilan chiffré de la séance (zones FC, découplage, pics) — aucune donnée inventée.';
   return `<div class="ai-result" style="--av:${v.c}">
-    <div class="ai-verdict">${v.l} <span class="ai-badge-demo">démo</span></div>
+    <div class="ai-verdict">${v.l} ${isDemo?'<span class="ai-badge-demo">démo</span>':''}</div>
     <div class="ai-headline">${r.headline}</div>
     <div class="ai-bul">${bul}</div>
     ${recos}
-    <div class="ai-foot">Généré à partir des données réelles de la séance (zones FC, découplage, pics). En production : rédigé par Claude via l’add-on IA.</div>
+    <div class="ai-foot">${foot}</div>
   </div>`;
 }
 function renderAi(s, data){
@@ -5595,10 +5598,35 @@ function renderAi(s, data){
     return;
   }
   body.innerHTML=`<div class="ai-loading"><span class="ai-dot"></span> Analyse de la séance en cours…</div>`;
-  setTimeout(()=>{
-    const b=computeSessionBilan(s, data), r=aiSummary(s, b);
-    body.innerHTML=aiResultHtml(s, b, r);
-  }, 450);
+  const b=computeSessionBilan(s, data);
+  // Connecté + add-on réel (pas juste le déverrouillage démo) → vrai résumé Claude.
+  if(window.PF?.user && window.__pf_aiAddon===true && typeof PF.summarizeSession==='function'){
+    const sessionKey=String(s.id || (s.title+'|'+(s.dur||'')+'|'+(s._realData?.provider_activity_id||'')));
+    PF.summarizeSession({
+      session_key: sessionKey,
+      bilan: b,
+      athlete_id: s.athleteId || null,
+      discipline: s.disc,
+      objective: (s.objectif&&s.objectif.type) || b.type,
+    }).then(r=>{
+      if(r && r.error){
+        if(r.error==='add_on_required') window.__pf_aiAddon=false;
+        else toast('Analyse IA indisponible, résumé local affiché');
+        const rl=aiSummary(s, b); body.innerHTML=aiResultHtml(s, b, rl, true);
+        return;
+      }
+      const mapped={headline:r.headline, tenu:r.verdict, bullets:(r.bullets||[]).map(x=>({s:x.status,t:x.text})), recos:r.recos||[]};
+      body.innerHTML=aiResultHtml(s, b, mapped, false);
+    }).catch(e=>{
+      console.warn('[PF] summarizeSession échoué :', e);
+      const rl=aiSummary(s, b); body.innerHTML=aiResultHtml(s, b, rl, true);
+    });
+  } else {
+    setTimeout(()=>{
+      const r=aiSummary(s, b);
+      body.innerHTML=aiResultHtml(s, b, r, true);
+    }, 450);
+  }
 }
 
 /* ---- curseur interactif : valeur exacte au survol ---- */

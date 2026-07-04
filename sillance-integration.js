@@ -135,6 +135,10 @@ async function hydrate() {
     renderVideoGate({ role, videosOk });
   });
 
+  await section("aiAddon", async () => {
+    window.__pf_aiAddon = await PF.hasAiAddon();
+  });
+
   // Re-render complet avec les données fraîches.
   try {
     app.renderSidebar?.();
