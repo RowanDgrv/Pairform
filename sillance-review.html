@@ -943,6 +943,8 @@ table.cbill td{padding:10px 9px;border-bottom:1px solid var(--line)}
 .club-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
 .club-add{background:var(--strength)}
 .club-hint{font-size:12.5px;color:var(--muted)}
+.analytics-empty{margin-top:26px;border:1px dashed var(--line-strong);border-radius:14px;padding:22px 24px}
+.analytics-empty .sub{margin-top:8px}
 .club-search{border:1px solid var(--line-strong);border-radius:10px;background:var(--panel);color:var(--text);font-size:13px;padding:9px 13px;min-width:200px}
 
 /* rappel de séance club */
@@ -1756,6 +1758,14 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     </div>
   </section>
 
+  <!-- État vide : compte confirmé sans la moindre activité réelle (voir setActivityState) -->
+  <section class="analytics-empty" id="analyticsEmpty" hidden>
+    <div class="analytics-head">
+      <h2>Analyse <span>performance</span></h2>
+    </div>
+    <p class="sub">Pas encore d'activité à analyser. Synchronise Strava/Garmin/Coros ou importe un fichier .TCX/.GPX pour voir tes graphiques (zones FC, charge, découplage…) apparaître ici.</p>
+  </section>
+
   <!-- ===================== MATÉRIEL ===================== -->
   <section class="gear" id="gear">
     <div class="analytics-head">
@@ -2449,6 +2459,14 @@ function updatePlanAthleteVisibility(){
   const sel = document.getElementById('planAthleteSelect'); if(!sel) return;
   sel.hidden = !(mode==='coach' && COACH_ATHLETES.length);
 }
+// Compte confirmé sans la moindre activité réelle : masque l'analyse et les
+// records de démo plutôt que de les présenter comme si c'était les siens.
+function setActivityState(hasActivity){
+  const an=document.getElementById('analytics'), anEmpty=document.getElementById('analyticsEmpty');
+  if(!an || !anEmpty) return;
+  an.hidden = !hasActivity;
+  anEmpty.hidden = hasActivity;
+}
 
 /* ============================================================
    DONNÉES RÉELLES — importées du calendrier iDO de l'athlète
@@ -2615,7 +2633,7 @@ function renderSidebar(){
       </div>
       <div class="records">
         <h2>Records personnels</h2>
-        ${RECORDS.map(r=>`<div class="pb"><span class="d">${r.d}</span>${r.isNew?'<span class="new">NEW</span>':''}<span class="v">${r.v}</span></div>`).join('')}
+        ${RECORDS.length ? RECORDS.map(r=>`<div class="pb"><span class="d">${r.d}</span>${r.isNew?'<span class="new">NEW</span>':''}<span class="v">${r.v}</span></div>`).join('') : `<p class="club-hint">Aucun record pour l'instant — importe ou synchronise une première activité.</p>`}
       </div>
       <div class="records" id="refsBlock">
         <h2>Mes références physio</h2>
@@ -3984,6 +4002,8 @@ window.__pf_app = {
   // Roster d'athlètes du coach (sélecteur "planifier pour") + athlète courant.
   setCoachAthletes,
   getCurrentAthleteId(){ return currentAthleteId; },
+  // Masque l'analyse/records de démo pour un compte confirmé sans activité réelle.
+  setActivityState,
 };
 
 /* ============================================================

@@ -59,6 +59,15 @@ async function hydrate() {
   await section("records", async () => {
     const recs = await PF.getRecords(uid);
     if (recs.length) app.replaceArray(app.data.RECORDS, recs.map(mapRecord));
+    // Compte confirmé sans la moindre activité réelle (ni record, ni import) :
+    // on ne veut pas montrer les records/graphiques de démo comme si c'était
+    // les siens. S'il y a le moindre signal réel, on n'y touche pas.
+    const acts = await PF.getActivities(1, uid);
+    const hasActivity = recs.length > 0 || acts.length > 0;
+    if (!hasActivity) {
+      app.replaceArray(app.data.RECORDS, []);
+      app.setActivityState?.(false);
+    }
   });
 
   await section("checkin", async () => {
