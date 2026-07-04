@@ -130,17 +130,19 @@ export const PF = {
   // Liste le matériel actif (athlète connecté, ou un athlète suivi côté coach).
   async getGear(athleteId = this.user.id) {
     const { data, error } = await sb.from("gear")
-      .select("id, type, name, brand, km, max_km, notified, retired")
+      .select("id, type, name, brand, km, max_km, cat, price, notified, retired")
       .eq("athlete_id", athleteId).eq("retired", false)
       .order("created_at", { ascending: true });
     if (error) { console.warn("getGear:", error.message); return []; }
     return data ?? [];
   },
-  // Ajoute un équipement. g = { type, name, brand?, km?, max_km?, notified? }.
+  // Ajoute un équipement. g = { type, name, brand?, km?, max_km?, cat?, price?, notified? }.
+  // cat : catégorie catalogue (daily/tempo/race/trail, chaussures uniquement).
   async addGear(g) {
     const { data, error } = await sb.from("gear")
       .insert({ athlete_id: this.user.id, type: g.type, name: g.name,
                 brand: g.brand ?? null, km: g.km ?? 0, max_km: g.max_km ?? 1000,
+                cat: g.cat ?? null, price: g.price ?? null,
                 notified: g.notified ?? [] })
       .select().single();
     if (error) { console.warn("addGear:", error.message); return null; }

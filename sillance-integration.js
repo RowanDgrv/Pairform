@@ -38,7 +38,9 @@ const mapCreneau = (c) => ({ id: c.id, disc: c.disc, title: c.title, day: c.day,
   time: c.time, dur: c.dur, place: c.place, cap: c.cap, coach: c.coach,
   price: Number(c.price) || 0, group: c.group_id, attendees: [] });
 const mapGear = (g) => ({ id: g.id, type: g.type, name: g.name, brand: g.brand || "",
-  km: Number(g.km) || 0, max: Number(g.max_km) || 1000, notified: g.notified || [] });
+  km: Number(g.km) || 0, max: Number(g.max_km) || 1000,
+  cat: g.cat || null, price: g.price != null ? Number(g.price) : null,
+  notified: g.notified || [] });
 
 /* ===========================================================================
  *  HYDRATATION — remplit les globales de l'app depuis Supabase

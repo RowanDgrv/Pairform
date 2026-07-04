@@ -1120,3 +1120,50 @@ drop policy if exists "extact: coach read" on external_activities;
 create policy "extact: coach read" on external_activities
   for select using (is_coach_of(user_id) and provider <> 'strava');
 
+
+-- ========================= 0011_gear_catalog.sql =========================
+-- =============================================================================
+--  0011_gear_catalog.sql  —  MATÉRIEL : catalogue de chaussures par marque
+--  -----------------------------------------------------------------------------
+--  La table `gear` existait déjà en base (créée hors de ce fichier lors de la
+--  mise en place de la persistance Matériel) mais n'avait jamais été versionnée
+--  ici. Ce bloc la rend idempotente et ajoute les colonnes du catalogue :
+--    • cat   : catégorie du modèle (daily/tempo/race/trail — chaussures only),
+--              alimente le conseiller de paire et le garde-fou pré-course.
+--    • price : prix d'achat, pour le coût au kilomètre affiché côté app.
+--  Le "comm" (km de retrait moyen communauté) reste un attribut du catalogue
+--  côté client (SHOE_CATALOG), pas une colonne : il évolue avec le catalogue,
+--  pas avec l'équipement d'un athlète donné.
+-- =============================================================================
+create table if not exists gear (
+  id          uuid primary key default gen_random_uuid(),
+  athlete_id  uuid not null references profiles(id) on delete cascade,
+  type        text not null check (type in ('shoe','bike')),
+  name        text not null,
+  brand       text,
+  km          numeric not null default 0,
+  max_km      numeric not null default 1000,
+  cat         text check (cat in ('daily','tempo','race','trail')),
+  price       numeric,
+  notified    jsonb not null default '[]',
+  retired     boolean not null default false,
+  created_at  timestamptz not null default now()
+);
+create index if not exists idx_gear_athlete on gear(athlete_id) where not retired;
+
+alter table gear add column if not exists cat   text;
+alter table gear add column if not exists price numeric;
+do $$ begin
+  if not exists (select 1 from pg_constraint where conname = 'gear_cat_check') then
+    alter table gear add constraint gear_cat_check check (cat in ('daily','tempo','race','trail'));
+  end if;
+end $$;
+
+alter table gear enable row level security;
+drop policy if exists "gear: athlete all" on gear;
+create policy "gear: athlete all" on gear
+  for all using (athlete_id = auth.uid()) with check (athlete_id = auth.uid());
+drop policy if exists "gear: coach reads" on gear;
+create policy "gear: coach reads" on gear
+  for select using (is_coach_of(athlete_id));
+

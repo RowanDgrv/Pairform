@@ -251,7 +251,7 @@ body[data-patterns="1"] .tpl[data-disc="strength"]::before{background:var(--c)}
 .tpl:active{cursor:grabbing}
 .tpl:hover{transform:translateX(3px);border-color:var(--c);box-shadow:var(--shadow-1)}
 .tpl .t{font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:7px}
-.tpl .t::before{content:attr(data-ico);font-size:14px}
+.tpl .t::before{content:'';width:8px;height:8px;flex:none;border-radius:2px;background:var(--c,var(--muted))}
 .tpl .m{font-family:var(--font-data);font-size:11px;color:var(--muted);margin-top:2px}
 .lib-note{
   margin-top:14px;padding:11px 12px;border-radius:10px;
@@ -304,7 +304,7 @@ body.grid-on .cal-guides{opacity:1}
 .session:hover{box-shadow:0 6px 22px color-mix(in srgb, var(--c) 25%, transparent);border-color:color-mix(in srgb, var(--c) 60%, var(--line))}
 .session.dragging{opacity:.35;transform:rotate(2deg) scale(.97)}
 .session .t{font-weight:600;font-size:12.5px;line-height:1.3;display:flex;gap:6px;align-items:flex-start;padding-right:16px}
-.session .t::before{content:attr(data-ico);font-size:13px;flex:none}
+.session .t::before{content:'';width:7px;height:7px;margin-top:4px;flex:none;border-radius:2px;background:var(--c,var(--muted))}
 .session .m{font-family:var(--font-data);font-size:10.5px;color:var(--muted);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
 .session .del{
   position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:6px;
@@ -318,6 +318,7 @@ body.grid-on .cal-guides{opacity:1}
 .done-chip{
   position:absolute;top:7px;right:7px;font-size:11px;color:var(--good);
 }
+.done-chip .ic{width:12px;height:12px}
 .check-btn{
   margin-top:7px;width:100%;padding:5px;border-radius:7px;font-size:11px;font-weight:600;
   border:1px solid var(--line-strong);background:transparent;color:var(--muted);transition:.2s;
@@ -386,19 +387,41 @@ body.grid-on .cal-guides{opacity:1}
 .ic-shirt{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M20.4%207.5%2016%204l-1.5%201.5a3%203%200%200%201-5%200L4%204%20.6%207.5%204%2011l1-1v10h14V10l1%201z%22/%3E%3C/svg%3E")}
 .ic-users{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M16%2021v-2a4%204%200%200%200-4-4H6a4%204%200%200%200-4%204v2%22/%3E%3Ccircle%20cx%3D%229%22%20cy%3D%227%22%20r%3D%224%22/%3E%3Cpath%20d%3D%22M22%2021v-2a4%204%200%200%200-3-3.87%22/%3E%3Cpath%20d%3D%22M16%203.13a4%204%200%200%201%200%207.75%22/%3E%3C/svg%3E")}
 .ic-clipboard{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%228%22%20y%3D%222%22%20width%3D%228%22%20height%3D%224%22%20rx%3D%221%22/%3E%3Cpath%20d%3D%22M16%204h2a2%202%200%200%201%202%202v14a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V6a2%202%200%200%201%202-2h2%22/%3E%3C/svg%3E")}
+.ic-shoe{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M2%2018c0-2.2%201.1-3.3%202.3-4.4C5.6%2012.5%206.1%2011.6%206.6%2010c.3-1%201-1.6%202-1.6h2c1%200%201.5.5%202%201.3.9%201.3%202.2%202%203.8%202H19c1.7%200%203%201.3%203%203v3.3H2z%22%2F%3E%3Cpath%20d%3D%22M2%2018h20v2a1%201%200%200%201-1%201H4a2%202%200%200%201-2-2z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-check{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%2F%3E%3C%2Fsvg%3E")}
+.ic-x{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M18%206%206%2018%22%2F%3E%3Cpath%20d%3D%22m6%206%2012%2012%22%2F%3E%3C%2Fsvg%3E")}
+.ic-alert-triangle{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m21.73%2018-8-14a2%202%200%200%200-3.48%200l-8%2014A2%202%200%200%200%204%2021h16a2%202%200%200%200%201.73-3Z%22%2F%3E%3Cpath%20d%3D%22M12%209v4%22%2F%3E%3Cpath%20d%3D%22M12%2017h.01%22%2F%3E%3C%2Fsvg%3E")}
+.ic-flag{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cline%20x1%3D%224%22%20y1%3D%2222%22%20x2%3D%224%22%20y2%3D%224%22%2F%3E%3Cpath%20d%3D%22M4%2015c2-1.3%204-1.3%206%200s4%201.3%206%200V4c-2%201.3-4%201.3-6%200s-4-1.3-6%200z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-mountain{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%2020%209%208l4%206%203-4%205%2010z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-zap{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolygon%20points%3D%2213%202%203%2014%2012%2014%2011%2022%2021%2010%2012%2010%2013%202%22%2F%3E%3C%2Fsvg%3E")}
+.ic-coin{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%229%22%2F%3E%3Cpath%20d%3D%22M15.5%208.8a4.2%204.2%200%201%200%200%206.4%22%2F%3E%3Cline%20x1%3D%227%22%20y1%3D%2210.3%22%20x2%3D%2213.5%22%20y2%3D%2210.3%22%2F%3E%3Cline%20x1%3D%227%22%20y1%3D%2213.2%22%20x2%3D%2213.5%22%20y2%3D%2213.2%22%2F%3E%3C%2Fsvg%3E")}
+.ic-bell{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%208a6%206%200%200%201%2012%200c0%207%203%209%203%209H3s3-2%203-9%22%2F%3E%3Cpath%20d%3D%22M10.3%2021a1.94%201.94%200%200%200%203.4%200%22%2F%3E%3C%2Fsvg%3E")}
+.ic-sparkles{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%202%2013.9%208.1%2020%2010%2013.9%2011.9%2012%2018%2010.1%2011.9%204%2010%2010.1%208.1z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-pin{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M20%2010c0%206-8%2012-8%2012s-8-6-8-12a8%208%200%200%201%2016%200Z%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2210%22%20r%3D%223%22%2F%3E%3C%2Fsvg%3E")}
+.ic-lock{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%225%22%20y%3D%2211%22%20width%3D%2214%22%20height%3D%2210%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M8%2011V7a4%204%200%200%201%208%200v4%22%2F%3E%3C%2Fsvg%3E")}
+.ic-thermometer{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M14%204v10.54a4%204%200%201%201-4%200V4a2%202%200%200%201%204%200Z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-wind{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12.8%2019.6A2%202%200%201%200%2014%2016H2%22%2F%3E%3Cpath%20d%3D%22M17.5%208a2.5%202.5%200%201%201%202%204H2%22%2F%3E%3Cpath%20d%3D%22M9.8%204.4A2%202%200%201%201%2011%208H2%22%2F%3E%3C%2Fsvg%3E")}
+.ic-sun{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%224%22%2F%3E%3Cpath%20d%3D%22M12%202v2M12%2020v2M4.9%204.9l1.4%201.4M17.7%2017.7l1.4%201.4M2%2012h2M20%2012h2M4.9%2019.1l1.4-1.4M17.7%206.3l1.4-1.4%22%2F%3E%3C%2Fsvg%3E")}
+.ic-battery{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%222%22%20y%3D%227%22%20width%3D%2218%22%20height%3D%2210%22%20rx%3D%222%22%2F%3E%3Cline%20x1%3D%2222%22%20y1%3D%2211%22%20x2%3D%2222%22%20y2%3D%2213%22%2F%3E%3Cpath%20d%3D%22M6%207v10%22%20%2F%3E%3C%2Fsvg%3E")}
+.ic-shield{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12%202%204%205v6c0%205%203.4%208.7%208%2011%204.6-2.3%208-6%208-11V5z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-cup{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M8%202h8l-1%204H9z%22%2F%3E%3Cpath%20d%3D%22M7%206h10l-1.2%2013a2%202%200%200%201-2%201.8h-3.6a2%202%200%200%201-2-1.8z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-film{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2216%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M7%204v16M17%204v16M3%209h4M3%2015h4M17%209h4M17%2015h4%22%2F%3E%3C%2Fsvg%3E")}
+.ic-link{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M9%2017H7a5%205%200%200%201%200-10h2%22%2F%3E%3Cpath%20d%3D%22M15%207h2a5%205%200%200%201%200%2010h-2%22%2F%3E%3Cline%20x1%3D%228%22%20y1%3D%2212%22%20x2%3D%2216%22%20y2%3D%2212%22%2F%3E%3C%2Fsvg%3E")}
+.ic-ticket{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%208a2%202%200%200%201%202-2h14a2%202%200%200%201%202%202v2a2%202%200%200%200%200%204v2a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2v-2a2%202%200%200%200%200-4z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-trophy{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M8%2021h8M12%2017v4M7%204h10v4a5%205%200%200%201-10%200z%22%2F%3E%3Cpath%20d%3D%22M7%205H4a2%202%200%200%200%200%204h1M17%205h3a2%202%200%200%201%200%204h-1%22%2F%3E%3C%2Fsvg%3E")}
+.ic-refresh{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%2012a9%209%200%200%201%2015.5-6.3L21%208M3%208l2.5%202.3A9%209%200%200%200%2021%2012%22%2F%3E%3C%2Fsvg%3E")}
+.ic-brain{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M9%203a3%203%200%200%200-3%203%203%203%200%200%200-2%205%203%203%200%200%200%202%205%203%203%200%200%200%203%203%203%203%200%200%200%203-3V6a3%203%200%200%200-3-3z%22%2F%3E%3Cpath%20d%3D%22M15%203a3%203%200%200%201%203%203%203%203%200%200%201%202%205%203%203%200%200%201-2%205%203%203%200%200%201-3%203%203%203%200%200%201-3-3%22%2F%3E%3C%2Fsvg%3E")}
+.ic-credit-card{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%222%22%20y%3D%225%22%20width%3D%2220%22%20height%3D%2214%22%20rx%3D%222%22%2F%3E%3Cline%20x1%3D%222%22%20y1%3D%2210%22%20x2%3D%2222%22%20y2%3D%2210%22%2F%3E%3C%2Fsvg%3E")}
+.ic-book{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%2019.5A2.5%202.5%200%200%201%206.5%2017H20%22%2F%3E%3Cpath%20d%3D%22M6.5%202H20v20H6.5A2.5%202.5%200%200%201%204%2019.5v-15A2.5%202.5%200%200%201%206.5%202Z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-utensils{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%203v7a2%202%200%200%200%202%202h1a2%202%200%200%200%202-2V3%22%2F%3E%3Cpath%20d%3D%22M5%2012v9%22%2F%3E%3Cpath%20d%3D%22M18%203c-1.5%200-3%201.5-3%205s1.5%205%203%205v8%22%2F%3E%3C%2Fsvg%3E")}
+.ic-cloud{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M17.5%2019a4.5%204.5%200%200%200%200-9%206%206%200%200%200-11.4-1.5A5%205%200%200%200%206.5%2019z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-star{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m12%202%203%207%207%20.8-5.2%204.8%201.4%207L12%2018l-6.2%203.6%201.4-7L2%209.8%209%209z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-moon{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M21%2012.8A9%209%200%201%201%2011.2%203%207%207%200%200%200%2021%2012.8Z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-lightbulb{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M9%2018h6M10%2022h4M15.1%2014A5%205%200%201%200%209%2014c.6.6%201%201.4%201%202.3V18h4v-1.7c0-.9.4-1.7%201.1-2.3Z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-message-circle{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M21%2011.5a8.4%208.4%200%200%201-.9%203.8%208.5%208.5%200%200%201-7.6%204.7%208.4%208.4%200%200%201-3.8-.9L3%2021l1.9-5.7a8.4%208.4%200%200%201-.9-3.8%208.5%208.5%200%200%201%204.7-7.6%208.4%208.4%200%200%201%203.8-.9h.5a8.48%208.48%200%200%201%208%208z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-edit{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M17%203a2.85%202.85%200%201%201%204%204L7.5%2020.5%202%2022l1.5-5.5Z%22%2F%3E%3C%2Fsvg%3E")}
+.ic-backpack{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M8%204h8a2%202%200%200%201%202%202v2.5c2%20.8%203%202.8%203%205.5v4a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2v-4c0-2.7%201-4.7%203-5.5V6a2%202%200%200%201%202-2Z%22%2F%3E%3Cpath%20d%3D%22M9%204v3M15%204v3M9%2012h6%22%2F%3E%3C%2Fsvg%3E")}
 
-
-.chrono{
-  border:1px solid var(--line);border-radius:12px;padding:13px 10px;text-align:center;
-  background:linear-gradient(180deg, rgba(255,84,112,.06), transparent);
-  transition:transform .2s, box-shadow .2s, border-color .2s;
-}
-.chrono:hover{transform:translateY(-3px);border-color:rgba(255,84,112,.5);box-shadow:0 10px 28px rgba(255,84,112,.18)}
-.chrono .d{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
-.chrono .c{font-family:var(--font-data);font-size:clamp(17px,2.2vw,22px);font-weight:700;margin:4px 0 2px;color:var(--text)}
-.chrono .delta{font-family:var(--font-data);font-size:10.5px}
-.chrono .delta.up{color:var(--good)} .chrono .delta.down{color:var(--run)}
-#vdotSpark{height:56px;margin-top:4px}
 
 /* ---------- Profil physiologique ---------- */
 .physio-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:12px;padding-bottom:8px}
@@ -465,17 +488,18 @@ body.grid-on .cal-guides{opacity:1}
 .readiness .lbl{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .readiness .advice{font-size:11.5px;color:#A9EFD2;margin-top:4px}
 
-/* ---------- Matériel (suivi d'usure) ---------- */
+/* ---------- Matériel (suivi d'usure + catalogue) ---------- */
 .gear{margin-top:26px}
 .gear-actions{margin:14px 0 16px}
-.gear-add{background:var(--run)}
+.gear-add{background:linear-gradient(120deg,var(--run),var(--bike))}
 .gear-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:13px}
 .gear-card{border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:15px 16px;position:relative}
 .gear-card-h{display:flex;align-items:center;gap:11px;margin-bottom:12px}
-.gear-ico{font-size:26px;flex:none}
+.gear-ico{flex:none;width:26px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.gear-ico .ic{width:20px;height:20px}
 .gear-i{flex:1;min-width:0}
 .gear-name{font-weight:700;font-size:14.5px}
-.gear-type{font-size:11px;color:var(--muted)}
+.gear-type{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}
 .gear-del{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:7px;font-size:11px;padding:4px 8px;cursor:pointer;flex:none}
 .gear-del:hover{border-color:var(--run);color:var(--run)}
 .gear-km{font-family:var(--font-data);font-size:24px;font-weight:700;margin-bottom:3px}
@@ -490,10 +514,39 @@ body.grid-on .cal-guides{opacity:1}
 .gear-ms.next{background:rgba(255,177,61,.12);color:var(--bike);border-color:transparent}
 .gear-ms.todo{color:var(--muted)}
 .gear-alert{margin-top:11px;font-size:12px;border-radius:9px;padding:9px 11px;line-height:1.45;display:flex;gap:8px;align-items:flex-start}
+.gear-alert .ic{flex:none;margin-top:1px}
 .gear-alert.warn{background:rgba(255,177,61,.1);border:1px solid rgba(255,177,61,.25);color:var(--bike)}
 .gear-alert.danger{background:rgba(255,84,112,.1);border:1px solid rgba(255,84,112,.25);color:var(--run)}
 .gear-alert.ok{background:rgba(57,230,163,.08);border:1px solid rgba(57,230,163,.2);color:var(--good)}
-.gear-modal{width:min(500px,100%)}
+.gear-modal{width:min(560px,100%)}
+/* recherche + catalogue chaussures */
+.shoe-results{display:flex;flex-direction:column;gap:4px;max-height:230px;overflow-y:auto;margin-top:7px}
+.shoe-item{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;
+  border:1px solid var(--line);border-radius:9px;background:var(--panel-2);color:var(--text);
+  font-size:13px;padding:9px 12px;cursor:pointer;transition:.13s}
+.shoe-item:hover{border-color:var(--swim);background:rgba(70,194,216,.08)}
+.si-name b{font-weight:800}
+.si-meta{font-size:10.5px;color:var(--muted);display:flex;align-items:center;gap:6px;flex:none}
+.sr-cat{font-size:10px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--muted);padding:7px 2px 2px}
+.shoe-brands{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:9px}
+.sb-hint{font-size:11px;color:var(--muted)}
+.brand-chip{border:1px solid var(--line-strong);border-radius:99px;background:transparent;color:var(--text);
+  font-size:11.5px;font-weight:700;padding:5px 12px;cursor:pointer;transition:.13s}
+.brand-chip:hover{border-color:var(--swim)}
+.brand-chip.sel{background:linear-gradient(120deg,rgba(70,194,216,.18),rgba(142,127,208,.16));border-color:transparent}
+.shoe-picked{font-size:12px;color:var(--soft);border:1px solid rgba(57,230,163,.3);background:rgba(57,230,163,.07);
+  border-radius:9px;padding:9px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gear-cat{font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--gc) 16%,transparent);color:var(--gc);border:1px solid color-mix(in srgb,var(--gc) 35%,transparent);display:inline-flex;align-items:center;gap:3px}
+.gear-cat .ic,.si-meta .ic{width:10px;height:10px}
+.shoe-picked .ic{width:14px;height:14px}
+.gear-cost{font-family:var(--font-data);font-size:11px;color:var(--bike);font-weight:700;margin-left:8px}
+.gear-comm{font-size:11.5px;color:var(--muted);margin:8px 0 2px;border:1px dashed var(--line-strong);border-radius:8px;padding:7px 10px}
+.gear-comm b{color:var(--swim)}
+.gear-advice{display:flex;gap:11px;align-items:flex-start;border:1px solid rgba(70,194,216,.3);background:rgba(70,194,216,.06);
+  border-radius:12px;padding:12px 15px;margin-bottom:10px;font-size:13px;line-height:1.5}
+.gear-advice.warn{border-color:rgba(255,177,61,.35);background:rgba(255,177,61,.07)}
+.ga-ico{flex:none;width:19px;height:19px;color:var(--swim)}
+.gear-advice.warn .ga-ico{color:var(--bike)}
 
 /* ---------- Panneau "Aujourd'hui" (guide quotidien) ---------- */
 .today-panel{display:none;margin-bottom:18px}
@@ -1128,6 +1181,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 .strava-acts{margin-top:10px;display:flex;flex-direction:column;gap:6px}
 .strava-act{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:9px;background:var(--panel-2);padding:8px 10px}
 .strava-act .ico{font-size:15px}
+.strava-act .ico .ic,.ci .ic,.cr-disc .ic,.pres-title .ic,.disc .ic{width:14px;height:14px;vertical-align:-2px}
 .strava-act .ai{flex:1;min-width:0}
 .strava-act .at{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .strava-act .am{font-family:var(--font-data);font-size:10.5px;color:var(--muted)}
@@ -1181,6 +1235,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 .imp-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ic)}
 .imp-top{display:flex;align-items:center;gap:8px;margin-bottom:9px}
 .imp-ico{font-size:18px}
+.imp-ico .ic{width:17px;height:17px}
 .imp-name{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
 .imp-cost{font-family:var(--font-data);font-size:20px;font-weight:700;line-height:1;color:var(--ic)}
 .imp-cost small{font-size:12px;color:var(--muted);font-weight:600}
@@ -1428,11 +1483,11 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       <button id="modeClub" role="tab" aria-selected="false"><i class="ic ic-landmark"></i>Club</button>
     </div>
     <button class="icon-btn theme-btn" id="themeBtn" aria-label="Changer de thème" title="Mode clair / sombre">
-      <span id="themeIcon">🌙</span>
+      <span id="themeIcon"><i class="ic ic-moon"></i></span>
     </button>
     <div class="bell-wrap" id="bellWrap">
       <button class="icon-btn bell-btn" id="bellBtn" aria-label="Notifications" aria-haspopup="true" title="Alertes">
-        🔔<span class="bell-badge" id="bellBadge" hidden>0</span>
+        <i class="ic ic-bell"></i><span class="bell-badge" id="bellBadge" hidden>0</span>
       </button>
       <div class="bell-menu" id="bellMenu" role="menu" aria-label="Alertes athlètes">
         <div class="bell-head">Alertes athlètes</div>
@@ -1480,7 +1535,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     <div class="stat">
       <div class="k">Prochaine course</div>
       <div class="v" id="raceCountdown">J–22</div>
-      <div class="trend flat">Gorillaman · Montauban 🦍</div>
+      <div class="trend flat">Gorillaman · Montauban</div>
     </div>
     <div class="stat stat-tech">
       <div class="k">Charge semaine</div>
@@ -1546,7 +1601,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     <div class="mental-glow" aria-hidden="true"></div>
     <div class="mental-txt">
       <span class="mental-tag">Inclus dans ta formule coaching</span>
-      <h2>Le mental, ta 4<sup>e</sup> discipline 🧠</h2>
+      <h2>Le mental, ta 4<sup>e</sup> discipline</h2>
       <p>Gestion du stress de course, visualisation, routines pré-compétition — une séance individuelle avec <b>Éric</b>, notre préparateur mental, directement dans son agenda.</p>
     </div>
     <button class="btn mental-btn" id="mentalBtn"><i class="ic ic-calendar"></i>Prendre RDV prépa mentale</button>
@@ -1556,7 +1611,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
   <section class="lactest" aria-label="Réserver un test lactate">
     <div class="lactest-glow" aria-hidden="true"></div>
     <div class="lactest-txt">
-      <span class="lactest-tag">Connais tes vrais seuils 🧪</span>
+      <span class="lactest-tag">Connais tes vrais seuils</span>
       <h2>Réserve ton test lactate</h2>
       <p>Un test à l'effort avec prélèvements sanguins détermine précisément tes seuils SV1 et SV2 — la base la plus fiable pour calibrer tes zones d'entraînement. Course à pied ou vélo, sur le terrain ou en labo.</p>
     </div>
@@ -1601,7 +1656,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       </div>
     </div>
 
-    <p class="rh-disclaimer">⚠️ Recommandations indicatives d'aide à la décision d'entraînement. Elles ne constituent pas un avis médical et ne remplacent pas une consultation. En cas de douleur, de fatigue inhabituelle ou de doute, consulte un professionnel de santé.</p>
+    <p class="rh-disclaimer"><i class="ic ic-alert-triangle"></i> Recommandations indicatives d'aide à la décision d'entraînement. Elles ne constituent pas un avis médical et ne remplacent pas une consultation. En cas de douleur, de fatigue inhabituelle ou de doute, consulte un professionnel de santé.</p>
   </section>
 
   <!-- ===================== ANALYTICS ===================== -->
@@ -1700,7 +1755,8 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       <h2>Mon <span>matériel</span></h2>
       <span class="src">suivi d'usure · alertes km</span>
     </div>
-    <p class="sub">Suis le kilométrage de tes chaussures et de tes vélos. Tu reçois une alerte à 500, 800 et 1000 km pour anticiper le remplacement de tes baskets.</p>
+    <p class="sub">Suis le kilométrage de tes chaussures et de tes vélos. Chaque modèle du catalogue a sa propre durée de vie estimée : tu es alerté avant que l'amorti ne se dégrade.</p>
+    <div id="gearAdvisor"></div>
     <div class="gear-actions">
       <button class="btn gear-add" id="gearAdd">+ Ajouter un équipement</button>
     </div>
@@ -1735,13 +1791,13 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     </div>
 
     <div class="club-tabs" id="clubTabs">
-      <button class="club-tab active" data-ct="dash">🏟️ Tableau de bord</button>
+      <button class="club-tab active" data-ct="dash"><i class="ic ic-landmark"></i>Tableau de bord</button>
       <button class="club-tab" data-ct="creneaux"><i class="ic ic-calendar"></i>Créneaux</button>
-      <button class="club-tab" data-ct="presence">✅ Présences</button>
-      <button class="club-tab" data-ct="bill">💶 Facturation</button>
+      <button class="club-tab" data-ct="presence"><i class="ic ic-check"></i>Présences</button>
+      <button class="club-tab" data-ct="bill"><i class="ic ic-coin"></i>Facturation</button>
       <button class="club-tab" data-ct="athletes"><i class="ic ic-users"></i>Adhérents</button>
       <button class="club-tab" data-ct="groupes"><i class="ic ic-shirt"></i>Groupes</button>
-      <button class="club-tab" data-ct="offres">🎟️ Offres</button>
+      <button class="club-tab" data-ct="offres"><i class="ic ic-ticket"></i>Offres</button>
     </div>
 
     <!-- Onglet créneaux -->
@@ -1767,7 +1823,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     <!-- Onglet athlètes -->
     <div class="club-view" id="clubViewAthletes" hidden>
       <div class="invite-card">
-        <div class="invite-icon">🔗</div>
+        <div class="invite-icon"><i class="ic ic-link"></i></div>
         <div class="invite-body">
           <div class="invite-title">Lien d'invitation du club</div>
           <div class="invite-sub">Partage ce lien à tes athlètes : ils demandent à rejoindre le club, puis tu les affectes au bon groupe.</div>
@@ -1809,17 +1865,17 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 <!-- Modal création de créneau club -->
 <div class="overlay" id="creneauOverlay" role="dialog" aria-modal="true" aria-label="Créer un créneau">
   <div class="modal creneau-modal">
-    <button class="close" id="creneauClose" aria-label="Fermer">✕</button>
+    <button class="close" id="creneauClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
     <span class="badge">Nouveau créneau</span>
     <h3>Créneau collectif</h3>
     <div class="cr-form">
       <div class="b-fld"><label>Discipline</label>
         <select id="crDisc">
-          <option value="swim">🌊 Natation</option>
-          <option value="bike">🚴 Vélo</option>
-          <option value="run">👟 Course</option>
-          <option value="strength">💪 Renfo</option>
-          <option value="hyrox">🦾 Hyrox</option>
+          <option value="swim">Natation</option>
+          <option value="bike">Vélo</option>
+          <option value="run">Course</option>
+          <option value="strength">Renfo</option>
+          <option value="hyrox">Hyrox</option>
         </select>
       </div>
       <div class="b-fld"><label>Intitulé</label><input type="text" id="crTitle" placeholder="Ex. Séance piste collective"></div>
@@ -1838,15 +1894,15 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       </div>
       <p class="cr-note" id="crPriceNote">Mets 0 pour un créneau inclus dans l'adhésion. Un tarif &gt; 0 active la séance « à la carte » (utile pour les salles Hyrox).</p>
     </div>
-    <button class="btn" id="crSave" style="width:100%;margin-top:8px">✓ Publier le créneau</button>
+    <button class="btn" id="crSave" style="width:100%;margin-top:8px"><i class="ic ic-check"></i> Publier le créneau</button>
   </div>
 </div>
 
 <!-- Modal création / édition de groupe -->
 <div class="overlay" id="groupOverlay" role="dialog" aria-modal="true" aria-label="Créer un groupe">
   <div class="modal group-modal">
-    <button class="close" id="groupClose" aria-label="Fermer">✕</button>
-    <span class="badge" style="background:var(--strength)">🎽 Groupe</span>
+    <button class="close" id="groupClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
+    <span class="badge" style="background:var(--strength)"><i class="ic ic-shirt"></i> Groupe</span>
     <h3 id="groupModalTitle">Nouveau groupe</h3>
     <div class="cr-form">
       <div class="b-fld"><label>Nom du groupe</label><input type="text" id="grpName" placeholder="Ex. Adultes Triathlon Ironman"></div>
@@ -1858,21 +1914,21 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
         <div class="grp-members" id="grpMembers"></div>
       </div>
     </div>
-    <button class="btn" id="grpSave" style="width:100%;margin-top:8px">✓ Enregistrer le groupe</button>
+    <button class="btn" id="grpSave" style="width:100%;margin-top:8px"><i class="ic ic-check"></i> Enregistrer le groupe</button>
   </div>
 </div>
 
 <!-- Modal acceptation d'une demande d'adhésion (affecter à un groupe) -->
 <div class="overlay" id="acceptOverlay" role="dialog" aria-modal="true" aria-label="Accepter une demande">
   <div class="modal accept-modal">
-    <button class="close" id="acceptClose" aria-label="Fermer">✕</button>
-    <span class="badge" style="background:var(--good);color:#062a1d">✓ Nouvelle adhésion</span>
+    <button class="close" id="acceptClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
+    <span class="badge" style="background:var(--good);color:#062a1d"><i class="ic ic-check"></i> Nouvelle adhésion</span>
     <h3 id="acceptName">Accepter l'athlète</h3>
     <p class="desc">Choisis le groupe qui correspond le mieux à cet athlète. Tu pourras le changer plus tard.</p>
     <div class="b-fld"><label>Affecter au groupe</label>
       <div class="accept-groups" id="acceptGroups"></div>
     </div>
-    <button class="btn" id="acceptSave" style="width:100%;margin-top:12px">✓ Ajouter au club</button>
+    <button class="btn" id="acceptSave" style="width:100%;margin-top:12px"><i class="ic ic-check"></i> Ajouter au club</button>
   </div>
 </div>
 
@@ -1883,31 +1939,38 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 <!-- Modal ajout d'équipement -->
 <div class="overlay" id="gearOverlay" role="dialog" aria-modal="true" aria-label="Ajouter un équipement">
   <div class="modal gear-modal">
-    <button class="close" id="gearClose" aria-label="Fermer">✕</button>
-    <span class="badge">👟 Équipement</span>
+    <button class="close" id="gearClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
+    <span class="badge"><i class="ic ic-shoe"></i> Équipement</span>
     <h3>Nouvel équipement</h3>
     <div class="cr-form">
       <div class="b-fld"><label>Type</label>
         <select id="gearType">
-          <option value="shoe">👟 Chaussures de course</option>
-          <option value="bike">🚴 Vélo</option>
+          <option value="shoe">Chaussures de course</option>
+          <option value="bike">Vélo</option>
         </select>
       </div>
-      <div class="b-fld"><label>Nom / modèle</label><input type="text" id="gearName" placeholder="Ex. Nike Vaporfly 3"></div>
+      <div class="b-fld" id="shoeSearchFld"><label>Cherche ton modèle</label>
+        <input type="text" id="gearSearch" placeholder="Ex. Pegasus, Novablast, Vaporfly…" autocomplete="off">
+        <div class="shoe-results" id="shoeResults"></div>
+        <div class="shoe-brands" id="shoeBrands"></div>
+      </div>
+      <div class="b-fld"><label>Nom / modèle</label><input type="text" id="gearName" placeholder="Ou saisis-le librement s'il n'est pas dans le catalogue"></div>
+      <div class="shoe-picked" id="shoePicked" hidden></div>
       <div class="cr-row">
         <div class="b-fld"><label>Km déjà parcourus</label><input type="number" id="gearKm" value="0" min="0"></div>
-        <div class="b-fld"><label>Seuil d'alerte max (km)</label><input type="number" id="gearMax" value="1000" min="100"></div>
+        <div class="b-fld"><label>Durée de vie (km)</label><input type="number" id="gearMax" value="900" min="100"></div>
+        <div class="b-fld"><label>Prix d'achat (€)</label><input type="number" id="gearPrice" value="" min="0" placeholder="160"></div>
       </div>
-      <p class="cr-note">Pour les chaussures de course, des alertes se déclenchent automatiquement à 500, 800 et 1000 km. Au-delà de 800 km, l'amorti se dégrade et le risque de blessure augmente.</p>
+      <p class="cr-note">La durée de vie se remplit automatiquement selon le modèle choisi : une chaussure carbone de compétition s'use vers 350 km, une paire d'entraînement tient 900 km et plus. Le prix permet de suivre ton coût au kilomètre.</p>
     </div>
-    <button class="btn" id="gearSave" style="width:100%;margin-top:8px">✓ Ajouter</button>
+    <button class="btn" id="gearSave" style="width:100%;margin-top:8px"><i class="ic ic-check"></i> Ajouter</button>
   </div>
 </div>
 
 <div class="overlay" id="mentalOverlay" role="dialog" aria-modal="true" aria-label="Prise de rendez-vous prépa mentale">
   <div class="modal mental-modal">
-    <button class="close" id="mentalClose" aria-label="Fermer">✕</button>
-    <span class="badge" style="background:var(--strength)">🧠 Prépa mentale</span>
+    <button class="close" id="mentalClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
+    <span class="badge" style="background:var(--strength)"><i class="ic ic-brain"></i> Prépa mentale</span>
     <h3>Réserve ta séance avec Éric</h3>
     <p class="desc" style="border-color:var(--strength)">Choisis ton créneau ci-dessous — la séance (visio, 45 min) est incluse dans ta formule, rien à régler.</p>
     <div class="calendly-wrap">
@@ -1920,8 +1983,8 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 
 <div class="overlay" id="lactestOverlay" role="dialog" aria-modal="true" aria-label="Réserver un test lactate">
   <div class="modal lactest-modal">
-    <button class="close" id="lactestClose" aria-label="Fermer">✕</button>
-    <span class="badge" style="background:var(--good)">🧪 Test lactate</span>
+    <button class="close" id="lactestClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
+    <span class="badge" style="background:var(--good)"><i class="ic ic-flask"></i> Test lactate</span>
     <h3>Réserve ton test lactate</h3>
     <p class="desc" style="border-color:var(--good)">Remplis ce formulaire : nous te recontactons sous 48 h pour fixer une date selon tes disponibilités.</p>
     <div class="lf-grid">
@@ -1937,7 +2000,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       <div class="lf-field"><label for="lf-period">Période souhaitée</label><input id="lf-period" type="text" placeholder="ex. semaine du 23 juin"></div>
       <div class="lf-field full"><label for="lf-msg">Message (objectif, course visée…)</label><textarea id="lf-msg" placeholder="Optionnel"></textarea></div>
     </div>
-    <button class="btn" id="lactestSend" style="width:100%">Envoyer ma demande ✉️</button>
+    <button class="btn" id="lactestSend" style="width:100%">Envoyer ma demande</button>
     <p class="mental-fallback" id="lactestFallback" style="display:none"></p>
   </div>
 </div>
@@ -1946,7 +2009,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 <!-- ===================== ANALYSE DÉTAILLÉE SÉANCE ===================== -->
 <div class="overlay" id="analysisOverlay" role="dialog" aria-modal="true" aria-label="Analyse de la séance">
   <div class="modal analysis-modal">
-    <button class="close" id="analysisClose" aria-label="Fermer">✕</button>
+    <button class="close" id="analysisClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
     <span class="badge" id="anBadge"></span>
     <h3 id="anTitle"></h3>
     <div class="an-kpis" id="anKpis"></div>
@@ -1977,7 +2040,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       <div class="an-dc-trend" id="anDecoupleTrend"></div>
     </div>
     <div class="an-section" id="anAiWrap">
-      <div class="an-sec-head"><h4>🧠 Assistant IA <span class="an-hint">résumé &amp; recommandations</span></h4></div>
+      <div class="an-sec-head"><h4><i class="ic ic-brain"></i> Assistant IA <span class="an-hint">résumé &amp; recommandations</span></h4></div>
       <div id="anAiBody"></div>
     </div>
     <div class="an-section">
@@ -1993,20 +2056,20 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 
 <div class="overlay" id="builderOverlay" role="dialog" aria-modal="true" aria-label="Création de séance">
   <div class="modal builder-modal">
-    <button class="close" id="builderClose" aria-label="Fermer">✕</button>
+    <button class="close" id="builderClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
     <div class="builder-head">
       <span class="badge" id="builderBadge">Nouvelle séance</span>
       <div class="builder-meta-row">
         <input type="text" id="bTitle" class="b-title-input" placeholder="Titre de la séance (ex. Seuil 4×8' FTP)">
         <div class="b-disc-pick" id="bDiscPick" role="tablist" aria-label="Sport">
-          <button data-d="swim" class="active">🌊</button>
-          <button data-d="bike">🚴</button>
-          <button data-d="run">👟</button>
-          <button data-d="strength">💪</button>
-          <button data-d="hyrox" title="Hyrox">🦾</button>
+          <button data-d="swim" class="active"><i class="ic ic-waves"></i></button>
+          <button data-d="bike"><i class="ic ic-bike"></i></button>
+          <button data-d="run"><i class="ic ic-run"></i></button>
+          <button data-d="strength"><i class="ic ic-dumbbell"></i></button>
+          <button data-d="hyrox" title="Hyrox"><i class="ic ic-zap"></i></button>
         </div>
         <select id="bObjectif" title="Objectif de la séance — sert à l'analyse IA" style="background:var(--panel-2);border:1px solid var(--line-strong);color:var(--soft);border-radius:10px;padding:0 10px;height:38px;font-size:12.5px;font-family:inherit;cursor:pointer">
-          <option value="">🎯 Objectif : auto</option>
+          <option value="">Objectif : auto</option>
           <option value="endurance|Z2">Endurance fondamentale (Z2)</option>
           <option value="seuil|Z3">Seuil aérobie · LT1 (Z3)</option>
           <option value="seuil|Z4">Seuil · LT2 (Z4)</option>
@@ -2025,7 +2088,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       <button class="b-add-block" id="bAddBlock">+ Ajouter un bloc</button>
 
       <div class="b-nutri">
-        <div class="b-nutri-head">🥗 Consignes nutrition <span id="bNutriAuto" class="b-nutri-auto"></span></div>
+        <div class="b-nutri-head"><i class="ic ic-utensils"></i> Consignes nutrition <span id="bNutriAuto" class="b-nutri-auto"></span></div>
         <div class="b-nutri-grid">
           <div class="b-fld"><label>Avant la séance</label><textarea id="bNutriPre" rows="2" placeholder="Auto selon le type — ou écris ta consigne"></textarea></div>
           <div class="b-fld"><label>Après la séance (récup)</label><textarea id="bNutriPost" rows="2" placeholder="Ex. protéines dans les 30 min + glucides"></textarea></div>
@@ -2037,8 +2100,8 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     <div class="builder-foot">
       <div class="b-summary" id="bSummary"></div>
       <div class="b-actions">
-        <button class="b-ghost" id="bSaveLib">📚 Ranger en bibliothèque</button>
-        <button class="btn" id="bSaveCal">✓ Ajouter au calendrier</button>
+        <button class="b-ghost" id="bSaveLib"><i class="ic ic-book"></i> Ranger en bibliothèque</button>
+        <button class="btn" id="bSaveCal"><i class="ic ic-check"></i> Ajouter au calendrier</button>
       </div>
     </div>
   </div>
@@ -2046,12 +2109,12 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 
 <div class="overlay" id="videoOverlay" role="dialog" aria-modal="true" aria-label="Lecteur vidéo">
   <div class="modal video-modal">
-    <button class="close" id="videoClose" aria-label="Fermer">✕</button>
+    <button class="close" id="videoClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
     <span class="badge" id="videoBadge"></span>
     <h3 id="videoTitle"></h3>
     <div class="video-frame" id="videoFrame"></div>
     <p class="video-desc" id="videoDesc"></p>
-    <button class="btn" id="videoToLib" style="background:var(--swim)">📚 Ouvrir la bibliothèque</button>
+    <button class="btn" id="videoToLib" style="background:var(--swim)"><i class="ic ic-book"></i> Ouvrir la bibliothèque</button>
   </div>
 </div>
 
@@ -2062,7 +2125,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 
 <!-- ===================== MESSAGERIE ===================== -->
 <button class="chat-fab" id="chatFab" aria-label="Messagerie">
-  💬<span class="chat-fab-badge" id="chatFabBadge" hidden></span>
+  <i class="ic ic-message-circle"></i><span class="chat-fab-badge" id="chatFabBadge" hidden></span>
 </button>
 <div class="chat-panel" id="chatPanel" role="dialog" aria-label="Messagerie">
   <div class="chat-head">
@@ -2077,7 +2140,7 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       <button class="chat-wa" id="chatWhatsapp" title="Ouvrir dans WhatsApp">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.738-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.247-.694.247-1.289.173-1.413z"/></svg>
       </button>
-      <button class="chat-close" id="chatClose" aria-label="Fermer">✕</button>
+      <button class="chat-close" id="chatClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
     </div>
   </div>
   <div class="chat-quick" id="chatQuick"></div>
@@ -2096,12 +2159,14 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
    Sillance — logique
    ============================================================ */
 const DISC = {
-  swim:     {label:'Natation', ico:'🌊', color:'var(--swim)', gear:['maillot de bain','bonnet','lunettes']},
-  bike:     {label:'Vélo',     ico:'🚴', color:'var(--bike)', gear:['vélo','casque','tenue vélo','bidon']},
-  run:      {label:'Course',   ico:'👟', color:'var(--run)', gear:['chaussures de course','tenue running']},
-  strength: {label:'Renfo',    ico:'💪', color:'var(--strength)', gear:['tapis','tenue confortable']},
-  hyrox:    {label:'Hyrox',    ico:'🦾', color:'#FF8A3D', gear:['chaussures','gants','tenue','eau']}
+  swim:     {label:'Natation', ico:'ic-waves',    color:'var(--swim)', gear:['maillot de bain','bonnet','lunettes']},
+  bike:     {label:'Vélo',     ico:'ic-bike',     color:'var(--bike)', gear:['vélo','casque','tenue vélo','bidon']},
+  run:      {label:'Course',   ico:'ic-run',      color:'var(--run)', gear:['chaussures de course','tenue running']},
+  strength: {label:'Renfo',    ico:'ic-dumbbell', color:'var(--strength)', gear:['tapis','tenue confortable']},
+  hyrox:    {label:'Hyrox',    ico:'ic-zap',      color:'#FF8A3D', gear:['chaussures','gants','tenue','eau']}
 };
+/* Icône HTML d'une discipline (usage innerHTML uniquement — pas dans <option>/textContent/SVG). */
+function discIcon(d){ return d && d.ico ? `<i class="ic ${d.ico}"></i>` : ''; }
 /* ============================================================
    HYROX — 8 stations officielles (avec 8 × 1 km course entre elles)
    Chaque station a une unité de mesure propre :
@@ -2111,18 +2176,18 @@ const DISC = {
    Certaines stations ont un poids (réglable à la création).
    ============================================================ */
 const HYROX_STATIONS = [
-  {key:'ski',     name:'SkiErg',              unit:'m',   def:1000, weighted:false, ico:'🎿'},
-  {key:'sledpush',name:'Sled Push',           unit:'m',   def:50,   weighted:true,  wDef:152, ico:'🛷'},
-  {key:'sledpull',name:'Sled Pull',           unit:'m',   def:50,   weighted:true,  wDef:103, ico:'🪢'},
-  {key:'burpee',  name:'Burpee Broad Jump',   unit:'m',   def:80,   weighted:false, ico:'🤸'},
-  {key:'row',     name:'Rowing',              unit:'m',   def:1000, weighted:false, ico:'🚣'},
-  {key:'farmer',  name:'Farmers Carry',       unit:'m',   def:200,  weighted:true,  wDef:24,  ico:'🧺'},
-  {key:'lunges',  name:'Sandbag Lunges',      unit:'m',   def:100,  weighted:true,  wDef:20,  ico:'🎒'},
-  {key:'wallball',name:'Wall Balls',          unit:'reps',def:100,  weighted:true,  wDef:9,   ico:'🏐'}
+  {key:'ski',     name:'SkiErg',              unit:'m',   def:1000, weighted:false, short:'Ski'},
+  {key:'sledpush',name:'Sled Push',           unit:'m',   def:50,   weighted:true,  wDef:152, short:'Push'},
+  {key:'sledpull',name:'Sled Pull',           unit:'m',   def:50,   weighted:true,  wDef:103, short:'Pull'},
+  {key:'burpee',  name:'Burpee Broad Jump',   unit:'m',   def:80,   weighted:false, short:'Burpee'},
+  {key:'row',     name:'Rowing',              unit:'m',   def:1000, weighted:false, short:'Row'},
+  {key:'farmer',  name:'Farmers Carry',       unit:'m',   def:200,  weighted:true,  wDef:24,  short:'Farmer'},
+  {key:'lunges',  name:'Sandbag Lunges',      unit:'m',   def:100,  weighted:true,  wDef:20,  short:'Lunges'},
+  {key:'wallball',name:'Wall Balls',          unit:'reps',def:100,  weighted:true,  wDef:9,   short:'W.Ball'}
 ];
 function hyroxStation(key){ return HYROX_STATIONS.find(s=>s.key===key); }
 /* matériel optionnel déclenché par mots-clés dans le titre de la séance.
-   👉 Ajoute ici tes propres tags (plaquettes, pull-buoy, etc.). */
+   Ajoute ici tes propres tags (plaquettes, pull-buoy, etc.). */
 const GEAR_TAGS = {
   'plaquette':'plaquettes', 'pull':'pull-buoy', 'pullbuoy':'pull-buoy', 'pull-buoy':'pull-buoy',
   'élastique':'élastique', 'frein':'palmes', 'palme':'palmes', 'tuba':'tuba',
@@ -2145,7 +2210,7 @@ function gearForSession(s){
    ------------------------------------------------------------
    Génère des conseils selon le type, l'intensité et la durée.
    Le coach peut surcharger via s.nutrition = {pre, during, post}.
-   👉 Repère le macronutriment clé (protéines / glucides) pour la
+   Repère le macronutriment clé (protéines / glucides) pour la
    notification post-synchro.
    ============================================================ */
 function nutritionForSession(s){
@@ -2185,7 +2250,7 @@ function nutritionReminder(s){
 /* ============================================================
    BIBLIOTHÈQUE VIDÉO — éducatifs & gammes
    ------------------------------------------------------------
-   👉 Pour ajouter une vidéo : remplis un objet ci-dessous.
+   Pour ajouter une vidéo : remplis un objet ci-dessous.
       - id     : identifiant unique
       - disc   : swim | bike | run | strength
       - title  : nom affiché
@@ -2279,7 +2344,7 @@ function videoForSession(s){
    certains ont des zones lactate, d'autres juste une VMA, etc.
    On stocke toutes les références disponibles ; l'éditeur de
    séance laisse choisir laquelle utiliser pour chaque bloc.
-   👉 Backend : ces valeurs viennent du profil de chaque athlète.
+   Backend : ces valeurs viennent du profil de chaque athlète.
    ============================================================ */
 const ATHLETE_REF = {
   // — Vélo —
@@ -2336,13 +2401,6 @@ function computeTarget(modelKey, pct){
 }
 function paceStr(s){ return Math.floor(s/60)+"'"+String(Math.round(s%60)).padStart(2,'0')+'"'; }
 function paceFromKmh(kmh){ return paceStr(3600/kmh)+'/km'; }
-function blockTypeMeta(t){
-  return ({warmup:{l:'Échauffement',c:'#39E6A3',ico:'🟢'},
-           work:{l:'Bloc',c:'#FF5470',ico:'🔴'},
-           recov:{l:'Récup',c:'#2FD9FF',ico:'🔵'},
-           cooldown:{l:'Retour au calme',c:'#9D7BFF',ico:'🟣'}})[t];
-}
-
 const TEMPLATES = [
   {id:'t1', disc:'swim', title:'Technique + éducatifs', dur:60, tss:45, zone:'Z2',
    desc:'400m échauffement · 8×50m éducatifs (rattrapé, poings fermés) · 6×100m allure régulière départ 2\'00 · 200m souple.'},
@@ -2452,7 +2510,7 @@ function readinessScore(){
   return Math.round((checkin.sommeil + (10-checkin.fatigue) + checkin.motivation)/30*100);
 }
 function readinessAdvice(s){
-  if(s>=75) return {c:'var(--good)', t:'Feu vert — la qualité passera bien aujourd\'hui 🔥'};
+  if(s>=75) return {c:'var(--good)', t:'Feu vert — la qualité passera bien aujourd\'hui'};
   if(s>=55) return {c:'var(--bike)', t:'Correct — séance OK, garde une marge sur l\'intensité'};
   return {c:'var(--run)', t:'Fatigue marquée — privilégie du Z1/Z2 ou du repos, préviens ton coach'};
 }
@@ -2466,7 +2524,7 @@ function renderSidebar(){
       <p class="hint">Glissez une séance sur un jour →</p>
       <button class="create-btn" id="createSessionBtn">+ Créer une séance</button>
       <div id="tplList" style="margin-top:12px"></div>
-      <div class="lib-note">💡 <b>Astuce coach</b> — déplacez aussi les séances d'un jour à l'autre directement dans le calendrier.</div>
+      <div class="lib-note"><i class="ic ic-lightbulb"></i> <b>Astuce coach</b> — déplacez aussi les séances d'un jour à l'autre directement dans le calendrier.</div>
       <div class="readiness" style="margin-top:14px">
         <div class="lbl">Fraîcheur athlète (check-in du jour)</div>
         <div class="score" style="color:${readinessAdvice(readinessScore()).c}">${readinessScore()}%</div>
@@ -2474,14 +2532,14 @@ function renderSidebar(){
       <div class="coach-connect" style="margin-top:14px">
         <div class="cc-t"><b>⭐ Abonnement Sillance</b></div>
         ${window.__pf_subscribed
-          ? `<div class="cc-s" style="color:#39e6a3">✓ Ton abonnement Sillance est actif. Merci !</div>
+          ? `<div class="cc-s" style="color:#39e6a3"><i class="ic ic-check"></i> Ton abonnement Sillance est actif. Merci !</div>
              <button class="cc-btn" id="coachManageBtn">Gérer mon abonnement</button>`
           : `<div class="cc-s">Débloque ton espace coach complet.</div>
              <div class="cc-price"><b>29 €</b><small>/mois</small></div>
              <button class="cc-btn" id="coachSubscribeBtn">S'abonner à Sillance</button>`}
       </div>
       <div class="coach-connect" style="margin-top:14px">
-        <div class="cc-t"><b>💳 Fais-toi payer</b></div>
+        <div class="cc-t"><b><i class="ic ic-credit-card"></i> Fais-toi payer</b></div>
         <div class="cc-s">Relie ton compte Stripe pour facturer tes athlètes.</div>
         <div class="cc-price">Tarif du suivi : <b id="coachPriceVal">${COACH_OFFER.price} €</b><small>/mois</small> · <a href="#" id="coachPriceEdit">modifier</a></div>
         <button class="cc-btn" id="coachConnectBtn">Relier Stripe</button>
@@ -2491,17 +2549,17 @@ function renderSidebar(){
     const ccb=document.getElementById('coachConnectBtn');
     if(ccb) ccb.onclick=()=>{
       if(window.PF?.user) PF.connectCoachStripe().catch(e=>{console.warn(e);toast('Stripe indisponible');});
-      else toast('Connecte ton espace coach (badge ☁︎) pour relier Stripe');
+      else toast('Connecte ton espace coach pour relier Stripe');
     };
     const csb=document.getElementById('coachSubscribeBtn');
     if(csb) csb.onclick=()=>{
       if(window.PF?.user){ toast('Redirection vers le paiement…'); PF.startCheckout('coach').catch(e=>{console.warn(e);toast('Paiement indisponible');}); }
-      else toast('Connecte ton espace coach (badge ☁︎) pour t\'abonner');
+      else toast('Connecte ton espace coach pour t\'abonner');
     };
     const cmb=document.getElementById('coachManageBtn');
     if(cmb) cmb.onclick=()=>{
       if(window.PF?.user) PF.openBillingPortal().catch(e=>{console.warn(e);toast('Portail indisponible');});
-      else toast('Connecte ton espace coach (badge ☁︎)');
+      else toast('Connecte ton espace coach');
     };
     const cpe=document.getElementById('coachPriceEdit');
     if(cpe) cpe.onclick=(ev)=>{
@@ -2520,9 +2578,9 @@ function renderSidebar(){
       <h2>Check-in du jour</h2>
       <p class="hint">30 secondes chaque matin — ton coach adapte le plan.</p>
       <div class="checkin">
-        ${[['sommeil','😴 Sommeil'],['fatigue','🪫 Fatigue jambes'],['motivation','⚡ Motivation']].map(([k,l])=>`
+        ${[['sommeil','Sommeil','ic-moon'],['fatigue','Fatigue jambes','ic-battery'],['motivation','Motivation','ic-zap']].map(([k,l,ic])=>`
         <div class="row">
-          <label>${l}<span class="val" id="val-${k}">${checkin[k]}/10</span></label>
+          <label><i class="ic ${ic}"></i> ${l}<span class="val" id="val-${k}">${checkin[k]}/10</span></label>
           <input type="range" min="1" max="10" value="${checkin[k]}" data-k="${k}" aria-label="${l}">
         </div>`).join('')}
         <div class="readiness">
@@ -2560,7 +2618,7 @@ function renderSidebar(){
           <label for="morningHour">Heure d'envoi</label>
           <input type="time" id="morningHour" value="07:00">
         </div>
-        <button class="btn morning-btn" id="morningBtn">🔔 Activer le rappel</button>
+        <button class="btn morning-btn" id="morningBtn"><i class="ic ic-bell"></i> Activer le rappel</button>
       </div>`;
     sidebarContent.querySelectorAll('input[type=range]').forEach(inp=>{
       inp.addEventListener('input', ()=>{
@@ -2602,14 +2660,14 @@ function saveMyRefs(){
       .catch(e=> console.warn('[PF] saveAthleteRefs échoué :', e));
   }
   render();
-  toast('Références mises à jour ✓');
+  toast('Références mises à jour');
 }
 
 /* ============================================================
    ALERTE COACH — check-in faible (< 50% de fraîcheur)
    ------------------------------------------------------------
    À la validation du check-in athlète, on notifie le coach.
-   👉 Backend : remplacer l'ajout local + Notification par un
+   Backend : remplacer l'ajout local + Notification par un
    POST vers l'API (push/email au coach concerné).
    ============================================================ */
 const COACH_ALERTS = [];          // file d'alertes côté coach
@@ -2628,9 +2686,9 @@ function submitCheckin(){
       .catch(e=> console.warn('[PF] saveCheckin échoué :', e));
   }
   // confirmation visuelle athlète
-  toast(urgent ? 'Check-in envoyé — alerte prioritaire à ton coach 🔴'
-       : low ? 'Check-in envoyé — ton coach est prévenu 🟠'
-             : 'Check-in envoyé ✓');
+  toast(urgent ? 'Check-in envoyé — alerte prioritaire à ton coach'
+       : low ? 'Check-in envoyé — ton coach est prévenu'
+             : 'Check-in envoyé');
   if(low){
     const alert = {
       id:'al'+Date.now(),
@@ -2649,7 +2707,7 @@ function submitCheckin(){
 
 function notifyCoach(a){
   // démo : notification navigateur (le vrai envoi se fait côté serveur)
-  const pre = a.level==='urgent' ? '🔴 URGENT' : '🟠';
+  const pre = a.level==='urgent' ? 'URGENT' : 'Alerte';
   if('Notification' in window){
     if(Notification.permission==='granted'){
       new Notification(`${pre} ${a.athlete} — fraîcheur ${a.score}%`,
@@ -2679,7 +2737,7 @@ function renderAlerts(){
   const list=document.getElementById('bellList');
   // tri : urgent d'abord, puis par score croissant
   COACH_ALERTS.sort((a,b)=> (a.level==='urgent'?0:1)-(b.level==='urgent'?0:1) || a.score-b.score);
-  if(!COACH_ALERTS.length){ list.innerHTML=`<div class="bell-empty">Aucune alerte. Tes athlètes sont en forme 💪</div>`; return; }
+  if(!COACH_ALERTS.length){ list.innerHTML=`<div class="bell-empty">Aucune alerte. Tes athlètes sont en forme.</div>`; return; }
   list.innerHTML=COACH_ALERTS.map(a=>{
     const urgent = a.level==='urgent';
     const col = urgent?'#FF5470':'#FF8A4D';
@@ -2687,12 +2745,12 @@ function renderAlerts(){
     return `<div class="alert-item ${a.seen?'':'unseen'}">
       <div class="alert-ring" style="--ac:${col};--p:${a.score}"><span>${a.score}</span></div>
       <div class="alert-body">
-        <div class="an">${a.athlete} <span class="flag" style="color:${col}">${urgent?'🔴':''}${flag}</span></div>
-        <div class="ad">😴 ${a.checkin.sommeil}/10 · 🪫 fatigue ${a.checkin.fatigue}/10 · ⚡ ${a.checkin.motivation}/10</div>
+        <div class="an">${a.athlete} <span class="flag" style="color:${col}">${flag}</span></div>
+        <div class="ad"><i class="ic ic-moon"></i> ${a.checkin.sommeil}/10 · <i class="ic ic-battery"></i> fatigue ${a.checkin.fatigue}/10 · <i class="ic ic-zap"></i> ${a.checkin.motivation}/10</div>
         <div class="at">${timeAgo(a.time)}</div>
         <div class="alert-cta">
           <button data-act="adapt">Adapter la séance</button>
-          <button data-act="message">💬 Message</button>
+          <button data-act="message"><i class="ic ic-message-circle"></i> Message</button>
           <button data-act="dismiss">Vu</button>
         </div>
       </div>
@@ -2737,10 +2795,10 @@ document.addEventListener('click', e=>{ if(!bellMenu.contains(e.target)&&e.targe
 /* ---- Message matinal : récap séances + matériel agrégé ---- */
 function buildMorningMessage(dateKey){
   const sessions = (planning[dateKey]||[]);
-  if(!sessions.length) return {empty:true, title:'Repos aujourd\'hui 😌', body:'Pas de séance prévue. Profites-en pour récupérer.'};
+  if(!sessions.length) return {empty:true, title:'Repos aujourd\'hui', body:'Pas de séance prévue. Profites-en pour récupérer.'};
   const discs = [...new Set(sessions.map(s=>DISC[s.disc].label))];
   const gear = [...new Set(sessions.flatMap(gearForSession))];
-  const lines = sessions.map(s=>`${DISC[s.disc].ico} ${s.title} · ${fmtDur(s.dur)}`);
+  const lines = sessions.map(s=>`${discIcon(DISC[s.disc])} ${s.title} · ${fmtDur(s.dur)}`);
   return {
     empty:false,
     title:`Entraînement du jour : ${discs.join(' + ')}`,
@@ -2763,19 +2821,19 @@ function buildMorningPreview(){
   box.innerHTML = `
     <div class="mp-title">${m.title}</div>
     <ul class="mp-sessions">${m.sessions.map(l=>`<li>${l}</li>`).join('')}</ul>
-    <div class="mp-gear-lbl">🎒 À prévoir</div>
+    <div class="mp-gear-lbl"><i class="ic ic-backpack"></i> À prévoir</div>
     <div class="mp-gear">${m.gear.map(g=>`<span>${g}</span>`).join('')}</div>
-    <button class="mp-sync" id="syncActivityBtn">🔄 J'ai fini — synchroniser mon activité</button>`;
+    <button class="mp-sync" id="syncActivityBtn"><i class="ic ic-refresh"></i> J'ai fini — synchroniser mon activité</button>`;
 
   const btn = document.getElementById('morningBtn');
   if(btn){
     btn.addEventListener('click', ()=>{
       const h = document.getElementById('morningHour').value || '07:00';
-      btn.textContent = `✓ Rappel activé à ${h}`;
+      btn.textContent = `Rappel activé à ${h}`;
       btn.classList.add('on');
       if('Notification' in window){
         Notification.requestPermission().then(p=>{
-          if(p==='granted'){ new Notification('Sillance — '+m.title, {body:'🎒 '+m.gear.join(', ')}); }
+          if(p==='granted'){ new Notification('Sillance — '+m.title, {body:m.gear.join(', ')}); }
         });
       }
     });
@@ -2788,16 +2846,16 @@ function buildMorningPreview(){
       // on prend la séance la plus "marquante" du jour (longue ou intense)
       const s = todaySessions.slice().sort((a,b)=> (b.dur||0)-(a.dur||0))[0];
       if(!s) return;
-      sync.textContent='✓ Activité synchronisée';
+      sync.textContent='Activité synchronisée';
       sync.classList.add('done');
       const reminder = nutritionReminder(s);
       const n = nutritionForSession(s);
-      toast(`Activité reçue 🔄 Pense à prendre : ${reminder}`);
+      toast(`Activité reçue — pense à prendre : ${reminder}`);
       if('Notification' in window){
         if(Notification.permission==='granted'){
-          new Notification('Sillance — Récupération 🍽', {body:`Pense à prendre : ${reminder}. ${n.post}`});
+          new Notification('Sillance — Récupération', {body:`Pense à prendre : ${reminder}. ${n.post}`});
         } else if(Notification.permission!=='denied'){
-          Notification.requestPermission().then(p=>{ if(p==='granted') new Notification('Sillance — Récupération 🍽', {body:`Pense à prendre : ${reminder}`}); });
+          Notification.requestPermission().then(p=>{ if(p==='granted') new Notification('Sillance — Récupération', {body:`Pense à prendre : ${reminder}`}); });
         }
       }
     });
@@ -2807,7 +2865,7 @@ function buildMorningPreview(){
 /* ============================================================
    CONNEXION STRAVA (interface)
    ------------------------------------------------------------
-   ⚠️ La vraie connexion OAuth nécessite un SERVEUR (le client
+   La vraie connexion OAuth nécessite un SERVEUR (le client
    secret ne doit jamais être dans cette page). Voir le guide
    d'intégration livré séparément.
    Ici : l'interface complète + une synchro simulée pour la démo.
@@ -2877,7 +2935,7 @@ function renderStravaCard(){
     const actsHtml = stravaActivities.length? `<div class="strava-acts">${stravaActivities.slice(0,6).map(a=>{
       const D=DISC[a.disc]||DISC.run;
       const src = a.src? ` · ${SRC[a.src]||a.src}` : '';
-      return `<div class="strava-act"><span class="ico">${D.ico}</span><div class="ai"><div class="at">${a.name}</div><div class="am">${fmtDur(a.dur)} · ${a.dist} km · ${a.date}${src}</div></div></div>`;
+      return `<div class="strava-act"><span class="ico">${discIcon(D)}</span><div class="ai"><div class="at">${a.name}</div><div class="am">${fmtDur(a.dur)} · ${a.dist} km · ${a.date}${src}</div></div></div>`;
     }).join('')}</div>` : `<p class="hint" style="margin-top:9px">Aucune activité encore importée.</p>`;
     const linked = providers.length? providers.map(p=>SRC[p]||p).join(' · ') : 'Strava';
     box.innerHTML=`
@@ -2925,7 +2983,7 @@ function importActivityFile(file){
     stravaActivities.unshift({disc:s.disc, name:s.title, dur:s.durMin, dist:+(+s.dist).toFixed(1), date:'importé', src:'upload'});
     renderStravaCard();
     openAnalysis({id:'imp'+Date.now(), disc:s.disc, title:s.title, dur:s.durMin, zone:'Z2', _realData:res.data});
-    toast('Activité importée ✓');
+    toast('Activité importée');
     // PROD : PF.saveActivity(res.summary, res.data) → table external_activities (à câbler).
   });
 }
@@ -2944,7 +3002,7 @@ function connectStrava(){
   // DÉMO : simule le retour de l'autorisation OAuth.
   const btn=document.getElementById('stravaConnectBtn');
   if(btn){ btn.textContent='Connexion à Strava…'; btn.disabled=true; }
-  setTimeout(()=>{ stravaConnected=true; stravaActivities=STRAVA_DEMO_SETS[stravaDemoSet].slice(); renderStravaCard(); toast('Strava connecté ✓'); }, 800);
+  setTimeout(()=>{ stravaConnected=true; stravaActivities=STRAVA_DEMO_SETS[stravaDemoSet].slice(); renderStravaCard(); toast('Strava connecté'); }, 800);
 }
 
 function syncStrava(){
@@ -2954,7 +3012,7 @@ function syncStrava(){
   if(window.PF?.user){
     PF.syncDevice('strava')
       .then(()=> refreshDeviceState())
-      .then(()=> toast(`${stravaActivities.length} activités synchronisées 🔄`))
+      .then(()=> toast(`${stravaActivities.length} activités synchronisées`))
       .catch(e=>{ console.warn('[PF] syncDevice:',e); renderStravaCard(); toast('Synchro Strava impossible'); });
     return;
   }
@@ -2962,7 +3020,7 @@ function syncStrava(){
   setTimeout(()=>{
     stravaActivities = STRAVA_DEMO_SETS[stravaDemoSet].slice();
     renderStravaCard();
-    toast(`${stravaActivities.length} activités importées 🔄`);
+    toast(`${stravaActivities.length} activités importées`);
   }, 1000);
 }
 
@@ -2991,7 +3049,7 @@ async function refreshDeviceState(){
 
 // Connexion d'une plateforme autre que Strava (Garmin/Coros).
 function connectProvider(p){
-  if(!window.PF?.user){ toast('Connecte-toi au cloud (badge ☁︎) puis réessaie'); return; }
+  if(!window.PF?.user){ toast('Connecte-toi au cloud puis réessaie'); return; }
   PF.connectDevice(p).then(r=>{ if(r&&r.pending) toast(r.message||'Intégration bientôt disponible'); })
     .catch(e=>{ console.warn('[PF] connectDevice:',e); toast('Connexion impossible'); });
 }
@@ -3013,7 +3071,7 @@ function buildTemplates(container){
     el.className='tpl'; el.draggable=true;
     el.dataset.disc=t.disc;
     el.style.setProperty('--c', D.color);
-    el.innerHTML = `<div class="t" data-ico="${D.ico}">${t.title}</div>
+    el.innerHTML = `<div class="t">${t.title}</div>
                     <div class="m">${t.dur}min · ${t.tss} TSS · ${t.zone}</div>`;
     el.addEventListener('dragstart', e=>{
       e.dataTransfer.setData('text/plain', JSON.stringify({type:'tpl', id:t.id}));
@@ -3110,12 +3168,12 @@ function sessionCard(s, dateKey){
   el.style.setProperty('--c', D.color);
   el.draggable = (mode==='coach');
   el.innerHTML = `
-    <div class="t" data-ico="${D.ico}">${s.title}</div>
+    <div class="t">${s.title}</div>
     <div class="m"><span>${fmtDur(s.dur)}</span>${s.dist?`<span>${s.dist} km</span>`:''}<span>${s.tss} TSS</span><span>${s.zone}</span>${s.done&&s.rpe?`<span class="rpe-chip" style="color:${rpeColor(s.rpe)}">RPE ${s.rpe}</span>`:''}</div>
     ${vid?`<span class="video-chip">${vid.title}</span>`:''}
-    ${s.done?'<span class="done-chip">✓</span>':''}
-    ${mode==='coach'?'<button class="del" aria-label="Supprimer">✕</button>':''}
-    ${mode==='athlete'?`<button class="check-btn">${s.done?'✓ Séance faite':'Marquer comme faite'}</button>`:''}
+    ${s.done?'<span class="done-chip"><i class="ic ic-check"></i></span>':''}
+    ${mode==='coach'?'<button class="del" aria-label="Supprimer"><i class="ic ic-x"></i></button>':''}
+    ${mode==='athlete'?`<button class="check-btn">${s.done?'<i class="ic ic-check"></i> Séance faite':'Marquer comme faite'}</button>`:''}
   `;
   el.addEventListener('dragstart', e=>{
     if(mode!=='coach') return;
@@ -3155,14 +3213,14 @@ function openRpeModal(s){
   let rpe = null;
   modal.style.setProperty('--c', D.color);
   modal.innerHTML = `
-    <button class="close" aria-label="Fermer">✕</button>
-    <span class="badge">${D.ico} ${D.label}</span>
+    <button class="close" aria-label="Fermer"><i class="ic ic-x"></i></button>
+    <span class="badge">${discIcon(D)} ${D.label}</span>
     <h3>Bien joué ! C'était comment ?</h3>
-    <p class="desc">Ton ressenti (RPE) aide ton coach à doser les prochaines séances — sois honnête, pas héroïque 😉</p>
+    <p class="desc">Ton ressenti (RPE) aide ton coach à doser les prochaines séances — sois honnête, pas héroïque.</p>
     <div class="rpe-grid">${Array.from({length:10},(_,i)=>`<button data-r="${i+1}" style="--rc:${rpeColor(i+1)}">${i+1}</button>`).join('')}</div>
     <div class="rpe-scale"><span>Très facile</span><span>À fond</span></div>
     <textarea class="rpe-note" placeholder="Un mot pour ton coach ? (sensations, douleurs, conditions…)"></textarea>
-    <button class="btn" id="rpeSave" disabled style="opacity:.5">Valider la séance ✓</button>`;
+    <button class="btn" id="rpeSave" disabled style="opacity:.5">Valider la séance <i class="ic ic-check"></i></button>`;
   overlay.classList.add('open');
   const save = modal.querySelector('#rpeSave');
   modal.querySelectorAll('.rpe-grid button').forEach(b=>{
@@ -3183,6 +3241,15 @@ function openRpeModal(s){
         .catch(e=> console.warn('[PF] markSessionDone échoué :', e));
     }
     closeModal(); render();
+    // — attribution intelligente du matériel (course à pied) —
+    if(s.disc==='run' && typeof recommendShoe==='function'){
+      const rec = recommendShoe(s);
+      if(rec && rec.shoe){
+        const dist = Math.round((s.km || (s.dur||60)/60*11) * 10)/10;
+        addGearKm(rec.shoe, dist);
+        setTimeout(()=> toast(`+${dist} km attribués à tes ${rec.shoe.name} (${rec.shoe.km}/${rec.shoe.max} km) — modifiable dans Matériel`), 900);
+      }
+    }
   };
   modal.querySelector('.close').onclick = closeModal;
 }
@@ -3194,8 +3261,8 @@ function openModal(s){
   const D = DISC[s.disc];
   modal.style.setProperty('--c', D.color);
   modal.innerHTML = `
-    <button class="close" aria-label="Fermer">✕</button>
-    <span class="badge">${D.ico} ${D.label}</span>
+    <button class="close" aria-label="Fermer"><i class="ic ic-x"></i></button>
+    <span class="badge">${discIcon(D)} ${D.label}</span>
     <h3>${s.title}</h3>
     <div class="grid">
       <div class="cell"><div class="k">Durée</div><div class="v">${s.dur}'</div></div>
@@ -3205,18 +3272,18 @@ function openModal(s){
     <p class="desc">${s.desc||'Séance planifiée.'}</p>
     ${(()=>{ const n=nutritionForSession(s); return `
       <div class="nutri-block nutri-pre">
-        <div class="nutri-head">🥗 Avant la séance</div>
+        <div class="nutri-head"><i class="ic ic-utensils"></i> Avant la séance</div>
         <div class="nutri-txt">${n.pre}</div>
         ${n.during?`<div class="nutri-during">⏱ Pendant : ${n.during}</div>`:''}
       </div>`; })()}
     ${s.done&&s.rpe?`<div class="fb-block"><div class="k">Feedback athlète</div>Ressenti <b style="color:${rpeColor(s.rpe)}">RPE ${s.rpe}/10</b>${s.note?` — «&nbsp;${s.note}&nbsp;»`:''}</div>`:''}
     ${(()=>{ const n=nutritionForSession(s); return `
       <div class="nutri-block nutri-post">
-        <div class="nutri-head">🍽 Après la séance · récupération</div>
+        <div class="nutri-head"><i class="ic ic-utensils"></i> Après la séance · récupération</div>
         <div class="nutri-txt">${n.post}</div>
       </div>`; })()}
-    ${s.done?`<button class="btn" id="openAnalysis" style="width:100%;margin-bottom:9px;background:var(--swim)">📊 Analyse détaillée de la séance</button>`:''}
-    <button class="btn" style="${s.done?'width:100%;background:transparent;border:1px solid var(--line-strong);color:var(--text)':''}">${s.done?'Fermer':"C'est noté, coach 👊"}</button>`;
+    ${s.done?`<button class="btn" id="openAnalysis" style="width:100%;margin-bottom:9px;background:var(--swim)"><i class="ic ic-chart"></i> Analyse détaillée de la séance</button>`:''}
+    <button class="btn" style="${s.done?'width:100%;background:transparent;border:1px solid var(--line-strong);color:var(--text)':''}">${s.done?'Fermer':"C'est noté, coach"}</button>`;
   overlay.classList.add('open');
   modal.querySelector('.close').onclick = closeModal;
   modal.querySelectorAll('.btn').forEach(btn=>{ if(btn.id!=='openAnalysis') btn.onclick = closeModal; });
@@ -3262,7 +3329,7 @@ document.querySelectorAll('.ath-tab').forEach(b=>{
   const icon=document.getElementById('themeIcon');
   function apply(light){
     document.body.classList.toggle('light', light);
-    if(icon) icon.textContent = light ? '☀️' : '🌙';
+    if(icon) icon.innerHTML = light ? '<i class="ic ic-sun"></i>' : '<i class="ic ic-moon"></i>';
     if(btn) btn.title = light ? 'Passer en mode sombre' : 'Passer en mode clair';
     if(typeof rebuildCharts==='function') rebuildCharts();
   }
@@ -3278,7 +3345,7 @@ document.querySelectorAll('.ath-tab').forEach(b=>{
    Le gestionnaire crée des créneaux ; les athlètes du club s'y
    inscrivent (démo : on simule l'inscription de "moi"). Sert aux
    clubs tri ET aux salles Hyrox (séances à la carte avec tarif).
-   👉 Backend : persister clubs, athlètes, créneaux et inscriptions ;
+   Backend : persister clubs, athlètes, créneaux et inscriptions ;
    brancher un paiement pour les créneaux tarifés.
    ============================================================ */
 const CLUB_ATHLETES = [
@@ -3292,7 +3359,7 @@ const CLUB_ATHLETES = [
   {id:'a8', name:'Marie Girard', disc:'hyrox', since:'2025', group:'g6', offer:'dropin'}
 ];
 /* groupes du club : le gestionnaire les crée et y affecte des athlètes.
-   👉 Sert à cibler les créneaux (ex. un créneau réservé au groupe Compétition). */
+   Sert à cibler les créneaux (ex. un créneau réservé au groupe Compétition). */
 let CLUB_GROUPS = [
   {id:'g1', name:'Jeunes Loisir', color:'#2FD9FF', desc:'Découverte et plaisir, sans objectif de compétition'},
   {id:'g2', name:'Jeunes Compétition', color:'#FF5470', desc:'Jeunes orientés performance et courses'},
@@ -3397,7 +3464,7 @@ function renderClubDash(){
     <div class="cdash-cols">
       <div class="cdash-card">
         <h4>Créneaux les plus remplis</h4>
-        ${top.map(c=>{const D=DISC[c.disc];const pct=Math.round(100*c.attendees.length/c.cap);return `<div class="cdash-slot"><span class="ci" style="color:${D.color}">${D.ico}</span><div class="cs-b"><div class="cs-t">${c.title}</div><div class="cs-m">${CLUB_DAYS[c.day]} ${c.time} · ${c.attendees.length}/${c.cap} inscrits</div><div class="cs-fill ${pct>=85?'hot':''}"><i style="width:${pct}%"></i></div></div><span class="cprice ${c.price>0?'paid':'free'}">${c.price>0?c.price+' €':'inclus'}</span></div>`;}).join('')}
+        ${top.map(c=>{const D=DISC[c.disc];const pct=Math.round(100*c.attendees.length/c.cap);return `<div class="cdash-slot"><span class="ci" style="color:${D.color}">${discIcon(D)}</span><div class="cs-b"><div class="cs-t">${c.title}</div><div class="cs-m">${CLUB_DAYS[c.day]} ${c.time} · ${c.attendees.length}/${c.cap} inscrits</div><div class="cs-fill ${pct>=85?'hot':''}"><i style="width:${pct}%"></i></div></div><span class="cprice ${c.price>0?'paid':'free'}">${c.price>0?c.price+' €':'inclus'}</span></div>`;}).join('')}
       </div>
       <div class="cdash-card">
         <h4>Répartition par formule</h4>
@@ -3429,17 +3496,17 @@ function renderClubOffres(){
   const box=document.getElementById('clubViewOffres'); if(!box) return;
   box.innerHTML=`
   <div class="cconnect">
-    <div><b>💳 Encaisse tes adhérents</b><div class="cconnect-s">Relie le compte Stripe de la salle → tu perçois abonnements &amp; séances à la carte directement (commission plateforme configurable).</div></div>
+    <div><b><i class="ic ic-credit-card"></i> Encaisse tes adhérents</b><div class="cconnect-s">Relie le compte Stripe de la salle → tu perçois abonnements &amp; séances à la carte directement (commission plateforme configurable).</div></div>
     <button class="co-edit" id="clubConnectBtn" style="border-color:var(--accent);color:var(--accent)">Relier Stripe</button>
   </div>
   <p class="club-hint" style="margin-bottom:14px">Une échelle de valeur : on monte → on paie plus → plus de suivi et de data. Clique un tarif pour l'ajuster.</p>
   <div class="coffers">${CLUB_OFFERS.map(o=>`
     <div class="coffer ${o.feature?'feat':''}">
-      ${o.feature?'<span class="cribbon">★ Marge premium</span>':''}
+      ${o.feature?'<span class="cribbon"><i class="ic ic-star"></i> Marge premium</span>':''}
       <div class="co-name">${o.name}</div>
       <div class="co-pitch">${o.pitch}</div>
       <div class="co-price">${o.price} €<small> ${o.unit}</small></div>
-      <button class="co-edit" data-o="${o.id}">✎ Modifier le tarif</button>
+      <button class="co-edit" data-o="${o.id}"><i class="ic ic-edit"></i> Modifier le tarif</button>
       <ul>${o.inc.map(i=>`<li>${i}</li>`).join('')}</ul>
       <div class="co-who">${o.who}</div>
     </div>`).join('')}</div>`;
@@ -3453,7 +3520,7 @@ function renderClubOffres(){
   const cc=document.getElementById('clubConnectBtn');
   if(cc) cc.onclick=()=>{
     if(window.PF?.user && window.__pf_clubId) PF.connectClubStripe(window.__pf_clubId).catch(e=>{console.warn(e);toast('Stripe indisponible');});
-    else toast('Connecte ton espace club (badge ☁︎) pour relier Stripe');
+    else toast('Connecte ton espace club pour relier Stripe');
   };
 }
 
@@ -3472,10 +3539,10 @@ function renderSessionReminder(){
     <span class="sr-icon">⏰</span>
     <div class="sr-body">
       <div class="sr-title">Rappel — ${CLUB_DAYS[c.day]} ${c.time} : ${c.title}</div>
-      <div class="sr-meta">${D.ico} ${D.label} · 📍 ${c.place} · ${fmtDur(c.dur)}${c.price>0?` · ${c.price}€`:''}</div>
+      <div class="sr-meta">${discIcon(D)} ${D.label} · <i class="ic ic-pin"></i> ${c.place} · ${fmtDur(c.dur)}${c.price>0?` · ${c.price}€`:''}</div>
     </div>
     <div class="sr-actions">
-      <button class="sr-confirm ${reminderStatus==='confirmed'?'done':''}" data-act="confirm">${reminderStatus==='confirmed'?'✓ Confirmé':'Je confirme'}</button>
+      <button class="sr-confirm ${reminderStatus==='confirmed'?'done':''}" data-act="confirm">${reminderStatus==='confirmed'?'<i class="ic ic-check"></i> Confirmé':'Je confirme'}</button>
       <button class="sr-cancel ${reminderStatus==='cancelled'?'done':''}" data-act="cancel">${reminderStatus==='cancelled'?'Absent noté':'J\'annule'}</button>
     </div>
   </div>`;
@@ -3483,13 +3550,13 @@ function renderSessionReminder(){
     reminderStatus='confirmed';
     if(!c.attendees.includes(ME_CLUB_ID)) c.attendees.push(ME_CLUB_ID);
     renderCreneaux(); renderClubStats();
-    toast('Présence confirmée ✓ Le coach est prévenu');
+    toast('Présence confirmée — le coach est prévenu');
   };
   box.querySelector('[data-act="cancel"]').onclick=()=>{
     reminderStatus='cancelled';
     const i=c.attendees.indexOf(ME_CLUB_ID); if(i>-1) c.attendees.splice(i,1);
     renderCreneaux(); renderClubStats();
-    toast('Absence notée — tu peux faire la séance de ton côté 💪 Le coach voit la mise à jour');
+    toast('Absence notée — tu peux faire la séance de ton côté. Le coach voit la mise à jour');
   };
 }
 
@@ -3514,10 +3581,10 @@ function renderClubHistory(){
     <div class="ch-total"><span>Total réglé ce trimestre</span><span>${totalPaid} €</span></div>` : '';
   box.innerHTML=`<div class="club-hist">
     <div class="ch-top">
-      <span class="ch-badge">🏆</span>
+      <span class="ch-badge"><i class="ic ic-trophy"></i></span>
       <div>
         <div class="ch-headline">Tu as fait <b>${h.trimestre} séances club</b> ce trimestre !</div>
-        <div class="ch-sub">Continue comme ça 💪</div>
+        <div class="ch-sub">Continue comme ça</div>
       </div>
     </div>
     <div class="ch-stats">
@@ -3541,20 +3608,20 @@ function renderCreneaux(){
       + (c.attendees.length>6?`<div class="cr-att more">+${c.attendees.length-6}</div>`:'');
     return `<div class="creneau-card" data-id="${c.id}" style="--cc:${D.color}">
       <div class="cr-top">
-        <span class="cr-disc"><span class="ci">${D.ico}</span>${c.title}</span>
+        <span class="cr-disc"><span class="ci">${discIcon(D)}</span>${c.title}</span>
         <span class="cr-price ${c.price>0?'paid':'free'}">${c.price>0?c.price+' €':'inclus'}</span>
       </div>
       <div class="cr-meta">
         <span><b>${CLUB_DAYS[c.day]}</b> ${c.time}</span>
         <span>${fmtDur(c.dur)}</span>
-        <span>📍 ${c.place}</span>
-        <span>👤 ${c.coach}</span>
+        <span><i class="ic ic-pin"></i> ${c.place}</span>
+        <span><i class="ic ic-user"></i> ${c.coach}</span>
       </div>
       <div class="cr-fill"><i style="width:${fillPct}%"></i></div>
       <div class="cr-fillrow"><span>${c.attendees.length}/${c.cap} inscrits</span><span>${c.cap-c.attendees.length} places restantes</span></div>
       <div class="cr-attendees">${avatars||'<span class="cr-roster">Aucun inscrit pour l\'instant</span>'}</div>
       <div class="cr-cta">
-        <button class="cr-join ${inIt?'in':''}" data-act="join">${inIt?'✓ Inscrit':(c.price>0?`S'inscrire · ${c.price}€`:'S\'inscrire')}</button>
+        <button class="cr-join ${inIt?'in':''}" data-act="join">${inIt?'<i class="ic ic-check"></i> Inscrit':(c.price>0?`S'inscrire · ${c.price}€`:'S\'inscrire')}</button>
         <button data-act="roster">Liste</button>
       </div>
     </div>`;
@@ -3568,7 +3635,7 @@ function renderCreneaux(){
       else {
         if(c.attendees.length>=c.cap){ toast('Créneau complet'); return; }
         c.attendees.push(ME_CLUB_ID);
-        toast(c.price>0?`Inscrit ✓ (${c.price}€ — paiement à la séance)`:'Inscrit au créneau ✓');
+        toast(c.price>0?`Inscrit (${c.price}€ — paiement à la séance)`:'Inscrit au créneau');
       }
       renderCreneaux(); renderClubStats(); renderPresence();
     };
@@ -3591,7 +3658,7 @@ function renderClubAthletes(filter){
         <div class="club-ath-m">membre depuis ${a.since} · ${nbInscr} créneau${nbInscr>1?'x':''}</div>
         ${g?`<span class="club-ath-grp" style="background:${g.color}">${g.name}</span>`:''}
         <span class="club-ath-offer co-${a.offer}" data-aid="${a.id}" title="Cliquer pour changer de formule">${clubOffer(a.offer).name}${a.offer==='coach'&&a.coach?` · ${a.coach}`:''}</span>
-        <span class="club-ath-vid ${a.videos?'on':''}" data-vaid="${a.id}" title="Débloquer les vidéos d'exercices pour cet athlète (facturé par athlète)">🎬 Vidéos${a.videos?' ✓':''}</span>
+        <span class="club-ath-vid ${a.videos?'on':''}" data-vaid="${a.id}" title="Débloquer les vidéos d'exercices pour cet athlète (facturé par athlète)"><i class="ic ic-film"></i> Vidéos${a.videos?' <i class="ic ic-check"></i>':''}</span>
       </div>
       <span class="club-ath-tag ${a.disc==='hyrox'?'hyrox':''}">${a.disc==='hyrox'?'Hyrox':'Tri'}</span>
     </div>`;
@@ -3674,7 +3741,7 @@ document.getElementById('acceptSave').onclick=()=>{
   acceptOverlay.classList.remove('open');
   renderClubAthletes(); renderClubStats();
   const g=clubGroup(acceptGroupId);
-  toast(`${newA.name} ajouté au club dans « ${g.name} » ✓`);
+  toast(`${newA.name} ajouté au club dans « ${g.name} »`);
 };
 
 /* lien d'invitation : copier, partager, simuler une demande */
@@ -3682,8 +3749,8 @@ document.getElementById('inviteCopy').onclick=()=>{
   const inp=document.getElementById('inviteLink');
   inp.select();
   try{ navigator.clipboard.writeText(inp.value); }catch(e){ document.execCommand && document.execCommand('copy'); }
-  const btn=document.getElementById('inviteCopy'); btn.textContent='✓ Copié'; btn.classList.add('done');
-  setTimeout(()=>{ btn.textContent='📋 Copier'; btn.classList.remove('done'); }, 1600);
+  const btn=document.getElementById('inviteCopy'); btn.textContent='Copié'; btn.classList.add('done');
+  setTimeout(()=>{ btn.textContent='Copier'; btn.classList.remove('done'); }, 1600);
   toast('Lien copié — partage-le à tes athlètes');
 };
 document.getElementById('inviteWhatsapp').onclick=()=>{
@@ -3705,7 +3772,7 @@ function renderPresence(){
     const chips = c.attendees.map(id=>{ const a=CLUB_ATHLETES.find(x=>x.id===id); return a?`<span class="pres-chip"><span class="pcdot"></span>${a.name}</span>`:''; }).join('');
     return `<div class="pres-card">
       <div class="pres-head">
-        <span class="pres-title">${D.ico} ${c.title} <span style="color:var(--muted);font-weight:400">· ${CLUB_DAYS[c.day]} ${c.time}</span></span>
+        <span class="pres-title">${discIcon(D)} ${c.title} <span style="color:var(--muted);font-weight:400">· ${CLUB_DAYS[c.day]} ${c.time}</span></span>
         <span class="pres-count">${c.attendees.length}/${c.cap} présents</span>
       </div>
       <div class="pres-list">${chips||'<span class="pres-empty">Personne inscrit pour l\'instant</span>'}</div>
@@ -3818,7 +3885,7 @@ document.getElementById('grpSave').onclick=()=>{
   }
   groupOverlay.classList.remove('open');
   clubView='groupes'; switchClubView();
-  toast(isEdit?'Groupe mis à jour ✓':'Groupe créé ✓');
+  toast(isEdit?'Groupe mis à jour':'Groupe créé');
 };
 
 // création de créneau
@@ -3857,7 +3924,7 @@ document.getElementById('crSave').onclick=()=>{
   }
   creneauOverlay.classList.remove('open');
   clubView='creneaux'; switchClubView(); renderClubStats();
-  toast('Créneau publié ✓ Les athlètes peuvent s\'inscrire');
+  toast('Créneau publié — les athlètes peuvent s\'inscrire');
 };
 function renderClub(){
   renderClubStats();
@@ -3895,13 +3962,13 @@ window.__pf_app = {
    messages persistés ; brancher l'API WhatsApp Business pour des
    envois automatiques.
    ============================================================ */
-const ATHLETE_PHONE = '33600000000'; // ⚠️ numéro athlète, format international SANS +, à renseigner
+const ATHLETE_PHONE = '33600000000'; // numéro athlète, format international SANS +, à renseigner
 let CHAT_MSGS = [
-  {from:'them', text:'Salut coach ! Prêt pour la semaine 💪', t:'08:12'},
+  {from:'them', text:'Salut coach ! Prêt pour la semaine', t:'08:12'},
   {from:'me',   text:'Yes ! Belle séance de seuil prévue demain.', t:'08:15'}
 ];
-const QUICK_COACH = ['Repose-toi aujourd\'hui 😴','Allège la séance du jour','Bravo pour la séance ! 👏','On décale à demain ?','Hydrate-toi bien 💧'];
-const QUICK_ATHLETE = ['Bien récupéré 👍','Jambes fatiguées aujourd\'hui','Séance validée ✅','Une question sur la séance ?'];
+const QUICK_COACH = ['Repose-toi aujourd\'hui','Allège la séance du jour','Bravo pour la séance !','On décale à demain ?','Hydrate-toi bien'];
+const QUICK_ATHLETE = ['Bien récupéré','Jambes fatiguées aujourd\'hui','Séance validée','Une question sur la séance ?'];
 
 const chatPanel=document.getElementById('chatPanel');
 const chatBody=document.getElementById('chatBody');
@@ -3921,7 +3988,7 @@ function sendChat(text){
   text=(text||'').trim(); if(!text) return;
   CHAT_MSGS.push({from:'me', text, t:nowHM()});
   document.getElementById('chatText').value=''; renderChat();
-  setTimeout(()=>{ CHAT_MSGS.push({from:'them', text:'Bien reçu, merci coach ! 🙏', t:nowHM()}); renderChat(); }, 1400);
+  setTimeout(()=>{ CHAT_MSGS.push({from:'them', text:'Bien reçu, merci coach !', t:nowHM()}); renderChat(); }, 1400);
 }
 function openChat(prefill){
   chatPanel.classList.add('open'); renderChat();
@@ -4028,7 +4095,7 @@ function renderVideoGrid(){
     const D=DISC[v.disc];
     const locked = v.premium && !window.__pf_subscribed;
     return `<div class="vcard${locked?' vlocked':''}" data-id="${v.id}" style="--c:${D.color}">
-      <div class="thumb"><span class="disc">${D.ico}</span><span class="play"></span><span class="dur">${v.dur}</span>${locked?'<span class="vlock">🔒 Premium</span>':''}</div>
+      <div class="thumb"><span class="disc">${discIcon(D)}</span><span class="play"></span><span class="dur">${v.dur}</span>${locked?'<span class="vlock"><i class="ic ic-lock"></i> Premium</span>':''}</div>
       <div class="vbody">
         <div class="vt">${v.title}</div>
         <div class="vmeta"><span class="lvl">${v.level}</span><span>${D.label}</span></div>
@@ -4095,12 +4162,12 @@ function openVideo(v){
   if(!v) return;
   // Gate premium : contenu payant verrouillé tant que l'utilisateur n'est pas abonné.
   if(v.premium && !window.__pf_subscribed){
-    if(window.PF?.user){ toast('Contenu Premium 🔒 — redirection vers l\'abonnement…'); PF.startCheckout('athlete').catch(e=>{ console.warn(e); toast('Abonnement indisponible'); }); }
-    else { toast('Contenu Premium 🔒 — réservé aux abonnés'); }
+    if(window.PF?.user){ toast('Contenu Premium — redirection vers l\'abonnement…'); PF.startCheckout('athlete').catch(e=>{ console.warn(e); toast('Abonnement indisponible'); }); }
+    else { toast('Contenu Premium — réservé aux abonnés'); }
     return;
   }
   const D=DISC[v.disc];
-  document.getElementById('videoBadge').textContent=`${D.ico} ${D.label}`;
+  document.getElementById('videoBadge').textContent=D.label;
   document.getElementById('videoBadge').style.background=D.color;
   document.getElementById('videoTitle').textContent=v.title;
   document.getElementById('videoDesc').textContent=v.desc;
@@ -4109,7 +4176,7 @@ function openVideo(v){
     // vidéo réelle (mp4 direct). Pour un embed YouTube/Vimeo, remplacer par une <iframe>.
     frame.innerHTML=`<video src="${v.src}" controls autoplay playsinline></video>`;
   } else {
-    frame.innerHTML=`<div class="ph"><div class="pico">🎬</div>Emplacement vidéo — branche l'URL dans <b>VIDEOS</b><br><small>(mp4 hébergé, ou embed YouTube/Vimeo)</small></div>`;
+    frame.innerHTML=`<div class="ph"><div class="pico"><i class="ic ic-film"></i></div>Emplacement vidéo — branche l'URL dans <b>VIDEOS</b><br><small>(mp4 hébergé, ou embed YouTube/Vimeo)</small></div>`;
   }
   videoOverlay.classList.add('open');
 }
@@ -4321,13 +4388,13 @@ function renderBlocks(){
         <input class="bk-title-in" placeholder="Titre du bloc (optionnel)" value="${blk.title||''}" data-f="btitle">
         <div class="bk-tools">
           <button data-act="dup" title="Dupliquer">⧉</button>
-          <button class="del" data-act="delblock" title="Supprimer">✕</button>
+          <button class="del" data-act="delblock" title="Supprimer"><i class="ic ic-x"></i></button>
         </div>
       </div>
       <div class="bk-lines">${lines}</div>
       <div class="bk-addline">
         ${builderState.disc==='hyrox'
-          ? `<button data-addstation="">+ Ajouter une station</button>` + HYROX_STATIONS.map(s=>`<button data-addstation="${s.key}">${s.ico} ${s.name}</button>`).join('')
+          ? `<button data-addstation="">+ Ajouter une station</button>` + HYROX_STATIONS.map(s=>`<button data-addstation="${s.key}">${s.name}</button>`).join('')
           : `<button data-add="warmup">+ Échauffement</button>
              <button data-add="exo">+ Exercice</button>
              <button data-add="contre">+ Contre-effort</button>
@@ -4345,7 +4412,7 @@ function lineHTML(blk, ln){
   if(builderState.disc==='hyrox' || ln.type==='station'){
     const st = hyroxStation(ln.station) || HYROX_STATIONS[0];
     const unitLbl = st.unit==='m' ? 'm' : 'reps';
-    const stationSel = HYROX_STATIONS.map(s=>`<option value="${s.key}" ${s.key===ln.station?'selected':''}>${s.ico} ${s.name}</option>`).join('');
+    const stationSel = HYROX_STATIONS.map(s=>`<option value="${s.key}" ${s.key===ln.station?'selected':''}>${s.name}</option>`).join('');
     const weightField = st.weighted
       ? `<div class="hx-weight"><input type="number" min="0" max="300" step="0.5" value="${ln.weight||0}" data-hx="weight"><span>kg</span></div>`
       : `<div class="hx-weight hx-noweight">— poids libre —</div>`;
@@ -4356,7 +4423,7 @@ function lineHTML(blk, ln){
         <input type="number" min="0" max="5000" value="${ln.target||0}" data-hx="target"><span>${unitLbl}</span>
       </div>
       ${weightField}
-      <button class="ln-del" data-act="delline" aria-label="Supprimer la station">✕</button>
+      <button class="ln-del" data-act="delline" aria-label="Supprimer la station"><i class="ic ic-x"></i></button>
     </div>`;
   }
 
@@ -4401,7 +4468,7 @@ function lineHTML(blk, ln){
       </div>
       ${intHTML}
     </div>
-    <button class="ln-del" data-act="delline" aria-label="Supprimer la ligne">✕</button>
+    <button class="ln-del" data-act="delline" aria-label="Supprimer la ligne"><i class="ic ic-x"></i></button>
   </div>`;
 }
 
@@ -4419,7 +4486,7 @@ function exactInputsHTML(ex){
   const tolField = (ex.kind!=='rpe')
     ? `<span class="ex-tol">±<input class="ex-n2" type="number" min="0" max="120" value="${ex.tol||0}" data-x="tol"><small>${tolUnit(ex.kind)}</small></span>`
     : '';
-  return `<div class="ex-row">${sel}<div class="ex-fields">${fields}</div>${tolField}<span class="ex-chip">🎯 ${exactToText(ex)}</span></div>`;
+  return `<div class="ex-row">${sel}<div class="ex-fields">${fields}</div>${tolField}<span class="ex-chip"><i class="ic ic-target"></i> ${exactToText(ex)}</span></div>`;
 }
 
 function wireBlocks(){
@@ -4493,7 +4560,7 @@ function wireBlocks(){
             ln.exact[x] = (x==='kmh' || (x==='tol' && ln.exact.kind==='speed'))? (parseFloat(inp.value)||0) : (+inp.value||0);
             // met à jour juste le chip sans tout re-render (garde le focus)
             const chip=lnEl.querySelector('.ex-chip');
-            if(chip) chip.textContent='🎯 '+exactToText(ln.exact);
+            if(chip) chip.textContent=exactToText(ln.exact);
             updateBuilderSummary();
           }
         });
@@ -4582,7 +4649,7 @@ function builderToText(){
         const st=hyroxStation(ln.station)||HYROX_STATIONS[0];
         const tgt = st.unit==='m' ? `${ln.target} m` : `${ln.target} reps`;
         const w = (st.weighted && ln.weight) ? ` @ ${ln.weight} kg` : '';
-        return `${st.ico} ${st.name} — ${tgt}${w}`;
+        return `${st.name} — ${tgt}${w}`;
       }
       const T=LINE_TYPES[ln.type];
       const tgts = (ln.mode==='exact')
@@ -4690,7 +4757,7 @@ document.getElementById('bSaveLib').addEventListener('click', ()=>{
       .catch(e=> console.warn('[PF] saveTemplate échoué :', e));
   }
   closeBuilder(); if(mode==='coach') renderSidebar();
-  toast('Séance rangée en bibliothèque 📚');
+  toast('Séance rangée en bibliothèque');
 });
 document.getElementById('bSaveCal').addEventListener('click', ()=>{
   const s=builderToSession();
@@ -4704,7 +4771,7 @@ document.getElementById('bSaveCal').addEventListener('click', ()=>{
       .catch(e=> console.warn('[PF] scheduleSession échoué :', e));
   }
   closeBuilder(); render();
-  toast('Séance ajoutée au calendrier ✓');
+  toast('Séance ajoutée au calendrier');
 });
 
 /* ============================================================
@@ -4715,7 +4782,7 @@ document.getElementById('bSaveCal').addEventListener('click', ()=>{
      - D+ (dénivelé positif cumulé)
      - VAP (vitesse ajustée à la pente / grade-adjusted pace)
      - splits par lap
-   👉 Backend : remplacer genSessionData() par les vraies données
+   Backend : remplacer genSessionData() par les vraies données
    GPS/capteurs de l'activité (Strava/Coros/Garmin .fit).
    ============================================================ */
 const analysisOverlay = document.getElementById('analysisOverlay');
@@ -4803,7 +4870,7 @@ function genSessionData(s){
      la vitesse relative) ; un vent arrière en rend un peu.
    - D+ : chaque mètre de dénivelé positif coûte du temps.
    Tout est exprimé en secondes/km perdues + temps total estimé.
-   ⚠️ Estimations indicatives, pas des mesures exactes.
+   Estimations indicatives, pas des mesures exactes.
    ============================================================ */
 function computeImpact(s, data){
   const isRun = s.disc==='run', isBike = s.disc==='bike';
@@ -4822,7 +4889,7 @@ function computeImpact(s, data){
   }
   const heatSecPerKm = basePaceSec * heatPctPerKm;
   const heatTotal = heatSecPerKm * distKm;
-  items.push({key:'Chaleur', ico:'🌡️', color:'var(--run)',
+  items.push({key:'Chaleur', ico:'ic-thermometer', color:'var(--run)',
     cost: heatSecPerKm, total: heatTotal,
     cond:`${c.temp}°C · ${c.humidity}% humidité`,
     detail: c.temp>15
@@ -4840,7 +4907,7 @@ function computeImpact(s, data){
     windSecPerKm = basePaceSec * windPct;
   }
   const windTotal = windSecPerKm * distKm;
-  items.push({key:'Vent', ico:'💨', color:'var(--swim)',
+  items.push({key:'Vent', ico:'ic-wind', color:'var(--swim)',
     cost: windSecPerKm, total: windTotal,
     cond:`${c.wind} km/h · ${c.windHead?'de face':'favorable'}`,
     detail: c.windHead
@@ -4851,7 +4918,7 @@ function computeImpact(s, data){
   // coût ~ 6 s par mètre de D+ en course (réparti sur la distance)
   const dplusSecTotal = isRun ? data.dplus*5.5 : data.dplus*3.2;
   const dplusSecPerKm = dplusSecTotal/distKm;
-  items.push({key:'Dénivelé', ico:'⛰️', color:'var(--bike)',
+  items.push({key:'Dénivelé', ico:'ic-mountain', color:'var(--bike)',
     cost: dplusSecPerKm, total: dplusSecTotal,
     cond:`${data.dplus} m D+`,
     detail: data.dplus>20
@@ -4874,7 +4941,7 @@ function renderImpact(s, data){
     const gain = i.total<0;
     const sign = gain?'+':'−';
     return `<div class="imp-card" style="--ic:${i.color}">
-      <div class="imp-top"><span class="imp-ico">${i.ico}</span><span class="imp-name">${i.key}</span></div>
+      <div class="imp-top"><span class="imp-ico"><i class="ic ${i.ico}"></i></span><span class="imp-name">${i.key}</span></div>
       <div class="imp-cost">${gain?'+':'−'}${fmtMMSS(i.total)}</div>
       <div class="imp-cond">${i.cond}</div>
       <div class="imp-detail">${i.detail}</div>
@@ -4883,7 +4950,7 @@ function renderImpact(s, data){
   // synthèse : allure "corrigée" si conditions neutres
   const correctedPace = imp.basePaceSec - (imp.totalLost+imp.totalGain)/imp.distKm;
   const summary = `<div class="imp-summary">
-    <div class="is-h">📊 Allure corrigée des conditions</div>
+    <div class="is-h"><i class="ic ic-chart"></i> Allure corrigée des conditions</div>
     <div class="is-txt">Dans des conditions neutres (15°C, sans vent, à plat), ton allure moyenne aurait été d'environ
       <b>${paceFromSpeed(3600/correctedPace)}/km</b> au lieu de <b>${paceFromSpeed(data.avgSpeed)}/km</b>.
       Au total, l'environnement t'a ${imp.totalLost+imp.totalGain>=0?'coûté':'fait gagner'}
@@ -4896,7 +4963,7 @@ function paceFromSpeed(kmh){ if(kmh<=0) return '—'; const s=3600/kmh; return M
 
 function openAnalysis(s){
   const D=DISC[s.disc];
-  document.getElementById('anBadge').textContent=`${D.ico} ${D.label}`;
+  document.getElementById('anBadge').textContent=D.label;
   document.getElementById('anBadge').style.background=D.color;
   document.getElementById('anTitle').textContent=s.title;
 
@@ -4956,7 +5023,7 @@ function defaultHyroxLog(s){
       blk.lines.forEach(ln=>{
         if(ln.type==='station'){
           const st=hyroxStation(ln.station)||HYROX_STATIONS[0];
-          stations.push({key:st.key, name:st.name, ico:st.ico, unit:st.unit,
+          stations.push({key:st.key, name:st.name, short:st.short, unit:st.unit,
             target:ln.target, weight:ln.weight||0,
             done:ln.target, hr:0, min:0, sec:0});
         }
@@ -4964,7 +5031,7 @@ function defaultHyroxLog(s){
     });
   }
   if(!stations.length){ // séance sans détail → 8 stations standard
-    stations = HYROX_STATIONS.map(st=>({key:st.key, name:st.name, ico:st.ico, unit:st.unit,
+    stations = HYROX_STATIONS.map(st=>({key:st.key, name:st.name, short:st.short, unit:st.unit,
       target:st.def, weight:st.weighted?st.wDef:0, done:st.def, hr:0, min:0, sec:0}));
   }
   return stations;
@@ -5018,7 +5085,7 @@ function drawHyroxHr(log){
     const h=(st.hr||0)?(H-P.b)-y(st.hr):0;
     if(st.hr){ svg.insertAdjacentHTML('beforeend',`<rect x="${x}" y="${y(st.hr)}" width="${bw}" height="${h}" rx="3" fill="var(--run)" opacity="0.85"/>`);
       svg.insertAdjacentHTML('beforeend',`<text x="${x+bw/2}" y="${y(st.hr)-4}" fill="var(--run)" font-size="9" font-family="var(--font-data)" text-anchor="middle">${st.hr}</text>`); }
-    svg.insertAdjacentHTML('beforeend',`<text x="${x+bw/2}" y="${H-P.b+14}" fill="var(--muted)" font-size="11" text-anchor="middle">${st.ico}</text>`);
+    svg.insertAdjacentHTML('beforeend',`<text x="${x+bw/2}" y="${H-P.b+14}" fill="var(--muted)" font-size="10" text-anchor="middle">${st.short||st.name}</text>`);
   });
   svg.insertAdjacentHTML('beforeend',`<text x="${W-P.r}" y="11" fill="var(--muted)" font-size="9" font-family="var(--font-data)" text-anchor="end">bpm</text>`);
 }
@@ -5030,7 +5097,7 @@ function renderHyroxStations(s){
       <span>Station</span><span>Réalisé</span><span>Poids</span><span>Temps</span><span>FC moy</span>
     </div>` + log.map((st,i)=>`
     <div class="hx-an-row" data-i="${i}">
-      <div class="hx-an-name">${st.ico} ${st.name}</div>
+      <div class="hx-an-name">${st.name}</div>
       <div class="hx-an-f"><input type="number" min="0" value="${st.done}" data-hl="done"><span>${st.unit==='m'?'m':'reps'}</span></div>
       <div class="hx-an-f">${st.weight?`<input type="number" min="0" step="0.5" value="${st.weight}" data-hl="weight"><span>kg</span>`:'<span class="hx-an-na">—</span>'}</div>
       <div class="hx-an-f hx-an-time"><input type="number" min="0" max="59" value="${st.min}" data-hl="min"><span>'</span><input type="number" min="0" max="59" value="${st.sec}" data-hl="sec"><span>"</span></div>
@@ -5425,12 +5492,12 @@ function injectAiCss(){
 }
 function aiPaywallHtml(){
   return `<div class="ai-pay">
-    <h5>🧠 Assistant IA — résumé & recommandations par séance</h5>
+    <h5><i class="ic ic-brain"></i> Assistant IA — résumé & recommandations par séance</h5>
     <div class="ai-sub">Add-on coach · analyse automatique de chaque activité</div>
     <div class="ai-feat">
-      <div><span class="ck">✦</span><span>Résumé clair de chaque séance : zones FC, allure/puissance, découplage.</span></div>
-      <div><span class="ck">✦</span><span>Verdict par rapport à l’objectif (Z2 tenu ? zone VO2max atteinte ?).</span></div>
-      <div><span class="ck">✦</span><span>Recommandations actionnables (rallonger les intervalles, recaler la zone…).</span></div>
+      <div><span class="ck"><i class="ic ic-check"></i></span><span>Résumé clair de chaque séance : zones FC, allure/puissance, découplage.</span></div>
+      <div><span class="ck"><i class="ic ic-check"></i></span><span>Verdict par rapport à l’objectif (Z2 tenu ? zone VO2max atteinte ?).</span></div>
+      <div><span class="ck"><i class="ic ic-check"></i></span><span>Recommandations actionnables (rallonger les intervalles, recaler la zone…).</span></div>
     </div>
     <div class="ai-price">${AI_ADDON_PRICE}€<small> / mois</small></div>
     <button class="ai-cta" id="aiActivate">Activer l’assistant IA</button>
@@ -5438,7 +5505,7 @@ function aiPaywallHtml(){
 }
 function aiResultHtml(s, b, r){
   const v=aiVerdictMeta(r.tenu);
-  const ico=st=>st==='ok'?'<span style="color:var(--good)">✓</span>':st==='warn'?'<span style="color:var(--bike)">!</span>':'<span style="color:var(--run)">✕</span>';
+  const ico=st=>st==='ok'?'<span style="color:var(--good)"><i class="ic ic-check"></i></span>':st==='warn'?'<span style="color:var(--bike)"><i class="ic ic-alert-triangle"></i></span>':'<span style="color:var(--run)"><i class="ic ic-x"></i></span>';
   const bul=r.bullets.map(x=>`<div><span class="ai-ico">${ico(x.s)}</span><span>${x.t}</span></div>`).join('');
   const recos=r.recos.length?`<div class="ai-recobox"><h6>Recommandations</h6><ul>${r.recos.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:'';
   return `<div class="ai-result" style="--av:${v.c}">
@@ -5460,7 +5527,7 @@ function renderAi(s, data){
     if(btn) btn.onclick=()=>{
       // En prod (connecté) : vrai checkout Stripe de l'add-on. En démo : déverrouillage immédiat.
       if(window.PF?.user && PF.subscribeAiAddon){ PF.subscribeAiAddon().catch(e=>console.warn('[PF] ai-addon:',e)); return; }
-      window.__pf_aiDemo=true; renderAi(s, data); toast('Assistant IA activé (démo) 🧠');
+      window.__pf_aiDemo=true; renderAi(s, data); toast('Assistant IA activé (démo)');
     };
     return;
   }
@@ -5628,7 +5695,7 @@ function renderLaps(data, isSwim){
   const cols=LAP_COLS.filter(c=>colApplies(c.app,disc));
   const sel=lapColSet(disc);
   const lbl=c=>typeof c.label==='function'?c.label(disc):c.label;
-  const tools=cols.map(c=>`<button class="lapcol ${sel.has(c.key)?'on':''}" data-k="${c.key}"><span class="box">${sel.has(c.key)?'✓':''}</span>${lbl(c)}</button>`).join('');
+  const tools=cols.map(c=>`<button class="lapcol ${sel.has(c.key)?'on':''}" data-k="${c.key}"><span class="box">${sel.has(c.key)?'<i class="ic ic-check"></i>':''}</span>${lbl(c)}</button>`).join('');
   const vis=cols.filter(c=>sel.has(c.key));
   const grid=`grid-template-columns:30px repeat(${vis.length||1}, minmax(0,1fr))`;
   const head=`<div class="an-lap-row head" style="${grid}"><span>#</span>${vis.map(c=>`<span>${lbl(c)}</span>`).join('')}</div>`;
@@ -5678,14 +5745,6 @@ const STRAVA_DEMO = {
   ftp:       [292, 296, 300, 302, 305, 306, 308, 310],          // watts → 310 réel
   pma:       [395, 399, 403, 406, 409, 411, 413, 415],          // watts → 415 réel
   weightKg:  70,
-  /* Indice VDOT estimé (10k 31'45, semi 1h08'52) → ~64 */
-  vdot:      [61.0, 61.4, 62.0, 62.4, 62.8, 63.2, 63.6, 64.0],
-  predictions: [
-    {d:'5 km',     time:'15:13', delta:'-0:14', up:true},
-    {d:'10 km',    time:'31:45', delta:'-0:28', up:true},
-    {d:'Semi 21k', time:'1:08:52', delta:'-0:58', up:true},
-    {d:'Marathon', time:'2:26:30', delta:'-2:10', up:true}
-  ],
   physio: [
     {k:'VO2max estimé', v:'71.0', u:'ml/kg/min', t:'▲ +1.6 / 8 sem.', up:true, c:'var(--run)'},
     {k:'FTP / poids',   v:'4.43', u:'W/kg',      t:'▲ +0.26',         up:true, c:'var(--bike)'},
@@ -5701,7 +5760,7 @@ const STRAVA_DEMO = {
               {z:'Z5 VO2max', pct:7, c:'#FF5470'}],
 
   /* ============================================================
-     TESTS LACTATE — ⚠️ REMPLACE PAR TES VRAIS RÉSULTATS DE TEST
+     TESTS LACTATE — REMPLACE PAR TES VRAIS RÉSULTATS DE TEST
      Chaque palier : {x: intensité, lac: lactate mmol/L, fc: bpm}
      - course : x = vitesse en km/h
      - vélo   : x = puissance en watts
@@ -6034,7 +6093,7 @@ function buildDurabLevels(){
     const chip=document.createElement('button'); chip.type='button'; chip.className='ctog'; chip.dataset.kj=l.kj;
     chip.style.setProperty('--lc', l.color);
     chip.innerHTML=`<span class="box"></span>${l.kj} kJ`;
-    const sync=()=>{ const on=durabSel.has(l.kj); chip.classList.toggle('on',on); chip.querySelector('.box').textContent=on?'✓':''; };
+    const sync=()=>{ const on=durabSel.has(l.kj); chip.classList.toggle('on',on); chip.querySelector('.box').innerHTML=on?'<i class="ic ic-check"></i>':''; };
     chip.onclick=()=>{ durabSel.has(l.kj)?durabSel.delete(l.kj):durabSel.add(l.kj); sync(); durabChart(); };
     sync(); box.appendChild(chip);
   });
@@ -6103,6 +6162,7 @@ function injectLoadHxCss(){
   .lm-row{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
   .lm-row:last-child{border-bottom:0}
   .lm-ic{font-size:14px;width:18px;text-align:center}
+  .lm-ic .ic{width:14px;height:14px}
   .lm-n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .lm-m{font-size:10px;color:var(--muted);border:1px solid var(--line-strong);border-radius:99px;padding:1px 7px}
   .lm-v{font-family:var(--font-data);font-weight:700;min-width:32px;text-align:right}
@@ -6123,8 +6183,8 @@ function injectLoadHxCss(){
 function renderLoadMix(){
   const box=document.getElementById('loadMixBody'); if(!box) return; injectLoadHxCss();
   const ctl=STRAVA_DEMO.ctl.at(-1), atl=STRAVA_DEMO.atl.at(-1), tsb=Math.round(ctl-atl);
-  const rows=LOAD_LOG.map(s=>{ const D=DISC[s.disc]||{ico:'•',color:'var(--muted)'};
-    return `<div class="lm-row"><span class="lm-ic" style="color:${D.color}">${D.ico}</span><span class="lm-n">${s.name}</span><span class="lm-m">${s.metric}</span><span class="lm-v">${sessionLoad(s)}</span></div>`; }).join('');
+  const rows=LOAD_LOG.map(s=>{ const D=DISC[s.disc]||{ico:null,color:'var(--muted)'};
+    return `<div class="lm-row"><span class="lm-ic" style="color:${D.color}">${discIcon(D)}</span><span class="lm-n">${s.name}</span><span class="lm-m">${s.metric}</span><span class="lm-v">${sessionLoad(s)}</span></div>`; }).join('');
   box.innerHTML=`
     <div class="lm-kpis">
       <div><div class="v" style="color:var(--swim)">${Math.round(ctl)}</div><div class="k">Fitness · CTL</div></div>
@@ -6147,7 +6207,7 @@ function renderHyrox(){
     </div>
     <div class="hx-sub">Dégradation d'allure sur les 8 runs · <b style="color:var(--bike)">+${deg}%</b> · survole une barre</div>
     <div class="hx-bars">${bars}</div>
-    <div class="hx-comp">🏃 Course sous fatigue (« compromised running ») : à froid <b>${fmtPace(h.freshPace)}/km</b> → après station <b style="color:var(--bike)">${fmtPace(h.fatiguePace)}/km</b> <span style="color:var(--bike)">(+${comp}%)</span></div>`;
+    <div class="hx-comp"><i class="ic ic-run"></i> Course sous fatigue (« compromised running ») : à froid <b>${fmtPace(h.freshPace)}/km</b> → après station <b style="color:var(--bike)">${fmtPace(h.fatiguePace)}/km</b> <span style="color:var(--bike)">(+${comp}%)</span></div>`;
 }
 mmpChart(); durabChart(); renderLoadMix(); renderHyrox();
 
@@ -6210,7 +6270,7 @@ mmpChart(); durabChart(); renderLoadMix(); renderHyrox();
   const lab=document.createElement('span'); lab.className='ctog-lbl'; lab.textContent='Graphiques affichés'; bar.appendChild(lab);
   REG.forEach(r=>{ if(!cards[r.key]) return;
     const chip=document.createElement('button'); chip.type='button'; chip.className='ctog'; chip.dataset.key=r.key;
-    chip.innerHTML=`<span class="box">✓</span>${r.label}`;
+    chip.innerHTML=`<span class="box"><i class="ic ic-check"></i></span>${r.label}`;
     chip.onclick=()=>{ hidden.has(r.key)?hidden.delete(r.key):hidden.add(r.key); apply(); save(); };
     bar.appendChild(chip);
   });
@@ -6220,7 +6280,7 @@ mmpChart(); durabChart(); renderLoadMix(); renderHyrox();
       const vis=!hidden.has(r.key);
       card.classList.toggle('c-hidden', !vis);
       const chip=bar.querySelector(`.ctog[data-key="${r.key}"]`);
-      if(chip){ chip.classList.toggle('on', vis); chip.querySelector('.box').textContent=vis?'✓':''; }
+      if(chip){ chip.classList.toggle('on', vis); chip.querySelector('.box').innerHTML=vis?'<i class="ic ic-check"></i>':''; }
     });
   }
   apply();
@@ -6334,7 +6394,7 @@ function recCard(label, value, unit, date, color, secondary){
     <div class="rec-label">${label}</div>
     <div class="rec-value">${value}<small>${unit}</small></div>
     <div class="rec-sub-secondary">${secondary||''}</div>
-    <div class="rec-date">📅 ${date}</div>
+    <div class="rec-date"><i class="ic ic-calendar"></i> ${date}</div>
   </div>`;
 }
 document.querySelectorAll('.rec-tab').forEach(b=> b.addEventListener('click', ()=>{
@@ -6354,10 +6414,10 @@ renderRecords();
      3. Check-in subjectif (sommeil / fatigue / motivation)
      4. RPE des séances récentes vs intensité prévue
    Chaque signal est noté 0–100, puis pondéré en indice global.
-   ⚠️ Sortie = RECOMMANDATION indicative. Jamais un diagnostic.
+   Sortie = RECOMMANDATION indicative. Jamais un diagnostic.
    Le coach valide ; rien n'est imposé automatiquement à l'athlète.
 
-   👉 Backend : remplacez les valeurs de démo (acwr, rpeRecent…)
+   Backend : remplacez les valeurs de démo (acwr, rpeRecent…)
    par les vraies, calculées sur les activités Strava/Coros/Polar.
    ============================================================ */
 const READINESS = {
@@ -6481,7 +6541,7 @@ function renderToday(){
   const s = todaySession();
   let seance, scClass, scHint;
   if(!s){ seance='Repos'; scClass='ti-info'; scHint='Journée sans séance prévue'; }
-  else if(s.done){ seance='Validée ✓'; scClass='ti-good'; scHint=s.title; }
+  else if(s.done){ seance='Validée <i class="ic ic-check"></i>'; scClass='ti-good'; scHint=s.title; }
   else { seance='À faire'; scClass='ti-warn'; scHint=s.title; }
 
   // 4. Nutrition recommandée (g glucides/h) selon durée & intensité de la séance
@@ -6509,42 +6569,42 @@ function renderToday(){
 
   box.innerHTML = `<div class="today-card">
     <div class="today-head">
-      <div class="today-title">☀️ Ton point du jour</div>
+      <div class="today-title"><i class="ic ic-sun"></i> Ton point du jour</div>
       <div class="today-date">${dateStr}</div>
     </div>
     <div class="today-grid">
       <div class="today-item">
-        <div class="ti-icon">🔋</div>
+        <div class="ti-icon"><i class="ic ic-battery"></i></div>
         <div class="ti-label">État de fraîcheur</div>
         <div class="ti-value ${frClass}">${fraicheur} %</div>
         <div class="ti-hint">${fraicheur>=70?'En forme, prêt à performer':fraicheur>=50?'Correct, gère l\'intensité':'Fatigue marquée, allège'}</div>
       </div>
       <div class="today-item">
-        <div class="ti-icon">🛡️</div>
+        <div class="ti-icon"><i class="ic ic-shield"></i></div>
         <div class="ti-label">Risque de blessure</div>
         <div class="ti-value ${rqClass}">${risque}</div>
         <div class="ti-hint">${rqHint}</div>
       </div>
       <div class="today-item">
-        <div class="ti-icon">🎯</div>
+        <div class="ti-icon"><i class="ic ic-target"></i></div>
         <div class="ti-label">Séance du jour</div>
         <div class="ti-value ${scClass}">${seance}</div>
         <div class="ti-hint">${scHint}</div>
       </div>
       <div class="today-item">
-        <div class="ti-icon">🥤</div>
+        <div class="ti-icon"><i class="ic ic-cup"></i></div>
         <div class="ti-label">Nutrition recommandée</div>
         <div class="ti-value ti-info">${carbs}</div>
         <div class="ti-hint">${nutHint}</div>
       </div>
       <div class="today-item">
-        <div class="ti-icon">🌙</div>
+        <div class="ti-icon"><i class="ic ic-moon"></i></div>
         <div class="ti-label">Heure idéale de coucher</div>
         <div class="ti-value ti-info">${bedStr}</div>
         <div class="ti-hint">~${need.toFixed(1).replace('.0','')} h de sommeil visées</div>
       </div>
     </div>
-    <div class="today-foot">💡 ${todayAdvice(fraicheur, risque, s)}</div>
+    <div class="today-foot"><i class="ic ic-lightbulb"></i> ${todayAdvice(fraicheur, risque, s)}</div>
   </div>`;
 }
 function todayAdvice(fr, risque, s){
@@ -6556,66 +6616,250 @@ function todayAdvice(fr, risque, s){
 }
 renderToday();
 
-/* Prévisions de performance (estimation de chronos selon la charge) retirées :
-   projection non fiable scientifiquement — supprimée à la demande. */
-
 /* ============================================================
-   MATÉRIEL — suivi d'usure des chaussures et vélos
+   MATÉRIEL — suivi d'usure des chaussures et vélos, catalogue par marque
    ------------------------------------------------------------
-   Chaque équipement cumule des km. Pour les chaussures de course,
-   des paliers d'alerte (500/800/1000 km) préviennent l'athlète :
-   au-delà, l'amorti se dégrade et le risque de blessure monte.
-   En production : le km s'incrémente automatiquement à chaque
-   séance où l'athlète a sélectionné cet équipement dans son feedback.
+   Chaque équipement cumule des km. Les chaussures de course choisies
+   dans le catalogue héritent de la durée de vie propre à leur modèle
+   (une carbone de compétition s'use vers 350 km, une paire d'entraînement
+   tient 900 km et plus) : les paliers d'alerte (60/85/100% de cette durée
+   de vie) sont donc calculés par modèle, pas sur un seuil générique.
+   Le km s'incrémente automatiquement après chaque séance course validée
+   (RPE), en attribuant la distance à la paire la plus adaptée.
    ============================================================ */
-const SHOE_MILESTONES = [500, 800, 1000];
-let GEAR = [
-  {id:'g1', type:'shoe', name:'Nike Pegasus 40', km:612, max:1000, notified:[500]},
-  {id:'g2', type:'shoe', name:'Saucony Endorphin Speed', km:284, max:900, notified:[]},
-  {id:'g3', type:'bike', name:'Canyon Ultimate CF', km:4380, max:20000, notified:[]}
+/* ============================================================
+   CATALOGUE CHAUSSURES — modèles marquants ~2018-2025
+   ------------------------------------------------------------
+   cat : daily (entraînement) · tempo (dynamique) · race (compétition
+   carbone) · trail. life : durée de vie estimée du modèle en km —
+   c'est LA clé : une carbone s'use vers 350 km, une daily tient 900+.
+   comm : km de retrait moyen observé "communauté" (démo — en prod,
+   agrégé sur les vrais retraits des athlètes Sillance).
+   Catalogue de démarrage à compléter (modèles récents possiblement
+   manquants) ; champ libre disponible pour tout modèle absent.
+   ============================================================ */
+const SHOE_CATALOG = [
+ // — Nike —
+ {b:'Nike',m:'Pegasus 39',cat:'daily',life:900,comm:860},
+ {b:'Nike',m:'Pegasus 40',cat:'daily',life:900,comm:870},
+ {b:'Nike',m:'Pegasus 41',cat:'daily',life:900,comm:880},
+ {b:'Nike',m:'Vomero 17',cat:'daily',life:950,comm:900},
+ {b:'Nike',m:'Invincible 3',cat:'daily',life:800,comm:760},
+ {b:'Nike',m:'Structure 25',cat:'daily',life:900,comm:850},
+ {b:'Nike',m:'Zoom Fly 5',cat:'tempo',life:650,comm:610},
+ {b:'Nike',m:'Zoom Fly 6',cat:'tempo',life:650,comm:620},
+ {b:'Nike',m:'Vaporfly 2',cat:'race',life:350,comm:320},
+ {b:'Nike',m:'Vaporfly 3',cat:'race',life:350,comm:330},
+ {b:'Nike',m:'Alphafly 2',cat:'race',life:350,comm:310},
+ {b:'Nike',m:'Alphafly 3',cat:'race',life:400,comm:360},
+ // — Adidas —
+ {b:'Adidas',m:'Ultraboost Light',cat:'daily',life:850,comm:800},
+ {b:'Adidas',m:'Supernova Rise',cat:'daily',life:900,comm:850},
+ {b:'Adidas',m:'Boston 11',cat:'tempo',life:700,comm:650},
+ {b:'Adidas',m:'Boston 12',cat:'tempo',life:700,comm:660},
+ {b:'Adidas',m:'Adios 8',cat:'tempo',life:600,comm:560},
+ {b:'Adidas',m:'Takumi Sen 10',cat:'race',life:400,comm:370},
+ {b:'Adidas',m:'Adios Pro 3',cat:'race',life:400,comm:360},
+ {b:'Adidas',m:'Adios Pro 4',cat:'race',life:400,comm:370},
+ // — Asics —
+ {b:'Asics',m:'Nimbus 25',cat:'daily',life:950,comm:900},
+ {b:'Asics',m:'Nimbus 26',cat:'daily',life:950,comm:910},
+ {b:'Asics',m:'Cumulus 26',cat:'daily',life:900,comm:860},
+ {b:'Asics',m:'Kayano 31',cat:'daily',life:950,comm:900},
+ {b:'Asics',m:'Novablast 4',cat:'tempo',life:750,comm:700},
+ {b:'Asics',m:'Novablast 5',cat:'tempo',life:750,comm:710},
+ {b:'Asics',m:'Superblast 2',cat:'tempo',life:800,comm:750},
+ {b:'Asics',m:'Magic Speed 4',cat:'tempo',life:600,comm:560},
+ {b:'Asics',m:'Metaspeed Sky Paris',cat:'race',life:350,comm:320},
+ {b:'Asics',m:'Metaspeed Edge Paris',cat:'race',life:350,comm:330},
+ // — Hoka —
+ {b:'Hoka',m:'Clifton 9',cat:'daily',life:850,comm:800},
+ {b:'Hoka',m:'Bondi 8',cat:'daily',life:900,comm:850},
+ {b:'Hoka',m:'Mach 5',cat:'tempo',life:650,comm:600},
+ {b:'Hoka',m:'Mach 6',cat:'tempo',life:700,comm:650},
+ {b:'Hoka',m:'Rocket X2',cat:'race',life:400,comm:360},
+ {b:'Hoka',m:'Cielo X1',cat:'race',life:400,comm:370},
+ {b:'Hoka',m:'Speedgoat 6',cat:'trail',life:750,comm:700},
+ // — Saucony —
+ {b:'Saucony',m:'Ride 17',cat:'daily',life:900,comm:850},
+ {b:'Saucony',m:'Triumph 22',cat:'daily',life:950,comm:900},
+ {b:'Saucony',m:'Kinvara 15',cat:'tempo',life:600,comm:550},
+ {b:'Saucony',m:'Endorphin Speed 3',cat:'tempo',life:650,comm:620},
+ {b:'Saucony',m:'Endorphin Speed 4',cat:'tempo',life:650,comm:630},
+ {b:'Saucony',m:'Endorphin Pro 3',cat:'race',life:400,comm:360},
+ {b:'Saucony',m:'Endorphin Pro 4',cat:'race',life:400,comm:370},
+ {b:'Saucony',m:'Peregrine 14',cat:'trail',life:700,comm:650},
+ // — Brooks —
+ {b:'Brooks',m:'Ghost 16',cat:'daily',life:950,comm:900},
+ {b:'Brooks',m:'Glycerin 21',cat:'daily',life:950,comm:900},
+ {b:'Brooks',m:'Adrenaline GTS 23',cat:'daily',life:950,comm:900},
+ {b:'Brooks',m:'Hyperion Max',cat:'tempo',life:650,comm:600},
+ {b:'Brooks',m:'Hyperion Elite 4',cat:'race',life:350,comm:320},
+ {b:'Brooks',m:'Cascadia 17',cat:'trail',life:800,comm:750},
+ // — New Balance —
+ {b:'New Balance',m:'1080 v13',cat:'daily',life:900,comm:850},
+ {b:'New Balance',m:'1080 v14',cat:'daily',life:900,comm:860},
+ {b:'New Balance',m:'880 v14',cat:'daily',life:900,comm:850},
+ {b:'New Balance',m:'Rebel v4',cat:'tempo',life:600,comm:560},
+ {b:'New Balance',m:'SC Trainer v2',cat:'tempo',life:700,comm:650},
+ {b:'New Balance',m:'SC Elite v4',cat:'race',life:400,comm:360},
+ // — On —
+ {b:'On',m:'Cloudmonster',cat:'daily',life:850,comm:800},
+ {b:'On',m:'Cloudsurfer',cat:'daily',life:800,comm:750},
+ {b:'On',m:'Cloudboom Echo 3',cat:'race',life:400,comm:360},
+ // — Mizuno —
+ {b:'Mizuno',m:'Wave Rider 28',cat:'daily',life:900,comm:860},
+ {b:'Mizuno',m:'Neo Vista',cat:'tempo',life:750,comm:700},
+ {b:'Mizuno',m:'Wave Rebellion Pro 2',cat:'race',life:400,comm:360},
+ // — Puma —
+ {b:'Puma',m:'Velocity Nitro 3',cat:'daily',life:850,comm:800},
+ {b:'Puma',m:'Deviate Nitro 3',cat:'tempo',life:700,comm:650},
+ {b:'Puma',m:'Fast-R 3',cat:'race',life:400,comm:360},
+ // — Salomon —
+ {b:'Salomon',m:'Speedcross 6',cat:'trail',life:750,comm:700},
+ {b:'Salomon',m:'S/Lab Genesis',cat:'trail',life:700,comm:650},
+ // — Kiprun (Decathlon) —
+ {b:'Kiprun',m:'KS900',cat:'daily',life:850,comm:800},
+ {b:'Kiprun',m:'KD900X LD',cat:'race',life:450,comm:410}
 ];
-function gearAlert(g){
-  if(g.type!=='shoe') return {cls:'ok', txt:`${g.km} km au compteur. Entretien régulier recommandé.`};
-  if(g.km>=1000) return {cls:'danger', txt:'⚠️ Plus de 1000 km : remplacement fortement conseillé. L\'amorti est très dégradé.'};
-  if(g.km>=800) return {cls:'danger', txt:'⚠️ Plus de 800 km : pense à les remplacer bientôt, le risque de blessure augmente.'};
-  if(g.km>=500) return {cls:'warn', txt:'🔔 Plus de 500 km : surveille l\'usure de la semelle et les sensations.'};
-  return {cls:'ok', txt:`Encore ${500-g.km} km avant le premier palier de surveillance.`};
+const SHOE_CAT_LABEL = {daily:'Entraînement', tempo:'Dynamique', race:'Compétition', trail:'Trail'};
+const SHOE_CAT_ICON  = {daily:'ic-run', tempo:'ic-zap', race:'ic-flag', trail:'ic-mountain'};
+const SHOE_CAT_COLOR = {daily:'var(--good)', tempo:'var(--bike)', race:'var(--run)', trail:'var(--strength)'};
+
+/* Retrouve la fiche catalogue d'un équipement persisté (par nom "Marque Modèle"). */
+function catalogFor(g){ return SHOE_CATALOG.find(e=>`${e.b} ${e.m}`===g.name); }
+
+/* Données de démo — remplacées par les vraies données persistées (Supabase) au login */
+let GEAR = [
+  {id:'g1', type:'shoe', name:'Nike Pegasus 40', km:612, max:900, price:130, cat:'daily', comm:870, notified:[500]},
+  {id:'g2', type:'shoe', name:'Saucony Endorphin Speed 4', km:284, max:650, price:180, cat:'tempo', comm:630, notified:[]},
+  {id:'g3', type:'shoe', name:'Asics Metaspeed Sky Paris', km:118, max:350, price:250, cat:'race', comm:320, notified:[]},
+  {id:'g4', type:'bike', name:'Canyon Ultimate CF', km:4380, max:20000, price:3200, cat:null, comm:null, notified:[]}
+];
+
+/* — Conseiller de paire : quelle chaussure pour la séance ? — */
+function recommendShoe(s){
+  const shoes = GEAR.filter(g=>g.type==='shoe' && g.km < g.max);   // paires encore vivantes
+  if(!shoes.length || !s || s.disc!=='run') return null;
+  const title=(s.title||'').toLowerCase();
+  let want;
+  if(/comp[ée]t|course|marathon|semi|10k|5k|race/.test(title)) want='race';
+  else if(/vma|seuil|vo2|fractionn|interval|tempo|dynamique|allure/.test(title) || s.zone==='Z4' || s.zone==='Z5') want='tempo';
+  else want='daily';
+  // meilleure paire de la catégorie voulue (la moins usée), sinon repli daily→tempo
+  const order = want==='race' ? ['race','tempo','daily'] : want==='tempo' ? ['tempo','daily','race'] : ['daily','tempo'];
+  for(const c of order){
+    const cand = shoes.filter(g=>(g.cat||catalogFor(g)?.cat)===c).sort((a,b)=>(a.km/a.max)-(b.km/b.max))[0];
+    if(cand) return {shoe:cand, want};
+  }
+  return {shoe:shoes[0], want};
 }
+
+/* — Garde-fou pré-course : projette l'usure jusqu'aux courses à venir — */
+const UPCOMING_RACES = [
+  {name:'Gorillaman (sprint)', inDays:22, needCat:'race'},
+  {name:'Marathon de Toulouse', inDays:60, needCat:'race'}
+];
+const RUN_KM_PER_WEEK = 42;   // volume course hebdo moyen de l'athlète (démo) — à remplacer par la vraie donnée
+function raceGearForecast(){
+  const out=[];
+  UPCOMING_RACES.forEach(r=>{
+    const kmUntil = RUN_KM_PER_WEEK * (r.inDays/7);
+    GEAR.filter(g=>g.type==='shoe').forEach(g=>{
+      const cat = g.cat || catalogFor(g)?.cat;
+      const projected = g.km + (cat==='daily'? kmUntil*0.65 : cat==='tempo'? kmUntil*0.25 : kmUntil*0.10);
+      if(cat===r.needCat && projected >= g.max*0.95){
+        out.push({race:r, gear:g, projected:Math.round(projected),
+          msg:`<b>${r.name}</b> dans ${r.inDays} j : tes <b>${g.name}</b> seront à environ ${Math.round(projected)} km (durée de vie ${g.max} km). Prévois une nouvelle paire de compétition et rode-la avant la course.`});
+      } else if(cat!==r.needCat && projected >= g.max*0.90){
+        out.push({race:r, gear:g, projected:Math.round(projected),
+          msg:`D'ici <b>${r.name}</b> (${r.inDays} j), tes <b>${g.name}</b> dépasseront leur durée de vie (environ ${Math.round(projected)}/${g.max} km). Anticipe le remplacement pour t'entraîner sur un amorti sain.`});
+      }
+    });
+  });
+  return out;
+}
+
+/* — Paliers d'usure calculés en % de la durée de vie du modèle (pas de seuils génériques) — */
+function shoeMilestones(g){
+  return [
+    {km:Math.round(g.max*0.60), lvl:'watch'},
+    {km:Math.round(g.max*0.85), lvl:'soon'},
+    {km:g.max, lvl:'replace'}
+  ];
+}
+
+function gearAlert(g){
+  if(g.type!=='shoe') return {cls:'ok', ic:'ic-check', txt:`${g.km} km au compteur. Entretien régulier recommandé.`};
+  const p = g.km/g.max*100;
+  if(p>=100) return {cls:'danger', ic:'ic-alert-triangle', txt:`Durée de vie dépassée (${g.max} km pour ce modèle) : remplacement fortement conseillé, l'amorti est dégradé.`};
+  if(p>=85) return {cls:'danger', ic:'ic-alert-triangle', txt:`${Math.round(p)}% de la durée de vie : pense à les remplacer bientôt, le risque de blessure augmente.`};
+  if(p>=60) return {cls:'warn', ic:'ic-bell', txt:`${Math.round(p)}% de la durée de vie de ce modèle : surveille l'usure de la semelle et les sensations.`};
+  return {cls:'ok', ic:'ic-check', txt:`Encore environ ${Math.round(g.max*0.6-g.km)} km avant le premier palier de surveillance de ce modèle.`};
+}
+
 function renderGear(){
   const box=document.getElementById('gearList'); if(!box) return;
   box.innerHTML = GEAR.map(g=>{
     const pct=Math.min(100, g.km/g.max*100);
+    const ms = shoeMilestones(g);
+    const cat = g.cat || catalogFor(g)?.cat;
+    const comm = g.comm ?? catalogFor(g)?.comm;
     const barColor = g.type==='shoe'
-      ? (g.km>=800?'var(--run)': g.km>=500?'var(--bike)':'var(--good)')
+      ? (pct>=85?'var(--run)': pct>=60?'var(--bike)':'var(--good)')
       : 'var(--swim)';
-    const milestones = g.type==='shoe' ? `<div class="gear-milestones">${SHOE_MILESTONES.map(m=>{
-      const cls = g.km>=m ? 'reached' : (g.km>=m-150?'next':'todo');
-      return `<span class="gear-ms ${cls}">${g.km>=m?'✓ ':''}${m} km</span>`;
+    const milestones = g.type==='shoe' ? `<div class="gear-milestones">${ms.map(m=>{
+      const cls = g.km>=m.km ? 'reached' : (g.km>=m.km-100?'next':'todo');
+      return `<span class="gear-ms ${cls}">${g.km>=m.km?'<i class="ic ic-check"></i> ':''}${m.km} km</span>`;
     }).join('')}</div>` : '';
-    // marqueurs sur la barre (paliers chaussures)
-    const marks = g.type==='shoe' ? SHOE_MILESTONES.map(m=>{
-      const left=Math.min(100,m/g.max*100); return `<span class="gb-mark" style="left:${left}%"></span>`;
+    // marqueurs sur la barre (paliers propres au modèle)
+    const marks = g.type==='shoe' ? ms.map(m=>{
+      const left=Math.min(100,m.km/g.max*100); return `<span class="gb-mark" style="left:${left}%"></span>`;
     }).join('') : '';
     const al=gearAlert(g);
+    const catBadge = cat ? `<span class="gear-cat" style="--gc:${SHOE_CAT_COLOR[cat]}"><i class="ic ${SHOE_CAT_ICON[cat]}"></i>${SHOE_CAT_LABEL[cat]}</span>` : '';
+    const costKm = (g.price && g.km>0) ? `<span class="gear-cost">${(g.price/g.km).toFixed(2)} €/km</span>` : (g.price?`<span class="gear-cost">${g.price} € neuve</span>`:'');
+    const commHtml = (g.type==='shoe' && comm) ? `<div class="gear-comm"><i class="ic ic-users"></i> Les athlètes Sillance retirent ce modèle à <b>${comm} km</b> en moyenne</div>` : '';
     return `<div class="gear-card" data-id="${g.id}">
       <div class="gear-card-h">
-        <span class="gear-ico">${g.type==='shoe'?'👟':'🚴'}</span>
+        <span class="gear-ico"><i class="ic ${g.type==='shoe'?'ic-shoe':'ic-bike'}"></i></span>
         <div class="gear-i">
           <div class="gear-name">${g.name}</div>
-          <div class="gear-type">${g.type==='shoe'?'Chaussures de course':'Vélo'}</div>
+          <div class="gear-type">${g.type==='shoe'?'Chaussures de course':'Vélo'} ${catBadge}</div>
         </div>
         <button class="gear-del" data-act="del">Retirer</button>
       </div>
-      <div class="gear-km">${g.km.toLocaleString('fr-FR')}<small> / ${g.max.toLocaleString('fr-FR')} km</small></div>
-      <div class="gear-sub">${Math.round(pct)}% de la durée de vie estimée</div>
+      <div class="gear-km">${g.km.toLocaleString('fr-FR')}<small> / ${g.max.toLocaleString('fr-FR')} km</small> ${costKm}</div>
+      <div class="gear-sub">${Math.round(pct)}% de la durée de vie du modèle</div>
       <div class="gear-bar">${marks}<i style="width:${pct}%;background:${barColor}"></i></div>
       ${milestones}
-      <div class="gear-alert ${al.cls}"><span>${al.cls==='danger'?'🚨':al.cls==='warn'?'🔔':'✓'}</span><span>${al.txt}</span></div>
+      ${commHtml}
+      <div class="gear-alert ${al.cls}"><i class="ic ${al.ic}"></i><span>${al.txt}</span></div>
       <div style="margin-top:10px;display:flex;gap:7px">
         <button class="gear-del" data-act="add10" style="border-color:var(--line-strong)">+ Simuler 50 km</button>
       </div>
     </div>`;
   }).join('') || '<p class="club-hint">Aucun équipement. Ajoute tes chaussures pour suivre leur usure.</p>';
+
+  // — bandeau conseil du jour + garde-fou courses à venir —
+  const advisor=document.getElementById('gearAdvisor');
+  if(advisor){
+    // séance course du jour, sinon la prochaine course planifiée
+    let target = todaySession(); let when='ta séance du jour';
+    if(!target || target.disc!=='run'){
+      const todayK = iso(new Date());
+      const keys = Object.keys(planning).filter(k=>k>=todayK).sort();
+      for(const k of keys){ const f=(planning[k]||[]).find(x=>x.disc==='run' && !x.done); if(f){ target=f; when=`ta prochaine séance course (« ${f.title} »)`; break; } }
+    }
+    const rec = recommendShoe(target);
+    const recHtml = rec ? `<div class="gear-advice">
+      <i class="ic ic-sparkles ga-ico"></i>
+      <div><b>Paire conseillée pour ${when}</b> — profil ${SHOE_CAT_LABEL[rec.want]} recommandé :
+      porte tes <b>${rec.shoe.name}</b> (${rec.shoe.km}/${rec.shoe.max} km).</div></div>` : '';
+    const forecasts = raceGearForecast();
+    const fcHtml = forecasts.map(f=>`<div class="gear-advice warn"><i class="ic ic-flag ga-ico"></i><div>${f.msg}</div></div>`).join('');
+    advisor.innerHTML = recHtml + fcHtml;
+  }
   box.querySelectorAll('.gear-card').forEach(card=>{
     const g=GEAR.find(x=>x.id===card.dataset.id);
     card.querySelector('[data-act="del"]').onclick=()=>{ GEAR=GEAR.filter(x=>x.id!==g.id); renderGear(); if(window.PF?.user) window.PF.retireGear(g.id).catch(e=>console.warn('retireGear',e)); };
@@ -6623,56 +6867,122 @@ function renderGear(){
     if(addBtn) addBtn.onclick=()=>{ addGearKm(g, 50); };
   });
 }
+
 /* incrémente le km et déclenche une notification au passage d'un palier */
 function addGearKm(g, km){
   const before=g.km; g.km+=km;
   if(g.type==='shoe'){
-    SHOE_MILESTONES.forEach(m=>{
-      if(before<m && g.km>=m && !g.notified.includes(m)){
-        g.notified.push(m);
+    shoeMilestones(g).forEach(m=>{
+      if(before<m.km && g.km>=m.km && !g.notified.includes(m.km)){
+        g.notified.push(m.km);
         notifyShoe(g, m);
       }
     });
   }
+  if(window.PF?.user && g.id) window.PF.updateGear(g.id, {km:g.km, notified:g.notified}).catch(e=>console.warn('updateGear',e));
   renderGear();
 }
+
 function notifyShoe(g, m){
   const msgs={
-    500:`🔔 Tes ${g.name} viennent de passer 500 km. Commence à surveiller l'usure de la semelle.`,
-    800:`⚠️ Tes ${g.name} ont atteint 800 km. Pense à prévoir une nouvelle paire bientôt.`,
-    1000:`🚨 Tes ${g.name} ont dépassé 1000 km. Il est temps de les remplacer pour éviter les blessures.`
+    watch:`Tes ${g.name} passent ${m.km} km (60% de leur durée de vie). Surveille l'usure de la semelle et les sensations.`,
+    soon:`Tes ${g.name} atteignent ${m.km} km (85% de leur durée de vie). Pense à prévoir une nouvelle paire.`,
+    replace:`Tes ${g.name} ont dépassé leur durée de vie (${g.max} km). Remplace-les pour éviter les blessures.`
   };
-  toast(msgs[m]||`${g.name} : ${m} km atteints`);
+  toast(msgs[m.lvl]||`${g.name} : ${m.km} km atteints`);
 }
+
 /* modal d'ajout */
 const gearOverlay=document.getElementById('gearOverlay');
 document.getElementById('gearAdd').onclick=()=> gearOverlay.classList.add('open');
 document.getElementById('gearClose').onclick=()=> gearOverlay.classList.remove('open');
 gearOverlay.addEventListener('click', e=>{ if(e.target===gearOverlay) gearOverlay.classList.remove('open'); });
-document.getElementById('gearType').addEventListener('change', e=>{
-  document.getElementById('gearMax').value = e.target.value==='shoe'?1000:20000;
+
+/* — Recherche + catalogue par marque — */
+let pickedShoe = null;
+const shoeResultsEl = document.getElementById('shoeResults');
+const shoeBrandsEl  = document.getElementById('shoeBrands');
+const shoePickedEl  = document.getElementById('shoePicked');
+
+function shoeResultRow(e){
+  return `<button class="shoe-item" data-b="${e.b}" data-m="${e.m}">
+    <span class="si-name"><b>${e.b}</b> ${e.m}</span>
+    <span class="si-meta"><span class="gear-cat" style="--gc:${SHOE_CAT_COLOR[e.cat]}"><i class="ic ${SHOE_CAT_ICON[e.cat]}"></i>${SHOE_CAT_LABEL[e.cat]}</span> · ${e.life} km</span>
+  </button>`;
+}
+function wireShoeRows(){
+  shoeResultsEl.querySelectorAll('.shoe-item').forEach(btn=>{
+    btn.onclick=()=> pickShoe(SHOE_CATALOG.find(x=>x.b===btn.dataset.b && x.m===btn.dataset.m));
+  });
+}
+function pickShoe(e){
+  if(!e) return;
+  pickedShoe = e;
+  document.getElementById('gearName').value = `${e.b} ${e.m}`;
+  document.getElementById('gearMax').value = e.life;
+  shoeResultsEl.innerHTML=''; document.getElementById('gearSearch').value='';
+  shoePickedEl.hidden=false;
+  shoePickedEl.innerHTML = `<span class="gear-cat" style="--gc:${SHOE_CAT_COLOR[e.cat]}"><i class="ic ${SHOE_CAT_ICON[e.cat]}"></i>${SHOE_CAT_LABEL[e.cat]}</span>
+    Durée de vie du modèle : <b>${e.life} km</b> · <i class="ic ic-users"></i> retrait moyen communauté : <b>${e.comm} km</b>`;
+}
+function renderShoeBrands(){
+  const brands=[...new Set(SHOE_CATALOG.map(e=>e.b))];
+  shoeBrandsEl.innerHTML = `<span class="sb-hint">…ou parcours par marque :</span>` +
+    brands.map(b=>`<button class="brand-chip" data-b="${b}">${b}</button>`).join('');
+  shoeBrandsEl.querySelectorAll('.brand-chip').forEach(ch=> ch.onclick=()=>{
+    shoeBrandsEl.querySelectorAll('.brand-chip').forEach(x=>x.classList.toggle('sel', x===ch));
+    const models=SHOE_CATALOG.filter(e=>e.b===ch.dataset.b);
+    const order=['daily','tempo','race','trail'];
+    shoeResultsEl.innerHTML = order.filter(c=>models.some(m=>m.cat===c)).map(c=>
+      `<div class="sr-cat">${SHOE_CAT_LABEL[c]}</div>` + models.filter(m=>m.cat===c).map(shoeResultRow).join('')
+    ).join('');
+    wireShoeRows();
+  });
+}
+document.getElementById('gearSearch').addEventListener('input', e=>{
+  const q=e.target.value.trim().toLowerCase();
+  pickedShoe=null; shoePickedEl.hidden=true;
+  if(q.length<2){ shoeResultsEl.innerHTML=''; return; }
+  const hits=SHOE_CATALOG.filter(x=>(x.b+' '+x.m).toLowerCase().includes(q)).slice(0,8);
+  shoeResultsEl.innerHTML = hits.map(shoeResultRow).join('') || '<div class="sr-cat">Aucun modèle — saisis-le librement ci-dessous</div>';
+  wireShoeRows();
 });
+document.getElementById('gearType').addEventListener('change', e=>{
+  document.getElementById('shoeSearchFld').style.display = e.target.value==='shoe' ? '' : 'none';
+  document.getElementById('gearMax').value = e.target.value==='shoe' ? 900 : 20000;
+  if(e.target.value!=='shoe'){ pickedShoe=null; shoePickedEl.hidden=true; }
+});
+
 document.getElementById('gearSave').onclick=()=>{
+  const type=document.getElementById('gearType').value;
   const g={
     id:'g'+Date.now(),
-    type:document.getElementById('gearType').value,
+    type,
     name:document.getElementById('gearName').value||'Équipement',
     km:+document.getElementById('gearKm').value||0,
     max:+document.getElementById('gearMax').value||1000,
+    price:+document.getElementById('gearPrice').value||null,
+    cat: type==='shoe' ? (pickedShoe?.cat || 'daily') : null,
+    comm: type==='shoe' ? (pickedShoe?.comm || null) : null,
     notified:[]
   };
   // marque comme déjà notifiés les paliers déjà dépassés à l'ajout
-  if(g.type==='shoe') SHOE_MILESTONES.forEach(m=>{ if(g.km>=m) g.notified.push(m); });
+  if(g.type==='shoe') shoeMilestones(g).forEach(m=>{ if(g.km>=m.km) g.notified.push(m.km); });
   GEAR.push(g);
   // persiste côté backend si connecté (sinon reste en démo local)
   if(window.PF?.user){
-    window.PF.addGear({type:g.type,name:g.name,km:g.km,max_km:g.max,notified:g.notified})
+    window.PF.addGear({type:g.type,name:g.name,km:g.km,max_km:g.max,notified:g.notified,cat:g.cat,price:g.price})
       .then(row=>{ if(row&&row.id) g.id=row.id; }).catch(e=>console.warn('addGear',e));
   }
+  pickedShoe=null; shoePickedEl.hidden=true;
+  document.getElementById('gearName').value=''; document.getElementById('gearSearch').value=''; shoeResultsEl.innerHTML='';
   gearOverlay.classList.remove('open');
   renderGear();
-  toast('Équipement ajouté ✓');
+  toast('Équipement ajouté — suivi d\'usure calibré sur ton modèle');
 };
+
+/* initialisation au chargement de la page */
+renderShoeBrands();
 renderGear();
 
 
@@ -6692,7 +7002,7 @@ document.addEventListener('keydown', e=>{ if(e.key==='Escape') mentalOverlay.cla
 
 /* ============================================================
    RÉSERVATION TEST LACTATE — formulaire par email
-   ⚠️ CONFIG : remplacez l'adresse par votre email de réception
+   CONFIG : remplacez l'adresse par votre email de réception
    ============================================================ */
 const LACTEST_EMAIL = 'contact@VOTRE-DOMAINE.fr';
 const lactestOverlay = document.getElementById('lactestOverlay');
@@ -6726,8 +7036,8 @@ document.getElementById('lactestSend').addEventListener('click', ()=>{
    (OAuth + GET /athlete/activities), agrégez-les par semaine
    puis appelez :
      loadStravaData({ weeks, hrAvg, distSwim, distBike, distRun,
-                      ctl, atl, ftp, pma, weightKg, vdot,
-                      predictions, physio, hrZones })
+                      ctl, atl, ftp, pma, weightKg,
+                      physio, hrZones })
    avec la même forme que STRAVA_DEMO — les graphiques se
    redessineront avec les vraies données.
    ============================================================ */
