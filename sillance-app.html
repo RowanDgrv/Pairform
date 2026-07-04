@@ -3384,7 +3384,7 @@ document.querySelectorAll('.ath-tab').forEach(b=>{
     document.body.classList.toggle('light', light);
     if(icon) icon.innerHTML = light ? '<i class="ic ic-sun"></i>' : '<i class="ic ic-moon"></i>';
     if(btn) btn.title = light ? 'Passer en mode sombre' : 'Passer en mode clair';
-    if(typeof rebuildCharts==='function') rebuildCharts();
+    if(typeof rebuildCharts==='function') setTimeout(rebuildCharts, 0);
   }
   // Thème auto selon l'heure : mode jour (clair) de 7h00 à 18h59, mode nuit (sombre) de 19h00 à 6h59.
   const h = new Date().getHours();
