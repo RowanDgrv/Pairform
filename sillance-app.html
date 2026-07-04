@@ -211,6 +211,10 @@ body[data-patterns="1"] .tpl[data-disc="strength"]::before{background:var(--c)}
   font-weight:600;font-size:13px;letter-spacing:.03em;transition:.2s;
 }
 .mode button.active{background:linear-gradient(120deg, rgba(47,217,255,.16), rgba(157,123,255,.16));color:var(--text)}
+.plan-athlete-select{
+  border:1px solid var(--line-strong);border-radius:10px;background:var(--panel);color:var(--text);
+  font-weight:600;font-size:12.5px;padding:8px 10px;max-width:170px;
+}
 
 /* ---------- Bandeau stats + ECG ---------- */
 .pulse-strip{
@@ -1535,6 +1539,9 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       <button id="modeAthlete" role="tab" aria-selected="false"><i class="ic ic-user"></i>Athlète</button>
       <button id="modeClub" role="tab" aria-selected="false"><i class="ic ic-landmark"></i>Club</button>
     </div>
+    <select id="planAthleteSelect" class="plan-athlete-select" aria-label="Planifier pour" hidden>
+      <option value="">Moi-même</option>
+    </select>
     <button class="icon-btn theme-btn" id="themeBtn" aria-label="Changer de thème" title="Mode clair / sombre">
       <span id="themeIcon"><i class="ic ic-moon"></i></span>
     </button>
@@ -2480,6 +2487,22 @@ let uid = 100;
 const planning = {}; // clé "YYYY-MM-DD" -> [sessions]
 function fmtDur(min){ const h=Math.floor(min/60), m=min%60; return h?`${h}h${String(m).padStart(2,'0')}`:`${m}min`; }
 
+/* ---- Coach : pour quel athlète planifie-t-on ? (défaut : pour soi-même) ---- */
+let COACH_ATHLETES = [];       // [{id, name}] — rempli par l'intégration Supabase
+let currentAthleteId = null;   // null = "Moi-même" (comportement historique)
+function setCoachAthletes(list, defaultId){
+  COACH_ATHLETES = list || [];
+  const sel = document.getElementById('planAthleteSelect'); if(!sel) return;
+  sel.innerHTML = '<option value="">Moi-même</option>' +
+    COACH_ATHLETES.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
+  if(defaultId){ sel.value = defaultId; currentAthleteId = defaultId; }
+  updatePlanAthleteVisibility();
+}
+function updatePlanAthleteVisibility(){
+  const sel = document.getElementById('planAthleteSelect'); if(!sel) return;
+  sel.hidden = !(mode==='coach' && COACH_ATHLETES.length);
+}
+
 /* ============================================================
    DONNÉES RÉELLES — importées du calendrier iDO de l'athlète
    3 semaines : S22 (offset -2), S23 (-1), S24 (0, en cours)
@@ -3354,9 +3377,14 @@ document.getElementById('prevWeek').onclick = ()=>{ weekOffset--; render() };
 document.getElementById('nextWeek').onclick = ()=>{ weekOffset++; render() };
 const mc = document.getElementById('modeCoach'), ma = document.getElementById('modeAthlete'), mcl = document.getElementById('modeClub');
 function setActiveMode(btn){ [mc,ma,mcl].forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
-mc.onclick = ()=>{ mode='coach'; setActiveMode(mc); renderSidebar(); render(); updateVideolibVisibility(); };
-ma.onclick = ()=>{ mode='athlete'; setActiveMode(ma); renderSidebar(); render(); updateVideolibVisibility(); };
-mcl.onclick = ()=>{ mode='club'; setActiveMode(mcl); updateVideolibVisibility(); renderClub(); };
+mc.onclick = ()=>{ mode='coach'; setActiveMode(mc); renderSidebar(); render(); updateVideolibVisibility(); updatePlanAthleteVisibility(); };
+ma.onclick = ()=>{ mode='athlete'; setActiveMode(ma); renderSidebar(); render(); updateVideolibVisibility(); updatePlanAthleteVisibility(); };
+mcl.onclick = ()=>{ mode='club'; setActiveMode(mcl); updateVideolibVisibility(); renderClub(); updatePlanAthleteVisibility(); };
+document.getElementById('planAthleteSelect').addEventListener('change', e=>{
+  currentAthleteId = e.target.value || null;
+  if(typeof window.__pf_loadPlanningFor==='function') window.__pf_loadPlanningFor(currentAthleteId);
+  else { renderSidebar(); render(); }
+});
 let athView = 'home';   // 'home' | 'stats'
 function updateVideolibVisibility(){
   // mode club : panneau club via attribut body ; sinon onglets athlète
@@ -4006,6 +4034,9 @@ window.__pf_app = {
   clearObj(obj){ for(const k of Object.keys(obj)) delete obj[k]; },
   // Remplace le matériel (démo → réel Supabase) et redessine la section.
   setGear(items){ if(typeof GEAR!=='undefined'){ GEAR = items.slice(); renderGear(); } },
+  // Roster d'athlètes du coach (sélecteur "planifier pour") + athlète courant.
+  setCoachAthletes,
+  getCurrentAthleteId(){ return currentAthleteId; },
 };
 
 /* écran d'accueil testeur (le bouton a aussi un onclick inline de secours) */
@@ -4828,7 +4859,7 @@ document.getElementById('bSaveCal').addEventListener('click', ()=>{
   (planning[key] ||= []).push(s);
   // Persistance backend (si connecté) — récupère l'id DB pour les futurs done/rpe.
   if(window.PF?.user){
-    PF.scheduleSession(PF.user.id, key, { disc:s.disc, title:s.title, dur:s.dur,
+    PF.scheduleSession(currentAthleteId || PF.user.id, key, { disc:s.disc, title:s.title, dur:s.dur,
       dist:s.dist||0, tss:s.tss, zone:s.zone, blocks:(s.blocksV2&&s.blocksV2.blocks)||[] })
       .then(saved=>{ if(saved) s.id = saved.id; })
       .catch(e=> console.warn('[PF] scheduleSession échoué :', e));

@@ -72,17 +72,21 @@ async function hydrate() {
     if (items.length && app.setGear) app.setGear(items.map(mapGear));
   });
 
+  let defaultAthleteId = null; // null = planifier pour soi-même (comportement historique)
+  await section("coachAthletes", async () => {
+    const rows = await PF.myAthletes();
+    const list = rows.map((r) => ({
+      id: r.athlete_id,
+      name: r.profiles?.full_name || r.profiles?.email || "Athlète",
+    }));
+    // Un coach avec des athlètes liés planifie par défaut pour le premier
+    // (plus utile que "pour soi-même" dans le cas d'usage réel).
+    if (PF.profile?.role === "coach" && list.length) defaultAthleteId = list[0].id;
+    app.setCoachAthletes?.(list, defaultAthleteId);
+  });
+
   await section("planning", async () => {
-    // Fenêtre large autour d'aujourd'hui (±4 semaines) pour couvrir la nav.
-    const today = new Date();
-    const from = new Date(today); from.setDate(from.getDate() - 28);
-    const to   = new Date(today); to.setDate(to.getDate() + 28);
-    const iso = (d) => d.toISOString().slice(0, 10);
-    const rows = await PF.getPlanning(uid, iso(from), iso(to));
-    app.clearObj(app.data.planning);
-    for (const s of rows) {
-      (app.data.planning[s.date] ||= []).push(mapSession(s));
-    }
+    await loadPlanningFor(defaultAthleteId);
   });
 
   await section("videos", async () => {
@@ -154,6 +158,26 @@ async function section(name, fn) {
   try { await fn(); }
   catch (e) { console.error(`[PF] hydrate ${name} échoué :`, e); }
 }
+
+// (Re)charge le planning pour un athlète donné (null = soi-même) et re-render.
+// Utilisé au chargement ET quand le coach change d'athlète dans le sélecteur.
+async function loadPlanningFor(athleteId) {
+  const app = A();
+  const today = new Date();
+  const from = new Date(today); from.setDate(from.getDate() - 28);
+  const to   = new Date(today); to.setDate(to.getDate() + 28);
+  const iso = (d) => d.toISOString().slice(0, 10);
+  const rows = await PF.getPlanning(athleteId || PF.user.id, iso(from), iso(to));
+  app.clearObj(app.data.planning);
+  for (const s of rows) {
+    (app.data.planning[s.date] ||= []).push(mapSession(s));
+  }
+  app.render?.();
+  app.renderSidebar?.();
+}
+window.__pf_loadPlanningFor = (athleteId) => {
+  loadPlanningFor(athleteId).catch((e) => console.error("[PF] loadPlanningFor échoué :", e));
+};
 
 /* ===========================================================================
  *  AUTH UI — overlay de connexion / inscription (thème sombre Sillance)
