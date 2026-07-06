@@ -78,7 +78,9 @@ async function hydrate() {
 
   await section("gear", async () => {
     const items = await PF.getGear(uid);
-    if (items.length && app.setGear) app.setGear(items.map(mapGear));
+    // Set inconditionnel : un compte réel sans matériel voit la section vide,
+    // pas le matériel de démonstration présenté comme le sien.
+    app.setGear?.(items.map(mapGear));
   });
 
   let defaultAthleteId = null; // null = planifier pour soi-même (comportement historique)
@@ -168,19 +170,25 @@ async function section(name, fn) {
   catch (e) { console.error(`[PF] hydrate ${name} échoué :`, e); }
 }
 
-// (Re)charge le planning pour un athlète donné (null = soi-même) et re-render.
-// Utilisé au chargement ET quand le coach change d'athlète dans le sélecteur.
+// (Re)charge le planning ET le matériel d'un athlète donné (null = soi-même),
+// puis re-render. Utilisé au chargement ET quand le coach change d'athlète.
 async function loadPlanningFor(athleteId) {
   const app = A();
+  const target = athleteId || PF.user.id;
   const today = new Date();
   const from = new Date(today); from.setDate(from.getDate() - 28);
   const to   = new Date(today); to.setDate(to.getDate() + 28);
   const iso = (d) => d.toISOString().slice(0, 10);
-  const rows = await PF.getPlanning(athleteId || PF.user.id, iso(from), iso(to));
+  const [rows, gearRows] = await Promise.all([
+    PF.getPlanning(target, iso(from), iso(to)),
+    PF.getGear(target),
+  ]);
   app.clearObj(app.data.planning);
   for (const s of rows) {
     (app.data.planning[s.date] ||= []).push(mapSession(s));
   }
+  // Matériel de CET athlète — vide si rien de renseigné, jamais celui d'un autre.
+  app.setGear?.(gearRows.map(mapGear));
   app.render?.();
   app.renderSidebar?.();
 }

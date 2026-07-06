@@ -562,6 +562,50 @@ body.grid-on .cal-guides{opacity:1}
 .gear-alert.warn{background:rgba(255,177,61,.1);border:1px solid rgba(255,177,61,.25);color:var(--bike)}
 .gear-alert.danger{background:rgba(255,84,112,.1);border:1px solid rgba(255,84,112,.25);color:var(--run)}
 .gear-alert.ok{background:rgba(57,230,163,.08);border:1px solid rgba(57,230,163,.2);color:var(--good)}
+/* mode coach (ni data-athview ni data-clubview) : le matériel de l'athlète est en lecture seule */
+body:not([data-athview]):not([data-clubview]) .gear-actions,
+body:not([data-athview]):not([data-clubview]) .gear-card .gear-del{display:none}
+
+/* ---------- Bandeau coach : l'athlète suivi en un coup d'œil ---------- */
+.coach-band{
+  display:grid;grid-template-columns:auto 1fr auto;gap:26px;align-items:center;
+  border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin-bottom:26px;
+  background:linear-gradient(135deg, var(--panel-2), var(--panel));position:relative;overflow:hidden;
+}
+.coach-band::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(600px 220px at 85% 0%, color-mix(in srgb, var(--cbc,#46C2D8) 10%, transparent), transparent 70%)}
+.coach-band[hidden]{display:none}
+.cb-id{display:flex;align-items:center;gap:16px;position:relative}
+.cb-av{width:54px;height:54px;border-radius:50%;flex:none;display:grid;place-items:center;
+  font-family:var(--font-display);font-weight:700;font-size:19px;color:#08131c;background:var(--cbc,var(--swim));
+  box-shadow:0 0 0 2px var(--panel), 0 0 0 4px color-mix(in srgb, var(--cbc,#46C2D8) 45%, transparent)}
+.cb-kicker{font-family:var(--font-data);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.cb-name{font-family:var(--font-display);font-weight:700;font-size:23px;line-height:1.1}
+.cb-race{font-size:12.5px;color:var(--soft);margin-top:5px;display:flex;align-items:center;gap:6px}
+.cb-race b{font-family:var(--font-data);color:var(--accent,#46C2D8)}
+.cb-race .ic{width:12px;height:12px;color:var(--muted)}
+.cb-forme{display:flex;align-items:center;gap:16px;position:relative;justify-self:center}
+.cb-ring{position:relative;width:72px;height:72px;flex:none}
+.cb-ring svg{transform:rotate(-90deg)}
+.cb-ring .pct{position:absolute;inset:0;display:grid;place-items:center;
+  font-family:var(--font-data);font-weight:700;font-size:16px}
+.cb-fdetail .cb-kicker{margin-bottom:5px}
+.cb-note{font-weight:700;font-size:14px;margin-bottom:6px}
+.cb-checkin{display:flex;gap:12px;font-family:var(--font-data);font-size:11px;color:var(--muted)}
+.cb-checkin span{display:flex;align-items:center;gap:4px}
+.cb-checkin .ic{width:11px;height:11px}
+.cb-flags{display:flex;flex-direction:column;gap:7px;align-items:flex-end;position:relative;max-width:280px}
+.cb-flag{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;
+  border-radius:99px;padding:5px 12px;line-height:1.3}
+.cb-flag .ic{width:11px;height:11px;flex:none}
+.cb-flag.warn{background:rgba(255,177,61,.10);border:1px solid rgba(255,177,61,.3);color:var(--bike)}
+.cb-flag.danger{background:rgba(255,84,112,.10);border:1px solid rgba(255,84,112,.3);color:var(--run)}
+.cb-flag.ok{background:rgba(57,230,163,.07);border:1px solid rgba(57,230,163,.18);color:var(--good)}
+@media(max-width:900px){
+  .coach-band{grid-template-columns:1fr;gap:18px}
+  .cb-forme{justify-self:start}
+  .cb-flags{align-items:flex-start}
+}
 .gear-modal{width:min(560px,100%)}
 /* recherche + catalogue chaussures */
 .shoe-results{display:flex;flex-direction:column;gap:4px;max-height:230px;overflow-y:auto;margin-top:7px}
@@ -1651,6 +1695,9 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     </div>
   </section>
 
+  <!-- ===================== BANDEAU COACH (athlète suivi) ===================== -->
+  <section class="coach-band" id="coachBand" aria-label="Athlète suivi"></section>
+
   <!-- ===================== PLANNER ===================== -->
   <div class="planner">
     <aside class="library" id="library" aria-label="Panneau latéral">
@@ -1852,10 +1899,10 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
   <!-- ===================== MATÉRIEL ===================== -->
   <section class="gear" id="gear">
     <div class="analytics-head">
-      <h2>Mon <span>matériel</span></h2>
+      <h2 id="gearTitle">Mon <span>matériel</span></h2>
       <span class="src">suivi d'usure · alertes km</span>
     </div>
-    <p class="sub">Suis le kilométrage de tes chaussures et de tes vélos. Chaque modèle du catalogue a sa propre durée de vie estimée : tu es alerté avant que l'amorti ne se dégrade.</p>
+    <p class="sub" id="gearSub">Suis le kilométrage de tes chaussures et de tes vélos. Chaque modèle du catalogue a sa propre durée de vie estimée : tu es alerté avant que l'amorti ne se dégrade.</p>
     <div id="gearAdvisor"></div>
     <div class="gear-actions">
       <button class="btn gear-add" id="gearAdd">+ Ajouter un équipement</button>
@@ -2540,12 +2587,31 @@ function fmtDur(min){ const h=Math.floor(min/60), m=min%60; return h?`${h}h${Str
    remplace la démo via setCoachAthletes().
    ============================================================ */
 const COACH_ROSTER = [
- {id:'a1', name:'Léa Fontan',     ini:'LF', color:'#46C2D8', checkin:{sommeil:8,fatigue:3,motivation:8}, race:{name:'Gorillaman · Sprint',   days:22}, drop:0,    comp:1.0},
- {id:'a2', name:'Marc Delieux',   ini:'MD', color:'#D9962F', checkin:{sommeil:5,fatigue:7,motivation:5}, race:{name:'Marathon de Toulouse',  days:60}, drop:0.18, comp:0.55},
- {id:'a3', name:'Chloé Vasseur',  ini:'CV', color:'#8E7FD0', checkin:{sommeil:7,fatigue:4,motivation:8}, race:{name:'HYROX Bordeaux',        days:35}, drop:0.10, comp:0.95},
- {id:'a4', name:'Théo Rambert',   ini:'TR', color:'#DD5C72', checkin:{sommeil:6,fatigue:5,motivation:6}, race:{name:'Semi de Blagnac',       days:14}, drop:0.25, comp:0.70},
- {id:'a5', name:'Emma Laurens',   ini:'EL', color:'#35C58C', checkin:{sommeil:9,fatigue:2,motivation:9}, race:{name:'70.3 Aix-en-Provence',  days:98}, drop:0.30, comp:1.0},
- {id:'a6', name:'Sofiane Kerbal', ini:'SK', color:'#FF8A3D', checkin:{sommeil:4,fatigue:8,motivation:4}, race:{name:'10 km de Toulouse',     days:9},  drop:0.15, comp:0.35},
+ {id:'a1', name:'Léa Fontan',     ini:'LF', color:'#46C2D8', checkin:{sommeil:8,fatigue:3,motivation:8}, race:{name:'Gorillaman · Sprint',   days:22}, drop:0,    comp:1.0,
+  gear:[
+    {id:'g1', type:'shoe', name:'Nike Pegasus 40', km:612, max:900, price:130, cat:'daily', comm:870, notified:[540]},
+    {id:'g2', type:'shoe', name:'Saucony Endorphin Speed 4', km:284, max:650, price:180, cat:'tempo', comm:630, notified:[]},
+    {id:'g3', type:'shoe', name:'Asics Metaspeed Sky Paris', km:118, max:350, price:250, cat:'race', comm:320, notified:[]},
+    {id:'g4', type:'bike', name:'Canyon Ultimate CF', km:4380, max:20000, price:3200, cat:null, comm:null, notified:[]},
+  ]},
+ {id:'a2', name:'Marc Delieux',   ini:'MD', color:'#D9962F', checkin:{sommeil:5,fatigue:7,motivation:5}, race:{name:'Marathon de Toulouse',  days:60}, drop:0.18, comp:0.55,
+  gear:[
+    {id:'g5', type:'shoe', name:'Adidas Boston 12', km:723, max:700, price:150, cat:'tempo', comm:660, notified:[420,595,700]},
+    {id:'g6', type:'shoe', name:'Adidas Ultraboost Light', km:214, max:850, price:180, cat:'daily', comm:800, notified:[]},
+  ]},
+ {id:'a3', name:'Chloé Vasseur',  ini:'CV', color:'#8E7FD0', checkin:{sommeil:7,fatigue:4,motivation:8}, race:{name:'HYROX Bordeaux',        days:35}, drop:0.10, comp:0.95,
+  gear:[
+    {id:'g7', type:'shoe', name:'Puma Deviate Nitro 3', km:405, max:700, price:160, cat:'tempo', comm:650, notified:[420]},
+  ]},
+ {id:'a4', name:'Théo Rambert',   ini:'TR', color:'#DD5C72', checkin:{sommeil:6,fatigue:5,motivation:6}, race:{name:'Semi de Blagnac',       days:14}, drop:0.25, comp:0.70,
+  gear:[
+    {id:'g8', type:'shoe', name:'Asics Novablast 5', km:648, max:750, price:150, cat:'tempo', comm:710, notified:[450,638]},
+    {id:'g9', type:'bike', name:'BMC Roadmachine', km:2150, max:20000, price:2400, cat:null, comm:null, notified:[]},
+  ]},
+ {id:'a5', name:'Emma Laurens',   ini:'EL', color:'#35C58C', checkin:{sommeil:9,fatigue:2,motivation:9}, race:{name:'70.3 Aix-en-Provence',  days:98}, drop:0.30, comp:1.0,
+  gear:[]},
+ {id:'a6', name:'Sofiane Kerbal', ini:'SK', color:'#FF8A3D', checkin:{sommeil:4,fatigue:8,motivation:4}, race:{name:'10 km de Toulouse',     days:9},  drop:0.15, comp:0.35,
+  gear:[]},
 ];
 let ROSTER = COACH_ROSTER;     // remplacé par le roster réel une fois connecté
 let rosterIsReal = false;
@@ -2569,8 +2635,8 @@ function setCoachAthletes(list, defaultId){
   updatePlanAthleteVisibility();
 }
 function updatePlanAthleteVisibility(){
-  const el = document.getElementById('athPicker'); if(!el) return;
-  el.hidden = mode!=='coach';
+  const el = document.getElementById('athPicker'); if(el) el.hidden = mode!=='coach';
+  const band = document.getElementById('coachBand'); if(band) band.hidden = mode!=='coach';
 }
 // Compte confirmé sans la moindre activité réelle : masque l'analyse et les
 // records de démo plutôt que de les présenter comme si c'était les siens.
@@ -3455,8 +3521,14 @@ document.getElementById('prevWeek').onclick = ()=>{ weekOffset--; render() };
 document.getElementById('nextWeek').onclick = ()=>{ weekOffset++; render() };
 const mc = document.getElementById('modeCoach'), ma = document.getElementById('modeAthlete'), mcl = document.getElementById('modeClub');
 function setActiveMode(btn){ [mc,ma,mcl].forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
-mc.onclick = ()=>{ mode='coach'; setActiveMode(mc); renderSidebar(); render(); updateVideolibVisibility(); updatePlanAthleteVisibility(); };
-ma.onclick = ()=>{ mode='athlete'; setActiveMode(ma); renderSidebar(); render(); updateVideolibVisibility(); updatePlanAthleteVisibility(); };
+mc.onclick = ()=>{ mode='coach'; setActiveMode(mc); renderSidebar(); render(); updateVideolibVisibility(); updatePlanAthleteVisibility(); if(typeof renderCoachBand==='function') renderCoachBand(); if(typeof renderGear==='function') renderGear(); };
+ma.onclick = ()=>{
+  mode='athlete'; setActiveMode(ma);
+  // la vue Athlète = SON espace : on restaure les données de l'athlète démo (roster[0])
+  if(!rosterIsReal && selectedAthleteIdx!==0){ selectedAthleteIdx=0; applyDemoAthlete(0); renderAthPicker(); }
+  else if(typeof renderGear==='function') renderGear();
+  renderSidebar(); render(); updateVideolibVisibility(); updatePlanAthleteVisibility();
+};
 mcl.onclick = ()=>{ mode='club'; setActiveMode(mcl); updateVideolibVisibility(); renderClub(); updatePlanAthleteVisibility(); };
 /* ---- Sélecteur d'athlète : rendu + bascule ---- */
 let BASE_PLANNING = null;   // plan de référence (celui de l'athlète 1), figé au 1er changement
@@ -3499,6 +3571,7 @@ function selectAthlete(i){
     applyDemoAthlete(i);
   }
   renderAthPicker();
+  renderCoachBand();
 }
 /* Reconstruit le planning affiché pour l'athlète démo i : même trame que le
    plan de base, mais assiduité (done/rpe) et volume propres à chacun. */
@@ -3523,8 +3596,67 @@ function applyDemoAthlete(i){
   Object.assign(checkin, a.checkin);
   const rc = document.getElementById('raceCountdown'); if(rc) rc.textContent = 'J–'+a.race.days;
   const rn = document.getElementById('raceName'); if(rn) rn.textContent = a.race.name;
+  // matériel : celui que CET athlète a renseigné (vide = vide, on n'invente rien)
+  if(typeof GEAR!=='undefined'){ GEAR = JSON.parse(JSON.stringify(a.gear||[])); renderGear(); }
   renderSidebar(); render();
+  if(typeof renderCoachBand==='function') renderCoachBand();
 }
+/* Bandeau coach : identité de l'athlète suivi, forme du matin en anneau,
+   détail du check-in et alertes actionnables (usure matériel, course proche,
+   assiduité faible). C'est le cockpit "quel athlète je regarde, où il en est". */
+function renderCoachBand(){
+  const band = document.getElementById('coachBand'); if(!band) return;
+  const a = ROSTER[selectedAthleteIdx]; if(!a){ band.innerHTML=''; return; }
+  const forme = athForme(a), fc = athFormeColor(forme);
+  const C = 2*Math.PI*30;
+  const dash = forme==null ? 0 : C*forme/100;
+  // GEAR est déclaré (let) plus bas dans le script : au premier rendu il est
+  // encore en zone morte temporelle -> on lit via try/catch plutôt que typeof.
+  let gearList = []; try{ gearList = GEAR || []; }catch(e){}
+  const worn = gearList.filter(g=>g.type==='shoe' && g.max>0 && g.km/g.max>=0.85);
+  let done=0, tot=0;
+  const mon = mondayOf(0);
+  for(let i=0;i<7;i++){ (planning[iso(addDays(mon,i))]||[]).forEach(s=>{ tot++; if(s.done) done++; }); }
+  const compPct = tot ? Math.round(done/tot*100) : null;
+  const flags = [];
+  worn.slice(0,2).forEach(g=>{ const p=Math.round(g.km/g.max*100);
+    flags.push(`<span class="cb-flag ${p>=100?'danger':'warn'}"><i class="ic ic-shoe"></i>${g.name} · ${p}% d'usure</span>`); });
+  if(a.race && a.race.days<=14) flags.push(`<span class="cb-flag warn"><i class="ic ic-flag"></i>Course dans ${a.race.days} j — pense à l'affûtage</span>`);
+  if(compPct!=null && compPct<60) flags.push(`<span class="cb-flag danger"><i class="ic ic-alert-triangle"></i>Réalisé faible : ${compPct}% cette semaine</span>`);
+  if(!flags.length) flags.push(`<span class="cb-flag ok"><i class="ic ic-check"></i>Rien à signaler</span>`);
+  const ck = a.checkin;
+  band.style.setProperty('--cbc', a.color);
+  band.innerHTML = `
+    <div class="cb-id">
+      <span class="cb-av">${a.ini}</span>
+      <div>
+        <div class="cb-kicker">Athlète suivi</div>
+        <div class="cb-name">${a.name}</div>
+        ${a.race?`<div class="cb-race"><i class="ic ic-flag"></i>${a.race.name} <b>J–${a.race.days}</b></div>`:''}
+      </div>
+    </div>
+    <div class="cb-forme">
+      <div class="cb-ring">
+        <svg width="72" height="72" viewBox="0 0 72 72">
+          <circle cx="36" cy="36" r="30" fill="none" stroke="var(--line-strong)" stroke-width="5"/>
+          <circle cx="36" cy="36" r="30" fill="none" stroke="${fc}" stroke-width="5" stroke-linecap="round"
+            stroke-dasharray="${dash.toFixed(1)} ${C.toFixed(1)}"/>
+        </svg>
+        <span class="pct" style="color:${fc}">${forme==null?'—':forme+'%'}</span>
+      </div>
+      <div class="cb-fdetail">
+        <div class="cb-kicker">Check-in de ce matin</div>
+        <div class="cb-note" style="color:${fc}">${forme==null?'Pas encore de check-in':athNote(forme)}</div>
+        ${ck?`<div class="cb-checkin">
+          <span><i class="ic ic-moon"></i>${ck.sommeil}/10</span>
+          <span><i class="ic ic-battery"></i>${ck.fatigue}/10</span>
+          <span><i class="ic ic-zap"></i>${ck.motivation}/10</span>
+        </div>`:''}
+      </div>
+    </div>
+    <div class="cb-flags">${flags.join('')}</div>`;
+}
+
 (function initAthPicker(){
   const btn=document.getElementById('apBtn'), menu=document.getElementById('apMenu');
   if(!btn) return;
@@ -3539,6 +3671,7 @@ function applyDemoAthlete(i){
   });
   renderAthPicker();
   updatePlanAthleteVisibility();
+  renderCoachBand();
 })();
 let athView = 'home';   // 'home' | 'stats'
 function updateVideolibVisibility(){
@@ -3551,6 +3684,12 @@ function updateVideolibVisibility(){
     document.body.setAttribute('data-athview', athView);
   }
   document.querySelectorAll('.ath-tab').forEach(b=> b.classList.toggle('active', b.dataset.tab===athView));
+  // Matériel : côté coach, c'est celui que l'athlète a renseigné (lecture seule)
+  const gt=document.getElementById('gearTitle'), gs=document.getElementById('gearSub');
+  if(gt) gt.innerHTML = mode==='coach' ? 'Matériel <span>de l\'athlète</span>' : 'Mon <span>matériel</span>';
+  if(gs) gs.textContent = mode==='coach'
+    ? 'Le matériel que l\'athlète a renseigné dans son espace — surveille l\'usure avant de planifier de l\'intensité.'
+    : 'Suis le kilométrage de tes chaussures et de tes vélos. Chaque modèle du catalogue a sa propre durée de vie estimée : tu es alerté avant que l\'amorti ne se dégrade.';
 }
 // branchement des onglets
 document.querySelectorAll('.ath-tab').forEach(b=>{
@@ -7118,7 +7257,9 @@ function renderGear(){
         <button class="gear-del" data-act="add10" style="border-color:var(--line-strong)">+ Simuler 50 km</button>
       </div>
     </div>`;
-  }).join('') || '<p class="club-hint">Aucun équipement. Ajoute tes chaussures pour suivre leur usure.</p>';
+  }).join('') || `<p class="club-hint">${mode==='coach'
+    ? 'Cet athlète n\'a renseigné aucun équipement dans son espace.'
+    : 'Aucun équipement. Ajoute tes chaussures pour suivre leur usure.'}</p>`;
 
   // — bandeau conseil du jour + garde-fou courses à venir —
   const advisor=document.getElementById('gearAdvisor');
