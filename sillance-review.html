@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- CSP : app (polices Google + module supabase-js via esm.sh + API supabase + iframe Calendly).
+     unsafe-inline requis (gros scripts/styles inline, site statique sans nonce).
+     frame-ancestors/X-Frame-Options non applicables via <meta> (en-tête HTTP requis). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://onbsgohvqejccowfnrbs.supabase.co wss://onbsgohvqejccowfnrbs.supabase.co https://esm.sh; frame-src https://calendly.com; base-uri 'self'; object-src 'none'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <title>Sillance — Coaching triathlon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
