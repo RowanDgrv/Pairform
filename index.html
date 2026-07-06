@@ -115,6 +115,9 @@ main,.nav,footer{position:relative;z-index:1}
 footer{border-top:1px solid var(--line);padding:44px 0;color:var(--muted);font-size:13px;background:var(--paper)}
 footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}
 footer .fmono{font-family:var(--mono);letter-spacing:.04em}
+.legal-links{border-top:1px solid var(--line);margin-top:26px;padding-top:22px;display:flex;flex-wrap:wrap;gap:8px 22px;font-family:var(--mono);font-size:12.5px;letter-spacing:.03em}
+.legal-links a{color:var(--muted)}
+.legal-links a:hover{color:var(--accent)}
 </style></head>
 <body>
 
@@ -205,7 +208,13 @@ footer .fmono{font-family:var(--mono);letter-spacing:.04em}
   <div class="brand" style="font-size:18px"><svg class="brandmark" width="24" height="16" viewBox="0 0 96 96" fill="none" aria-hidden="true" style="vertical-align:middle"><path d="M74 48 L22 26" stroke="#A9B6CC" stroke-width="8" stroke-linecap="round" opacity=".55"/><path d="M74 48 L22 70" stroke="#A9B6CC" stroke-width="8" stroke-linecap="round" opacity=".55"/><path d="M74 48 L36 37" stroke="#46C2D8" stroke-width="8" stroke-linecap="round"/><path d="M74 48 L36 59" stroke="#46C2D8" stroke-width="8" stroke-linecap="round"/><circle cx="74" cy="48" r="9" fill="#46C2D8"/></svg><span class="wm">Sill<b>ance</b></span></div>
   <div class="fmono">Entre dans le sillage — Triathlon · Hyrox · Course à pied</div>
   <div class="fmono">© 2026 Sillance</div>
-</div></footer>
+</div>
+<div class="wrap"><nav class="legal-links" aria-label="Informations légales">
+  <a href="./legal/mentions-legales.html">Mentions légales</a>
+  <a href="./legal/cgu.html">CGU</a>
+  <a href="./legal/cgv.html">CGV</a>
+  <a href="./legal/confidentialite.html">Politique de confidentialité</a>
+</nav></div></footer>
 
 <script>
 /* ---------- Hero : sillage eau -> vent, genere en WebGL ---------- */
