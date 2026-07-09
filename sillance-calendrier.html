@@ -83,7 +83,7 @@ body{
 ::selection{background:rgba(70,194,216,.26)}
 button{font-family:inherit;cursor:pointer}
 
-.apex-app{max-width:1340px;margin:0 auto;padding:20px clamp(12px,3vw,32px) 80px}
+.apex-app{max-width:1600px;margin:0 auto;padding:20px clamp(12px,3vw,32px) 80px}
 
 /* ---------- Topbar ---------- */
 .topbar{
@@ -269,7 +269,7 @@ body[data-patterns="1"] .tpl[data-disc="strength"]::before{background:var(--c)}
 @keyframes ecgDraw{to{stroke-dashoffset:-1200}}
 
 /* ---------- Layout principal ---------- */
-.planner{display:grid;grid-template-columns:248px 1fr;gap:18px;align-items:start}
+.planner{display:grid;grid-template-columns:236px 1fr;gap:20px;align-items:start}
 @media (max-width:980px){.planner{grid-template-columns:1fr}}
 
 /* ---------- Bibliothèque de séances ---------- */
@@ -313,7 +313,7 @@ body.grid-on .cal-guides{opacity:1}
 .cal-guides .cg-rows{position:absolute;inset:0;background-image:repeating-linear-gradient(to bottom,rgba(70,194,216,.12) 0 1px,transparent 1px var(--lh))}
 @media (max-width:980px){.cal-guides{display:none}}
 .day{
-  border-right:1px solid var(--line);min-height:384px;
+  border-right:1px solid var(--line);min-height:480px;
   display:flex;flex-direction:column;position:relative;
   transition:background .2s;
 }
@@ -323,26 +323,39 @@ body.grid-on .cal-guides{opacity:1}
 .day.today .day-head{background:linear-gradient(180deg, rgba(47,217,255,.14), transparent)}
 .day.today .day-head .dnum{color:var(--swim)}
 .day-head{
-  padding:16px 12px 8px;border-bottom:1px solid var(--line);
+  padding:16px 14px 10px;border-bottom:1px solid var(--line);
   display:flex;align-items:baseline;gap:8px;
 }
 .day-head .dname{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .day-head .dnum{font-family:var(--font-data);font-size:18px;font-weight:700;margin-left:auto}
-.day-body{padding:8px;flex:1;display:flex;flex-direction:column;gap:8px}
+.day-body{padding:10px;flex:1;display:flex;flex-direction:column;gap:10px}
 
 .session{
   border:1px solid var(--line);border-left:3px solid var(--c);
   border-radius:10px;background:var(--panel-2);
-  padding:8px 12px;cursor:grab;user-select:none;position:relative;
+  padding:10px 12px 11px;cursor:grab;user-select:none;position:relative;
   transition:transform .15s, box-shadow .2s, opacity .2s;
   animation:popIn .25s ease;
 }
 @keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
 .session:hover{box-shadow:0 6px 22px color-mix(in srgb, var(--c) 25%, transparent);border-color:color-mix(in srgb, var(--c) 60%, var(--line))}
 .session.dragging{opacity:.35;transform:rotate(2deg) scale(.97)}
-.session .t{font-weight:600;font-size:12.5px;line-height:1.3;display:flex;gap:6px;align-items:flex-start;padding-right:16px}
+.session .t{font-weight:600;font-size:13.5px;line-height:1.3;display:flex;gap:6px;align-items:flex-start;padding-right:16px}
 .session .t::before{content:'';width:7px;height:7px;margin-top:4px;flex:none;border-radius:2px;background:var(--c,var(--muted))}
-.session .m{font-family:var(--font-data);font-size:10.5px;color:var(--muted);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+.session .m{font-family:var(--font-data);font-size:11px;color:var(--muted);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
+
+/* Profil visuel de la séance (barres d'intensité dans le temps, façon TrainingPeaks) */
+.sess-profile{
+  position:relative;margin-top:9px;height:40px;
+  display:flex;align-items:flex-end;gap:1px;
+}
+.sess-profile i{flex:1;min-height:2px;border-radius:1px 1px 0 0;opacity:.92}
+.sess-profile .thr{
+  position:absolute;left:0;right:0;bottom:80%;
+  border-top:1px dashed color-mix(in srgb, var(--muted) 50%, transparent);
+  pointer-events:none;
+}
+.session.done .sess-profile{filter:saturate(.35);opacity:.7}
 .session .del{
   position:absolute;top:6px;right:6px;width:18px;height:18px;border-radius:6px;
   border:none;background:transparent;color:var(--muted);font-size:11px;line-height:1;
@@ -3376,6 +3389,100 @@ function render(){
   if(typeof wireSessionVideos==='function') wireSessionVideos();
 }
 
+/* ============================================================
+   PROFIL VISUEL DE SÉANCE — mini graphique de barres sous la carte
+   ------------------------------------------------------------
+   Hauteur = intensité (% de référence), couleur = zone, la ligne
+   pointillée = seuil (100%). Séances construites avec l'éditeur :
+   profil exact depuis blocksV2. Séances de la bibliothèque : profil
+   estimé depuis la zone + le nombre de répétitions dans la description.
+   ============================================================ */
+function intensityColor(p){
+  if(p<70)  return '#39E6A3'; // endurance
+  if(p<85)  return '#FFD43D'; // tempo
+  if(p<100) return '#FFB13D'; // seuil
+  if(p<112) return '#FF5470'; // VO2max
+  return '#E36BFF';           // anaérobie / sprint
+}
+function profLineMin(ln, disc){
+  if(ln.type==='station') return 4; // ~4 min par station Hyrox
+  if(ln.metric==='dist'){
+    const kmh = disc==='swim'?3.5:(disc==='run'?12:30);
+    return (ln.dist||0)/1000/kmh*60;
+  }
+  return (ln.dur?.h||0)*60 + (ln.dur?.m||0) + (ln.dur?.s||0)/60;
+}
+function profLinePct(ln){
+  if(ln.type==='station') return 96;
+  if(ln.mode==='exact' && ln.exact){
+    const ex=ln.exact;
+    if(ex.kind==='power')   return ATHLETE_REF.ftp ? ex.w/ATHLETE_REF.ftp*100 : 90;
+    if(ex.kind==='speed')   return ATHLETE_REF.vma ? ex.kmh/ATHLETE_REF.vma*100 : 85;
+    if(ex.kind==='pace'){ const sec=(ex.m||0)*60+(ex.s||0); const v=sec?3600/sec:0; return ATHLETE_REF.vma&&v ? v/ATHLETE_REF.vma*100 : 85; }
+    if(ex.kind==='time100'){ const sec=(ex.m||0)*60+(ex.s||0); return ATHLETE_REF.css&&sec ? ATHLETE_REF.css/sec*100 : 85; }
+    if(ex.kind==='rpe')     return (ex.rpe||6)*12;
+    return 85;
+  }
+  return ln.pct||70;
+}
+const ZONE_PCT = {Z1:55, Z2:65, Z3:80, Z4:95, Z5:108, Z6:118};
+/* profil estimé pour les séances sans structure (templates) */
+function profileFromDesc(s){
+  const dur = s.dur||60;
+  const zPct = ZONE_PCT[s.zone] || 60;
+  const segs = [];
+  const warm = Math.min(20, Math.max(6, dur*0.2));
+  const cool = Math.min(15, Math.max(4, dur*0.12));
+  const main = Math.max(5, dur - warm - cool);
+  // échauffement progressif
+  [46,52,58,63].forEach(p=> segs.push({min:warm/4, pct:p}));
+  const txt = (s.desc||'')+' '+(s.title||'');
+  const hard = zPct>=90 || /vma|vo2|seuil|intervalle|fractionn|sprint/i.test(txt);
+  if(s.disc==='hyrox' ){
+    // alternance course / station × 8
+    for(let i=0;i<8;i++){ segs.push({min:main/16, pct:72}); segs.push({min:main/16, pct:96}); }
+  } else if(hard){
+    // répétitions : on lit le premier "N×" de la description
+    const m = txt.match(/(\d+)\s*[×x]/);
+    const reps = Math.min(12, Math.max(3, m?+m[1]:5));
+    const work = main*0.6/reps, rest = main*0.4/reps;
+    for(let i=0;i<reps;i++){ segs.push({min:work, pct:zPct}); segs.push({min:rest, pct:46}); }
+  } else if(s.disc==='strength' || s.zone==='—'){
+    for(let i=0;i<3;i++){ segs.push({min:main/4.5, pct:76}); segs.push({min:main/9, pct:48}); }
+  } else {
+    segs.push({min:main, pct:zPct});
+  }
+  // retour au calme
+  [56,48,42].forEach(p=> segs.push({min:cool/3, pct:p}));
+  return segs;
+}
+function profileSegments(s){
+  if(s.blocksV2 && s.blocksV2.blocks){
+    const segs=[];
+    s.blocksV2.blocks.forEach(blk=>{
+      for(let r=0;r<(blk.series||1);r++)
+        blk.lines.forEach(ln=> segs.push({min:profLineMin(ln, s.disc), pct:profLinePct(ln)}));
+    });
+    if(segs.some(x=>x.min>0)) return segs;
+  }
+  return profileFromDesc(s);
+}
+function sessionProfileHTML(s){
+  const segs = profileSegments(s).filter(x=>x.min>0);
+  const total = segs.reduce((a,x)=>a+x.min,0);
+  if(!total) return '';
+  const n = Math.max(18, Math.min(56, Math.round((s.dur||total)/3)));
+  const rnd = seededRand((s.title||'x').split('').reduce((a,c)=>a+c.charCodeAt(0),3)+Math.round(total));
+  let bars='', used=0, si=0;
+  for(let i=0;i<n;i++){
+    const t=(i+0.5)/n*total;
+    while(si<segs.length-1 && used+segs[si].min < t){ used+=segs[si].min; si++; }
+    const p=Math.max(30, Math.min(125, segs[si].pct + (rnd()*6-3)));
+    bars+=`<i style="height:${Math.round(p/125*100)}%;background:${intensityColor(p)}"></i>`;
+  }
+  return `<div class="sess-profile" aria-hidden="true"><span class="thr"></span>${bars}</div>`;
+}
+
 function sessionCard(s, dateKey){
   const D = DISC[s.disc];
   const vid = (mode==='athlete') ? videoForSession(s) : null;
@@ -3388,6 +3495,7 @@ function sessionCard(s, dateKey){
   el.innerHTML = `
     <div class="t">${s.title}</div>
     <div class="m"><span>${fmtDur(s.dur)}</span>${s.dist?`<span>${s.dist} km</span>`:''}<span>${s.tss} TSS</span><span>${s.zone}</span>${s.done&&s.rpe?`<span class="rpe-chip" style="color:${rpeColor(s.rpe)}">RPE ${s.rpe}</span>`:''}</div>
+    ${sessionProfileHTML(s)}
     ${vid?`<span class="video-chip">${vid.title}</span>`:''}
     ${s.done?'<span class="done-chip"><i class="ic ic-check"></i></span>':''}
     ${mode==='coach'?'<button class="del" aria-label="Supprimer"><i class="ic ic-x"></i></button>':''}
