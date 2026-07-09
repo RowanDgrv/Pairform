@@ -4265,7 +4265,15 @@ document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal() });
 document.getElementById('prevWeek').onclick = ()=>{ weekOffset--; render() };
 document.getElementById('nextWeek').onclick = ()=>{ weekOffset++; render() };
 const mc = document.getElementById('modeCoach'), ma = document.getElementById('modeAthlete'), mcl = document.getElementById('modeClub');
-function setActiveMode(btn){ [mc,ma,mcl].forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+function setActiveMode(btn){
+  [mc,ma,mcl].forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+  // mobile (colonnes empilées) : le panneau latéral est AU-DESSUS du calendrier
+  // → on y amène l'utilisateur au changement de mode, sinon il ne le voit jamais
+  if(window.innerWidth<=980) setTimeout(()=>{
+    const p=document.querySelector('.planner');
+    if(p) p.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 80);
+}
 mc.onclick = ()=>{ mode='coach'; setActiveMode(mc); renderSidebar(); render(); updateVideolibVisibility(); updatePlanAthleteVisibility(); if(typeof renderCoachBand==='function') renderCoachBand(); if(typeof renderGear==='function') renderGear(); };
 ma.onclick = ()=>{
   mode='athlete'; setActiveMode(ma);
