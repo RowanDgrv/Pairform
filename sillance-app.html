@@ -301,6 +301,29 @@ body[data-patterns="1"] .tpl[data-disc="strength"]::before{background:var(--c)}
 .tpl .t{font-weight:600;font-size:13.5px;display:flex;align-items:center;gap:7px}
 .tpl .t::before{content:'';width:8px;height:8px;flex:none;border-radius:2px;background:var(--c,var(--muted))}
 .tpl .m{font-family:var(--font-data);font-size:11px;color:var(--muted);margin-top:2px}
+.tpl .zb{
+  margin-left:auto;flex:none;font-family:var(--font-data);font-size:10px;font-weight:700;
+  padding:1px 7px;border-radius:99px;border:1px solid currentColor;
+}
+/* Bibliothèque — filtres sport / type + groupes dépliables par zone */
+.lib-filters{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.lib-filters select{
+  width:100%;height:36px;padding:0 10px;border-radius:10px;cursor:pointer;
+  background:var(--panel-2);border:1px solid var(--line-strong);color:var(--text);
+  font-size:12.5px;font-family:inherit;
+}
+.tpl-group{margin-top:10px}
+.tpl-group summary{
+  cursor:pointer;list-style:none;display:flex;align-items:center;gap:7px;
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  padding:6px 2px;user-select:none;
+}
+.tpl-group summary::-webkit-details-marker{display:none}
+.tpl-group summary::before{content:'▸';font-size:10px;transition:transform .15s}
+.tpl-group[open] summary::before{transform:rotate(90deg)}
+.tpl-group summary em{font-style:normal;margin-left:auto;font-family:var(--font-data);font-size:10px}
+.tpl-group .tpl{margin-top:7px}
+.lib-empty{margin-top:12px;font-size:12px;color:var(--muted);text-align:center;padding:10px}
 .lib-note{
   margin-top:14px;padding:11px 12px;border-radius:10px;
   background:rgba(57,230,163,.07);border:1px dashed rgba(57,230,163,.35);
@@ -1405,9 +1428,11 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 .b-title-input{flex:1;border:1px solid var(--line-strong);border-radius:10px;background:var(--panel-2);
   color:var(--text);font-family:var(--font-ui);font-size:15px;font-weight:600;padding:11px 13px}
 .b-title-input:focus{outline:2px solid var(--swim);outline-offset:1px}
-.b-disc-pick{display:flex;gap:4px;background:var(--panel-2);border:1px solid var(--line-strong);border-radius:10px;padding:3px}
-.b-disc-pick button{width:38px;height:36px;border:none;background:transparent;border-radius:7px;font-size:17px;transition:.15s}
-.b-disc-pick button.active{background:rgba(47,217,255,.18)}
+.b-disc-select{
+  height:38px;padding:0 10px;border-radius:10px;cursor:pointer;
+  background:var(--panel-2);border:1px solid var(--line-strong);color:var(--text);
+  font-size:12.5px;font-family:inherit;
+}
 /* sélecteur de références multiples */
 .b-refs-row{display:flex;align-items:center;gap:10px;margin-top:13px;flex-wrap:wrap}
 .b-refs-lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
@@ -2303,13 +2328,13 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       <span class="badge" id="builderBadge">Nouvelle séance</span>
       <div class="builder-meta-row">
         <input type="text" id="bTitle" class="b-title-input" placeholder="Titre de la séance (ex. Seuil 4×8' FTP)">
-        <div class="b-disc-pick" id="bDiscPick" role="tablist" aria-label="Sport">
-          <button data-d="swim" class="active"><i class="ic ic-waves"></i></button>
-          <button data-d="bike"><i class="ic ic-bike"></i></button>
-          <button data-d="run"><i class="ic ic-run"></i></button>
-          <button data-d="strength"><i class="ic ic-dumbbell"></i></button>
-          <button data-d="hyrox" title="Hyrox"><i class="ic ic-zap"></i></button>
-        </div>
+        <select id="bDiscPick" class="b-disc-select" aria-label="Sport">
+          <option value="swim">Natation</option>
+          <option value="bike">Vélo</option>
+          <option value="run">Course</option>
+          <option value="strength">Renfo</option>
+          <option value="hyrox">Hyrox</option>
+        </select>
         <select id="bObjectif" title="Objectif de la séance — sert à l'analyse IA" style="background:var(--panel-2);border:1px solid var(--line-strong);color:var(--soft);border-radius:10px;padding:0 10px;height:38px;font-size:12.5px;font-family:inherit;cursor:pointer">
           <option value="">Objectif : auto</option>
           <option value="endurance|Z2">Endurance fondamentale (Z2)</option>
@@ -3402,21 +3427,80 @@ function fmtActDate(iso){
   return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
 }
 
+/* ============================================================
+   BIBLIOTHÈQUE — filtres sport / type + groupes par zone
+   ------------------------------------------------------------
+   La catégorie d'une séance = la zone LA PLUS HAUTE atteinte par
+   un de ses intervalles (une séance avec des intervalles Z5 est
+   une séance Z5, même si le reste est en Z2). À défaut de
+   structure détaillée, on lit la zone déclarée du modèle.
+   ============================================================ */
+function zoneFromPct(p){ if(p<62) return 1; if(p<78) return 2; if(p<88) return 3; if(p<103) return 4; return 5; }
+function tplZoneCat(t){
+  let best=0;
+  if(t.blocksV2 && t.blocksV2.blocks){
+    t.blocksV2.blocks.forEach(blk=>blk.lines.forEach(ln=>{
+      if(ln.type==='exo') best=Math.max(best, zoneFromPct(profLinePct(ln)));
+      else if(ln.type==='station') best=Math.max(best, 4);
+    }));
+  }
+  if(!best){ const m=String(t.zone||'').match(/Z\s*(\d)/i); if(m) best=Math.min(5,+m[1]); }
+  return best? 'Z'+best : '—';
+}
+const ZONE_CATS=[
+  ['Z5','Z5 · VO2max / VMA'], ['Z4','Z4 · Seuil'], ['Z3','Z3 · Tempo'],
+  ['Z2','Z2 · Endurance'], ['Z1','Z1 · Récupération'], ['—','Renfo / autre']
+];
+const ZONE_COLORS={Z1:'#39E6A3',Z2:'#39E6A3',Z3:'#FFD43D',Z4:'#FFB13D',Z5:'#FF5470','—':'#8B93A7'};
+let libSport='all', libZone='all';
+
 function buildTemplates(container){
-  TEMPLATES.forEach(t=>{
-    const D = DISC[t.disc];
-    const el = document.createElement('div');
-    el.className='tpl'; el.draggable=true;
-    el.dataset.disc=t.disc;
-    el.style.setProperty('--c', D.color);
-    el.innerHTML = `<div class="t">${t.title}</div>
-                    <div class="m">${t.dur}min · ${t.tss} TSS · ${t.zone}</div>`;
-    el.addEventListener('dragstart', e=>{
-      e.dataTransfer.setData('text/plain', JSON.stringify({type:'tpl', id:t.id}));
-    });
-    el.addEventListener('click', ()=> openModal({...t, id:null}, null));
-    container.appendChild(el);
+  container.innerHTML='';
+  const filt=document.createElement('div'); filt.className='lib-filters';
+  filt.innerHTML=`
+    <select id="libSport" aria-label="Filtrer par sport">
+      <option value="all">Tous les sports</option>
+      ${Object.entries(DISC).map(([k,d])=>`<option value="${k}"${libSport===k?' selected':''}>${d.label}</option>`).join('')}
+    </select>
+    <select id="libZone" aria-label="Filtrer par type de séance">
+      <option value="all">Tous les types de séance</option>
+      ${ZONE_CATS.map(([v,l])=>`<option value="${v}"${libZone===v?' selected':''}>${l}</option>`).join('')}
+    </select>`;
+  container.appendChild(filt);
+  filt.querySelector('#libSport').addEventListener('change', e=>{ libSport=e.target.value; buildTemplates(container); });
+  filt.querySelector('#libZone').addEventListener('change', e=>{ libZone=e.target.value; buildTemplates(container); });
+
+  const list = TEMPLATES
+    .map(t=>({t, z:tplZoneCat(t)}))
+    .filter(x=> (libSport==='all'||x.t.disc===libSport) && (libZone==='all'||x.z===libZone));
+  if(!list.length){
+    container.insertAdjacentHTML('beforeend','<div class="lib-empty">Aucune séance — modifie les filtres ou crée-en une.</div>');
+    return;
+  }
+  ZONE_CATS.forEach(([v,label])=>{
+    const items=list.filter(x=>x.z===v);
+    if(!items.length) return;
+    const grp=document.createElement('details'); grp.className='tpl-group'; grp.open=true;
+    const sum=document.createElement('summary');
+    sum.innerHTML=`${label} <em>${items.length}</em>`;
+    grp.appendChild(sum);
+    items.forEach(x=> grp.appendChild(tplCard(x.t, x.z)));
+    container.appendChild(grp);
   });
+}
+function tplCard(t, z){
+  const D = DISC[t.disc];
+  const el = document.createElement('div');
+  el.className='tpl'; el.draggable=true;
+  el.dataset.disc=t.disc;
+  el.style.setProperty('--c', D.color);
+  el.innerHTML = `<div class="t">${t.title}<span class="zb" style="color:${ZONE_COLORS[z]}">${z}</span></div>
+                  <div class="m">${t.dur}min · ${t.tss} TSS</div>`;
+  el.addEventListener('dragstart', e=>{
+    e.dataTransfer.setData('text/plain', JSON.stringify({type:'tpl', id:t.id}));
+  });
+  el.addEventListener('click', ()=> openModal({...t, id:null}, null));
+  return el;
 }
 
 /* ---- rendu calendrier ---- */
@@ -5014,7 +5098,7 @@ function openBuilder(dateKey, existing){
   document.getElementById('bTitle').value = builderState.title||'';
   document.getElementById('bObjectif').value = builderState.objectif||'';
   document.getElementById('builderBadge').textContent = existing ? 'Modifier la séance' : 'Nouvelle séance';
-  document.querySelectorAll('#bDiscPick button').forEach(b=> b.classList.toggle('active', b.dataset.d===builderState.disc));
+  document.getElementById('bDiscPick').value = builderState.disc;
   renderRefs();
   renderBlocks();
   initBuilderNutrition(existing);
@@ -5336,11 +5420,14 @@ function builderToText(){
 }
 function builderToSession(){
   const {min,tss}=builderTotals();
-  // zone dominante = ligne "exo" la plus longue
-  let domZone='Z2', maxw=0;
+  // zone de la séance = la plus haute atteinte par un intervalle "exo"
+  // (des intervalles Z5 dans la séance → séance classée Z5)
+  let zMax=0;
   builderState.blocks.forEach(blk=>blk.lines.forEach(ln=>{
-    if(ln.type==='exo'){ const w=lineMinutes(ln)*blk.series; if(w>maxw){ maxw=w; domZone=(zoneForPct(ln.model,ln.pct).split(' ')[0]||'Z3'); } }
+    if(ln.type==='exo') zMax=Math.max(zMax, zoneFromPct(profLinePct(ln)));
+    else if(ln.type==='station') zMax=Math.max(zMax, 4);
   }));
+  const domZone = zMax ? 'Z'+zMax : 'Z2';
   // nutrition : valeurs saisies par le coach (ou auto si laissé vide)
   const pre=document.getElementById('bNutriPre').value.trim();
   const post=document.getElementById('bNutriPost').value.trim();
@@ -5389,11 +5476,8 @@ document.getElementById('builderClose').addEventListener('click', closeBuilder);
 document.getElementById('builderOverlay').addEventListener('click', e=>{ if(e.target.id==='builderOverlay') closeBuilder(); });
 document.getElementById('bTitle').addEventListener('input', e=>{ builderState.title=e.target.value; });
 document.getElementById('bObjectif').addEventListener('change', e=>{ builderState.objectif=e.target.value; });
-document.querySelectorAll('#bDiscPick button').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    document.querySelectorAll('#bDiscPick button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    builderState.disc=b.dataset.d;
+document.getElementById('bDiscPick').addEventListener('change', e=>{
+    builderState.disc=e.target.value;
     builderState.activeRefs=defaultActiveRefs(builderState.disc);
     if(builderState.disc==='hyrox'){
       // convertit chaque bloc en stations Hyrox (une station par défaut si vide)
@@ -5417,7 +5501,6 @@ document.querySelectorAll('#bDiscPick button').forEach(b=>{
     }
     renderRefs(); renderBlocks();
     if(builderState._refreshNutri) builderState._refreshNutri();
-  });
 });
 document.getElementById('bAddBlock').addEventListener('click', ()=>{ builderState.blocks.push(defaultBlockNew(builderState.disc)); renderBlocks(); });
 document.getElementById('bSaveLib').addEventListener('click', ()=>{
