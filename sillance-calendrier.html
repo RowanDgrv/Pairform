@@ -347,6 +347,39 @@ body[data-patterns="1"] .tpl[data-disc="strength"]::before{background:var(--c)}
 #cyPicker .it:hover{background:color-mix(in srgb,var(--accent) 12%,transparent)}
 #cyPicker .it small{margin-left:auto;color:var(--muted);font-family:var(--font-data);font-size:10px}
 @media(max-width:760px){.cy-days{grid-template-columns:repeat(2,1fr)}.cy-actions{margin-left:0}}
+
+/* ---------- Paramètres (page abonnements & compte) ---------- */
+.settings-modal{width:min(880px,100%)}
+.set-layout{display:grid;grid-template-columns:215px 1fr;gap:18px;margin-top:8px}
+@media(max-width:720px){.set-layout{grid-template-columns:1fr}}
+.set-nav{display:flex;flex-direction:column;gap:5px}
+.set-tab{text-align:left;padding:10px 12px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--soft);font-size:13px;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:8px}
+.set-tab:hover{background:var(--panel-2)}
+.set-tab.active{background:var(--panel-2);border-color:var(--line-strong);color:var(--text)}
+.set-body{min-height:340px}
+.set-h{font-family:var(--font-display);font-size:17px;font-weight:700;margin-bottom:2px}
+.set-sub{font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.set-plan{border:1px solid var(--line-strong);border-radius:14px;padding:16px;background:var(--panel-2);margin-bottom:14px}
+.set-plan .p-name{font-weight:700;font-size:14.5px}
+.set-plan .p-price{font-family:var(--font-data);font-size:22px;font-weight:700;margin:2px 0 4px}
+.set-plan .p-price small{font-size:12px;color:var(--muted);font-weight:400}
+.set-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;flex:none}
+.set-status.on{color:var(--good);background:color-mix(in srgb,var(--good) 13%,transparent);border:1px solid color-mix(in srgb,var(--good) 40%,transparent)}
+.set-status.trial{color:var(--bike);background:color-mix(in srgb,var(--bike) 13%,transparent);border:1px solid color-mix(in srgb,var(--bike) 40%,transparent)}
+.set-status.off{color:var(--muted);background:var(--panel);border:1px solid var(--line-strong)}
+.set-rows{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:12px 0}
+@media(max-width:520px){.set-rows{grid-template-columns:1fr}}
+.set-rows>div{background:var(--panel-2);padding:10px 13px}
+.set-rows .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.set-rows .v{font-size:13px;font-weight:600}
+.set-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:4px}
+.btn.set-danger{border-color:color-mix(in srgb,var(--run) 45%,transparent);color:var(--run)}
+.btn.set-danger:hover{background:color-mix(in srgb,var(--run) 10%,transparent)}
+.set-upsell{border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);border-radius:14px;padding:15px 16px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 10%,transparent),transparent);margin-top:14px}
+.set-upsell b{font-size:14px}
+.set-upsell p{font-size:12.5px;color:var(--soft);margin:5px 0 10px;line-height:1.5}
+.set-note{margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.45}
+.ic-settings{--i:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M12.22%202h-.44a2%202%200%200%200-2%202v.18a2%202%200%200%201-1%201.73l-.43.25a2%202%200%200%201-2%200l-.15-.08a2%202%200%200%200-2.73.73l-.22.38a2%202%200%200%200%20.73%202.73l.15.1a2%202%200%200%201%201%201.72v.51a2%202%200%200%201-1%201.74l-.15.09a2%202%200%200%200-.73%202.73l.22.38a2%202%200%200%200%202.73.73l.15-.08a2%202%200%200%201%202%200l.43.25a2%202%200%200%201%201%201.73V20a2%202%200%200%200%202%202h.44a2%202%200%200%200%202-2v-.18a2%202%200%200%201%201-1.73l.43-.25a2%202%200%200%201%202%200l.15.08a2%202%200%200%200%202.73-.73l.22-.39a2%202%200%200%200-.73-2.73l-.15-.08a2%202%200%200%201-1-1.74v-.5a2%202%200%200%201%201-1.74l.15-.09a2%202%200%200%200%20.73-2.73l-.22-.38a2%202%200%200%200-2.73-.73l-.15.08a2%202%200%200%201-2%200l-.43-.25a2%202%200%200%201-1-1.73V4a2%202%200%200%200-2-2z%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%223%22%2F%3E%3C%2Fsvg%3E")}
 .lib-note{
   margin-top:14px;padding:11px 12px;border-radius:10px;
   background:rgba(57,230,163,.07);border:1px dashed rgba(57,230,163,.35);
@@ -1668,6 +1701,9 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     <button class="icon-btn theme-btn" id="themeBtn" aria-label="Changer de thème" title="Mode clair / sombre">
       <span id="themeIcon"><i class="ic ic-moon"></i></span>
     </button>
+    <button class="icon-btn settings-btn" id="settingsBtn" aria-label="Paramètres" title="Paramètres">
+      <i class="ic ic-settings"></i>
+    </button>
     <div class="bell-wrap" id="bellWrap">
       <button class="icon-btn bell-btn" id="bellBtn" aria-label="Notifications" aria-haspopup="true" title="Alertes">
         <i class="ic ic-bell"></i><span class="bell-badge" id="bellBadge" hidden>0</span>
@@ -2265,6 +2301,21 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     <div class="an-section" id="anSimilarWrap">
       <div class="an-sec-head"><h4>Séances similaires</h4><span class="an-hint">comparaison automatique</span></div>
       <div id="anSimilar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Paramètres (abonnements & compte) ===== -->
+<div class="overlay" id="settingsOverlay" role="dialog" aria-modal="true" aria-label="Paramètres">
+  <div class="modal settings-modal">
+    <button class="close" id="settingsClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
+    <span class="badge">Paramètres</span>
+    <div class="set-layout">
+      <nav class="set-nav" id="setNav">
+        <button class="set-tab active" data-tab="structure"><i class="ic ic-landmark"></i> Abonnement Structure</button>
+        <button class="set-tab" data-tab="coach"><i class="ic ic-brain"></i> Abonnement coach · IA</button>
+      </nav>
+      <div class="set-body" id="setBody"></div>
     </div>
   </div>
 </div>
@@ -2882,7 +2933,7 @@ function renderSidebar(){
         <div class="cc-t"><b><i class="ic ic-brain"></i> Assistant IA coach</b></div>
         ${aiUnlocked()
           ? `<div class="cc-s" style="color:#39e6a3"><i class="ic ic-check"></i> Actif — chaque séance réalisée est analysée : respect du plan, dérive cardiaque, découplage FC, zones.</div>
-             <button class="cc-btn" id="aiManageBtn">Gérer / révoquer l'accès</button>`
+             <button class="cc-btn" id="aiManageBtn">Gérer dans les paramètres</button>`
           : `<div class="cc-s">Vérifie automatiquement que chaque séance réalisée respecte ce qui était prévu : zones cibles, dérive cardiaque, découplage FC.</div>
              <div class="cc-price"><b>Essai 14 jours</b><small> puis ${AI_ADDON_PRICE} €/mois</small></div>
              <button class="cc-btn" id="aiTrialBtn">Commencer l'essai 14 jours</button>
@@ -2902,13 +2953,10 @@ function renderSidebar(){
     const aiT=document.getElementById('aiTrialBtn');
     if(aiT) aiT.onclick=()=>{
       if(window.PF?.user && PF.subscribeAiAddon){ PF.subscribeAiAddon().catch(e=>{console.warn('[PF] ai-addon:',e); toast('Stripe indisponible');}); return; }
-      window.__pf_aiDemo=true; renderSidebar(); toast('Assistant IA activé — essai 14 jours (démo)');
+      window.__pf_aiDemo=true; window.__pf_aiDemoStart=Date.now(); renderSidebar(); toast('Assistant IA activé — essai 14 jours (démo)');
     };
     const aiM=document.getElementById('aiManageBtn');
-    if(aiM) aiM.onclick=()=>{
-      if(window.PF?.user && PF.openBillingPortal){ PF.openBillingPortal().catch(()=>toast('Portail de facturation indisponible')); return; }
-      window.__pf_aiDemo=false; renderSidebar(); toast('Accès à l\'assistant IA révoqué (démo)');
-    };
+    if(aiM) aiM.onclick=()=> openSettings('coach');
     const ccb=document.getElementById('coachConnectBtn');
     if(ccb) ccb.onclick=()=>{
       if(window.PF?.user) PF.connectCoachStripe().catch(e=>{console.warn(e);toast('Stripe indisponible');});
@@ -2920,10 +2968,7 @@ function renderSidebar(){
       else toast('Connecte ton espace coach pour t\'abonner');
     };
     const cmb=document.getElementById('coachManageBtn');
-    if(cmb) cmb.onclick=()=>{
-      if(window.PF?.user) PF.openBillingPortal().catch(e=>{console.warn(e);toast('Portail indisponible');});
-      else toast('Connecte ton espace coach');
-    };
+    if(cmb) cmb.onclick=()=> openSettings('structure');
     const cpe=document.getElementById('coachPriceEdit');
     if(cpe) cpe.onclick=(ev)=>{
       ev.preventDefault();
@@ -3661,6 +3706,120 @@ document.getElementById('cyApply').addEventListener('click', ()=>{
   document.getElementById('cycleOverlay').classList.remove('open');
   applyCycle(c, document.getElementById('cyStart').value);
 });
+
+/* ============================================================
+   PARAMÈTRES — page abonnements (Structure + coach/IA)
+   ------------------------------------------------------------
+   Accessible par la roue crantée du header. C'est ICI (et plus
+   dans la sidebar) que le coach révoque l'assistant IA.
+   Démo : valeurs d'exemple ; connecté : les boutons pointent vers
+   le vrai checkout / portail Stripe.
+   ============================================================ */
+function fmtDateFr(d){ return d.toLocaleDateString('fr-FR'); }
+function aiTrialDaysLeft(){
+  if(window.__pf_aiDemo && window.__pf_aiDemoStart)
+    return Math.max(0, 14 - Math.floor((Date.now()-window.__pf_aiDemoStart)/86400000));
+  return null;
+}
+function settingsStructureHtml(){
+  const sub = window.__pf_subscribed===true || !window.PF?.user; // démo : montré actif
+  return `
+    <div class="set-h">Abonnement Structure</div>
+    <div class="set-sub">La formule Sillance de ta structure — échéances, facturation et gestion.</div>
+    <div class="set-plan">
+      <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div class="p-name">Sillance Coach — Mensuel</div>
+          <div class="p-price">29€<small> /mois</small></div>
+        </div>
+        <span class="set-status ${sub?'on':'off'}">${sub?'Actif':'Inactif'}</span>
+      </div>
+      <div class="set-rows">
+        <div><div class="k">Créé le</div><div class="v">14/04/2026</div></div>
+        <div><div class="k">Valide jusqu'au</div><div class="v">09/08/2026</div></div>
+        <div><div class="k">Prochain paiement</div><div class="v">Renouvellement le 09/08/2026</div></div>
+        <div><div class="k">Statut du dernier paiement</div><div class="v" style="color:var(--good)">Payé</div></div>
+        <div><div class="k">Date d'émission</div><div class="v">09/07/2026</div></div>
+        <div><div class="k">Moyen de paiement</div><div class="v">Visa •••• 4242 — expire 11/2029</div></div>
+      </div>
+      <div class="set-actions">
+        <button class="btn cy-ghost" id="setPortalBtn"><i class="ic ic-credit-card"></i> Détails et gestion</button>
+        ${sub?'':`<button class="btn" id="setSubscribeBtn">S'abonner — 29 €/mois</button>`}
+      </div>
+    </div>
+    <div class="set-upsell">
+      <b>⭐ Passe ta structure en COACH PRO</b>
+      <p>Active les fonctionnalités PRO pour tous les coachs de ta structure et l'Assistant IA pour tes athlètes.</p>
+      <button class="btn" id="setProBtn">Découvrir</button>
+    </div>`;
+}
+function settingsCoachHtml(){
+  const on = aiUnlocked();
+  const days = aiTrialDaysLeft();
+  const chip = on ? (days!=null?`<span class="set-status trial">Essai — ${days} j restants</span>`:'<span class="set-status on">Actif</span>')
+                  : '<span class="set-status off">Inactif</span>';
+  return `
+    <div class="set-h">Abonnement coach — Assistant IA</div>
+    <div class="set-sub">L'add-on d'analyse automatique des séances réalisées : respect du plan, dérive cardiaque, découplage FC, temps en zone.</div>
+    <div class="set-plan">
+      <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div class="p-name">Assistant IA (add-on coach)</div>
+          <div class="p-price">${AI_ADDON_PRICE}€<small> /mois · essai 14 j</small></div>
+        </div>
+        ${chip}
+      </div>
+      ${on ? `
+      <div class="set-rows">
+        <div><div class="k">Statut</div><div class="v">${days!=null?`Essai en cours — ${days} jour${days>1?'s':''} restant${days>1?'s':''}`:'Abonnement actif'}</div></div>
+        <div><div class="k">Prochain débit</div><div class="v">${days!=null?`${AI_ADDON_PRICE} € le ${fmtDateFr(addDays(new Date(window.__pf_aiDemoStart||Date.now()),14))} — sauf révocation`:`${AI_ADDON_PRICE} € à la prochaine échéance`}</div></div>
+      </div>
+      <div class="set-actions">
+        <button class="btn cy-ghost set-danger" id="setAiRevoke"><i class="ic ic-x"></i> Révoquer l'accès à l'assistant IA</button>
+      </div>
+      <div class="set-note">Aucun débit n'a lieu si tu révoques avant la fin de l'essai. Connecté, la révocation passe par le portail Stripe (accès conservé jusqu'à l'échéance).</div>`
+      : `
+      <div class="set-actions" style="margin-top:12px">
+        <button class="btn" id="setAiStart">Commencer l'essai 14 jours</button>
+      </div>
+      <div class="set-note">Carte enregistrée à l'activation. Débit automatique de ${AI_ADDON_PRICE} €/mois à la fin de l'essai, sauf révocation depuis cette page.</div>`}
+    </div>`;
+}
+let settingsTab='structure';
+function renderSettings(){
+  document.querySelectorAll('#setNav .set-tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===settingsTab));
+  const body=document.getElementById('setBody');
+  body.innerHTML = settingsTab==='structure' ? settingsStructureHtml() : settingsCoachHtml();
+  const portal=document.getElementById('setPortalBtn');
+  if(portal) portal.onclick=()=>{ if(window.PF?.user && PF.openBillingPortal){ PF.openBillingPortal().catch(()=>toast('Portail indisponible')); } else toast('Portail Stripe (démo)'); };
+  const subB=document.getElementById('setSubscribeBtn');
+  if(subB) subB.onclick=()=>{ if(window.PF?.user && PF.startCheckout){ PF.startCheckout('coach').catch(()=>toast('Stripe indisponible')); } else toast('Checkout Stripe (démo)'); };
+  const pro=document.getElementById('setProBtn');
+  if(pro) pro.onclick=()=>toast('COACH PRO — bientôt disponible');
+  const st=document.getElementById('setAiStart');
+  if(st) st.onclick=()=>{
+    if(window.PF?.user && PF.subscribeAiAddon){ PF.subscribeAiAddon().catch(()=>toast('Stripe indisponible')); return; }
+    window.__pf_aiDemo=true; window.__pf_aiDemoStart=Date.now();
+    renderSettings(); if(mode==='coach') renderSidebar();
+    toast('Assistant IA activé — essai 14 jours (démo)');
+  };
+  const rv=document.getElementById('setAiRevoke');
+  if(rv) rv.onclick=()=>{
+    if(window.PF?.user && window.__pf_aiAddon===true && PF.openBillingPortal){ PF.openBillingPortal().catch(()=>toast('Portail indisponible')); return; }
+    window.__pf_aiDemo=false; window.__pf_aiDemoStart=null;
+    renderSettings(); if(mode==='coach') renderSidebar();
+    toast('Accès à l\'assistant IA révoqué');
+  };
+}
+function openSettings(tab){
+  if(tab) settingsTab=tab;
+  renderSettings();
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+document.getElementById('settingsBtn').addEventListener('click', ()=> openSettings());
+document.getElementById('settingsClose').addEventListener('click', ()=> document.getElementById('settingsOverlay').classList.remove('open'));
+document.getElementById('settingsOverlay').addEventListener('click', e=>{ if(e.target.id==='settingsOverlay') document.getElementById('settingsOverlay').classList.remove('open'); });
+document.querySelectorAll('#setNav .set-tab').forEach(b=> b.addEventListener('click', ()=>{ settingsTab=b.dataset.tab; renderSettings(); }));
 
 /* ---- rendu calendrier ---- */
 const calGrid = document.getElementById('calGrid');
