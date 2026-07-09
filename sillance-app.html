@@ -285,7 +285,13 @@ body[data-patterns="1"] .tpl[data-disc="strength"]::before{background:var(--c)}
 
 /* ---------- Layout principal ---------- */
 .planner{display:grid;grid-template-columns:236px 1fr;gap:20px;align-items:start}
-@media (max-width:980px){.planner{grid-template-columns:1fr}}
+@media (max-width:980px){
+  .planner{grid-template-columns:1fr}
+  /* mobile : le CALENDRIER d'abord, le panneau (bibliothèque / espace athlète) ensuite —
+     sinon on scrolle une colonne interminable avant de voir les séances */
+  .planner .calendar{order:1}
+  .planner .library{order:2;position:static}
+}
 
 /* ---------- Bibliothèque de séances ---------- */
 .library{
@@ -4357,9 +4363,10 @@ function setActiveMode(btn){
   // mobile (colonnes empilées) : le panneau latéral est AU-DESSUS du calendrier
   // → on y amène l'utilisateur au changement de mode, sinon il ne le voit jamais
   if(window.innerWidth<=980) setTimeout(()=>{
-    const p=document.querySelector('.planner');
-    if(p) p.scrollIntoView({behavior:'smooth', block:'start'});
-  }, 80);
+    // athlète/club : on amène au panneau (sous le calendrier) — coach : en haut du calendrier
+    const cible = (mode==='coach') ? document.querySelector('.planner') : document.getElementById('library');
+    if(cible) cible.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 120);
 }
 mc.onclick = ()=>{ mode='coach'; setActiveMode(mc); renderSidebar(); render(); updateVideolibVisibility(); updatePlanAthleteVisibility(); if(typeof renderCoachBand==='function') renderCoachBand(); if(typeof renderGear==='function') renderGear(); };
 ma.onclick = ()=>{
