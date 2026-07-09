@@ -3517,7 +3517,7 @@ const ZONE_CATS=[
   ['Z5','Z5 · VO2max / VMA'], ['Z4','Z4 · Seuil'], ['Z3','Z3 · Tempo'],
   ['Z2','Z2 · Endurance'], ['Z1','Z1 · Récupération'], ['—','Renfo / autre']
 ];
-const ZONE_COLORS={Z1:'#39E6A3',Z2:'#39E6A3',Z3:'#FFD43D',Z4:'#FFB13D',Z5:'#FF5470','—':'#8B93A7'};
+const ZONE_COLORS={Z1:'#2FD9FF',Z2:'#39E6A3',Z3:'#FFD43D',Z4:'#FFB13D',Z5:'#FF5470','—':'#8B93A7'};
 let libSport='all', libZone='all';
 
 function buildTemplates(container){
@@ -3927,6 +3927,7 @@ function render(){
    estimé depuis la zone + le nombre de répétitions dans la description.
    ============================================================ */
 function intensityColor(p){
+  if(p<62)  return '#2FD9FF'; // récupération (Z1)
   if(p<70)  return '#39E6A3'; // endurance
   if(p<85)  return '#FFD43D'; // tempo
   if(p<100) return '#FFB13D'; // seuil
