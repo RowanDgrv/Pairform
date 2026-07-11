@@ -1323,6 +1323,31 @@ table.cbill td{padding:10px 9px;border-bottom:1px solid var(--line)}
 .cr-desc{margin-top:7px;font-size:12px;color:var(--soft);background:var(--panel-2);border-left:2px solid var(--cc);border-radius:0 8px 8px 0;padding:7px 10px;line-height:1.5}
 .cr-desc.locked{color:var(--muted);font-style:italic;border-left-color:var(--line-strong)}
 .cr-pending{font-size:10.5px;color:var(--bike);margin-top:5px}
+/* fiche créneau à onglets */
+.crd-modal{width:min(640px,100%)}
+.crd-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);font-family:var(--font-data);margin:6px 0 12px}
+.crd-tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.crd-tab{background:transparent;border:none;color:var(--muted);font-size:13px;font-weight:600;padding:8px 13px;cursor:pointer;border-bottom:2px solid transparent}
+.crd-tab.active{color:var(--text);border-bottom-color:var(--accent)}
+.crd-body{min-height:210px}
+.crd-desc{font-size:13.5px;color:var(--soft);line-height:1.6;background:var(--panel-2);border-left:2px solid var(--accent);border-radius:0 10px 10px 0;padding:12px 14px;white-space:pre-wrap}
+.crd-desc.locked{color:var(--muted);font-style:italic;border-left-color:var(--line-strong)}
+.crd-hint{font-size:11px;color:var(--muted);margin-top:9px}
+.crd-list{display:flex;flex-direction:column;gap:7px}
+.crd-p{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--soft);background:var(--panel-2);border-radius:9px;padding:7px 11px}
+.crd-p .st{margin-left:auto;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:99px}
+.crd-p .st.ok{color:var(--good);background:color-mix(in srgb,var(--good) 12%,transparent)}
+.crd-p .st.wait{color:var(--bike);background:color-mix(in srgb,var(--bike) 12%,transparent)}
+.crd-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.crd-form .b-fld.full{grid-column:1/-1}
+.crd-form label{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.crd-form input,.crd-form select{width:100%;background:var(--panel-2);border:1px solid var(--line-strong);color:var(--text);border-radius:9px;padding:8px 10px;font-family:inherit;font-size:12.5px}
+.crd-save{margin-top:14px}
+.cr-viewbar{grid-column:1/-1;display:flex;align-items:center;gap:9px;margin-bottom:4px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.cr-viewbtn{background:var(--panel-2);border:1px solid var(--line-strong);color:var(--muted);border-radius:99px;padding:5px 13px;font-size:11.5px;font-weight:700;cursor:pointer}
+.cr-viewbtn.on{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 50%,transparent);background:color-mix(in srgb,var(--accent) 10%,transparent)}
+.cr-viewbar em{font-style:normal;font-family:var(--font-data);font-size:11px}
+
 .club-ath-minor{display:inline-block;margin-top:5px;margin-left:6px;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:99px;
   border:1px solid var(--line-strong);color:var(--muted);cursor:pointer}
 .club-ath-minor.warn{background:rgba(255,84,112,.14);color:var(--run);border-color:rgba(255,84,112,.5)}
@@ -1534,6 +1559,8 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 }
 /* sélecteur de références multiples */
 .b-refs-row{display:flex;align-items:center;gap:10px;margin-top:13px;flex-wrap:wrap}
+.b-ref-chip.nosensor{margin-left:auto;border-style:dashed}
+.b-ref-chip.nosensor.on{border-style:solid;background:color-mix(in srgb,var(--bike) 14%,transparent);color:var(--bike);border-color:color-mix(in srgb,var(--bike) 50%,transparent)}
 .b-refs-lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .b-refs{display:flex;gap:6px;flex-wrap:wrap}
 .b-ref-chip{font-size:12px;font-weight:600;padding:5px 11px;border-radius:99px;border:1px solid var(--line-strong);
@@ -2175,6 +2202,22 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       <p class="cr-note" id="crPriceNote">Mets 0 pour un créneau inclus dans l'adhésion. Un tarif &gt; 0 active la séance « à la carte » (utile pour les salles Hyrox).</p>
     </div>
     <button class="btn" id="crSave" style="width:100%;margin-top:8px"><i class="ic ic-check"></i> Publier le créneau</button>
+  </div>
+</div>
+
+<!-- ===== Fiche créneau : description / participants / paramètres ===== -->
+<div class="overlay" id="crDetailOverlay" role="dialog" aria-modal="true" aria-label="Fiche du créneau">
+  <div class="modal crd-modal">
+    <button class="close" id="crdClose" aria-label="Fermer"><i class="ic ic-x"></i></button>
+    <span class="badge" id="crdBadge">Créneau</span>
+    <h3 id="crdTitle"></h3>
+    <div class="crd-meta" id="crdMeta"></div>
+    <nav class="crd-tabs" id="crdTabs">
+      <button class="crd-tab active" data-t="desc">Description</button>
+      <button class="crd-tab" data-t="participants">Participants</button>
+      <button class="crd-tab" data-t="params">Paramètres</button>
+    </nav>
+    <div class="crd-body" id="crdBody"></div>
   </div>
 </div>
 
@@ -4768,11 +4811,24 @@ function renderClubHistory(){
   </div>`;
 }
 
+let crMemberView=false;
 function renderCreneaux(){
   renderSessionReminder();
   renderClubHistory();
   const box=document.getElementById('creneauList');
-  box.innerHTML = CRENEAUX.slice().sort((a,b)=>a.day-b.day||a.time.localeCompare(b.time)).map(c=>{
+  // bandeau de bascule : ce que voit le coach (tout) vs un adhérent (uniquement
+  // les créneaux ouverts à tous ou à SON groupe — les autres n'existent pas pour lui)
+  const me=CLUB_ATHLETES.find(a=>a.id===ME_CLUB_ID);
+  const seen = crMemberView
+    ? CRENEAUX.filter(c=>!c.group || (me && me.group===c.group))
+    : CRENEAUX;
+  const hidden = CRENEAUX.length - seen.length;
+  box.innerHTML = `<div class="cr-viewbar">
+      <span>Affichage :</span>
+      <button class="cr-viewbtn ${!crMemberView?'on':''}" data-v="coach">Vue coach — tout</button>
+      <button class="cr-viewbtn ${crMemberView?'on':''}" data-v="member">Vue adhérent${me?` (${me.name.split(' ')[0]} · ${me.group?clubGroup(me.group).name:'sans groupe'})`:''}</button>
+      ${crMemberView&&hidden?`<em>${hidden} créneau${hidden>1?'x':''} d'autres groupes masqué${hidden>1?'s':''}</em>`:''}
+    </div>` + seen.slice().sort((a,b)=>a.day-b.day||a.time.localeCompare(b.time)).map(c=>{
     const D=DISC[c.disc];
     const inIt = c.attendees.includes(ME_CLUB_ID);
     const fillPct = Math.min(100, c.attendees.length/c.cap*100);
@@ -4784,8 +4840,8 @@ function renderCreneaux(){
         <span class="cr-price ${c.price>0?'paid':'free'}">${c.price>0?c.price+' €':'inclus'}</span>
       </div>
       <div class="cr-meta">
-        <span><b>${CLUB_DAYS[c.day]}</b> ${c.time}</span>
-        <span title="Se répète chaque semaine"><i class="ic ic-refresh"></i> hebdo</span>
+        <span><b>${c.recur==='once'&&c.date?new Date(c.date+'T00:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short'}):CLUB_DAYS[c.day]}</b> ${c.time}</span>
+        ${c.recur==='once'?'<span title="Séance ponctuelle">ponctuel</span>':'<span title="Se répète chaque semaine"><i class="ic ic-refresh"></i> hebdo</span>'}
         <span>${fmtDur(c.dur)}</span>
         <span><i class="ic ic-pin"></i> ${c.place}</span>
         <span><i class="ic ic-user"></i> ${c.coach}</span>
@@ -4808,8 +4864,9 @@ function renderCreneaux(){
         <button data-act="roster">Liste</button>
       </div>
     </div>`;
-  }).join('') || '<p class="club-hint">Aucun créneau. Crée le premier !</p>';
+  }).join('') + (seen.length?'':'<p class="club-hint">Aucun créneau visible pour ce profil.</p>');
   // wiring
+  box.querySelectorAll('.cr-viewbtn').forEach(b=>b.onclick=()=>{ crMemberView=b.dataset.v==='member'; renderCreneaux(); });
   box.querySelectorAll('.creneau-card').forEach(card=>{
     const c=CRENEAUX.find(x=>x.id===card.dataset.id);
     const cf=card.querySelector('[data-act="confirm"]');
@@ -4830,7 +4887,9 @@ function renderCreneaux(){
       }
       renderCreneaux(); renderClubStats(); renderPresence();
     };
-    card.querySelector('[data-act="roster"]').onclick=()=>{ clubView='presence'; switchClubView(); };
+    card.querySelector('[data-act="roster"]').onclick=(e)=>{ e.stopPropagation(); openCreneauDetail(c,'participants'); };
+    card.addEventListener('click', e=>{ if(!e.target.closest('button')) openCreneauDetail(c,'desc'); });
+    card.style.cursor='pointer';
   });
 }
 
@@ -5166,6 +5225,106 @@ document.getElementById('grpSave').onclick=()=>{
   clubView='groupes'; switchClubView();
   toast(isEdit?'Groupe mis à jour':'Groupe créé');
 };
+
+
+/* ============================================================
+   FICHE CRÉNEAU — clic sur la carte → description (les absents
+   retrouvent le contenu), participants, paramètres (dont la
+   récurrence : hebdomadaire ou séance ponctuelle datée).
+   ============================================================ */
+let crdCurrent=null, crdTab='desc';
+function openCreneauDetail(c, tab){
+  crdCurrent=c; crdTab=tab||'desc';
+  const D=DISC[c.disc];
+  const ov=document.getElementById('crDetailOverlay');
+  ov.querySelector('.modal').style.setProperty('--c', D.color);
+  document.getElementById('crdBadge').innerHTML=`${discIcon(D)} ${D.label}`;
+  document.getElementById('crdTitle').textContent=c.title;
+  renderCreneauDetail();
+  ov.classList.add('open');
+}
+function crdWhen(c){
+  return c.recur==='once' && c.date
+    ? `${new Date(c.date+'T00:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})} ${c.time}`
+    : `${CLUB_DAYS[c.day]} ${c.time} · chaque semaine`;
+}
+function renderCreneauDetail(){
+  const c=crdCurrent; if(!c) return;
+  document.getElementById('crdMeta').innerHTML=
+    `<span>${crdWhen(c)}</span><span>${fmtDur(c.dur)}</span><span>${c.place}</span><span>${c.coach}</span>`;
+  document.querySelectorAll('#crdTabs .crd-tab').forEach(b=>b.classList.toggle('active', b.dataset.t===crdTab));
+  const body=document.getElementById('crdBody');
+  const g=c.group?clubGroup(c.group):null;
+  if(crdTab==='desc'){
+    const me=CLUB_ATHLETES.find(a=>a.id===ME_CLUB_ID);
+    const canSee=!g || (me && me.group===c.group);
+    body.innerHTML = canSee
+      ? `<div class="crd-desc">${c.desc||'Aucune description pour ce créneau — ajoute le contenu dans l\'onglet Paramètres.'}</div>
+         <div class="crd-hint">Visible par ${g?`le groupe ${g.name}`:'tout le club'} — les absents retrouvent ici le contenu de la séance pour la faire de leur côté.</div>`
+      : `<div class="crd-desc locked"><i class="ic ic-lock"></i> Contenu réservé au groupe ${g.name}.</div>`;
+  }
+  else if(crdTab==='participants'){
+    const rows=[
+      ...c.attendees.map(id=>({id, st:'ok'})),
+      ...((c.invited||[]).map(id=>({id, st:'wait'})))
+    ].map(r=>{
+      const a=CLUB_ATHLETES.find(x=>x.id===r.id);
+      return `<div class="crd-p"><div class="cr-att">${a?initials(a.name):'?'}</div>${a?a.name:'—'}
+        <span class="st ${r.st}">${r.st==='ok'?'présent':'invité — à confirmer'}</span></div>`;
+    }).join('');
+    body.innerHTML = rows ? `<div class="crd-list">${rows}</div>` : '<p class="club-hint">Personne pour l\'instant.</p>';
+  }
+  else {
+    body.innerHTML = `
+      <div class="crd-form">
+        <div class="b-fld"><label>Récurrence</label>
+          <select id="crdRecur">
+            <option value="weekly" ${c.recur!=='once'?'selected':''}>Chaque semaine</option>
+            <option value="once" ${c.recur==='once'?'selected':''}>Séance ponctuelle (date)</option>
+          </select></div>
+        <div class="b-fld" id="crdWhenFld">${c.recur==='once'
+          ? `<label>Date</label><input type="date" id="crdDate" value="${c.date||''}">`
+          : `<label>Jour</label><select id="crdDay">${CLUB_DAYS.map((d,i)=>`<option value="${i}" ${i===c.day?'selected':''}>${d}</option>`).join('')}</select>`}</div>
+        <div class="b-fld"><label>Heure</label><input type="time" id="crdTime" value="${c.time}"></div>
+        <div class="b-fld"><label>Durée (min)</label><input type="number" id="crdDur" min="15" max="240" value="${c.dur}"></div>
+        <div class="b-fld"><label>Lieu</label><input type="text" id="crdPlace" value="${c.place}"></div>
+        <div class="b-fld"><label>Places max</label><input type="number" id="crdCap" min="1" max="200" value="${c.cap}"></div>
+        <div class="b-fld"><label>Groupe (contenu réservé)</label>
+          <select id="crdGroup"><option value="">Tout le club</option>${CLUB_GROUPS.map(gr=>`<option value="${gr.id}" ${gr.id===c.group?'selected':''}>${gr.name}</option>`).join('')}</select></div>
+        <div class="b-fld"><label>Tarif (€)</label><input type="number" id="crdPrice" min="0" step="0.5" value="${c.price}"></div>
+        <div class="b-fld full"><label>Contenu de la séance</label><textarea id="crdDesc" rows="3" style="width:100%;background:var(--panel-2);border:1px solid var(--line-strong);color:var(--text);border-radius:9px;padding:8px 10px;font-family:inherit;font-size:12.5px;resize:vertical">${c.desc||''}</textarea></div>
+      </div>
+      <button class="btn crd-save" id="crdSave"><i class="ic ic-check"></i> Enregistrer les paramètres</button>`;
+    document.getElementById('crdRecur').onchange=e=>{
+      c.recur = e.target.value==='once' ? 'once' : 'weekly';
+      if(c.recur==='once' && !c.date) c.date = iso(addDays(new Date(),7));
+      renderCreneauDetail();
+    };
+    document.getElementById('crdSave').onclick=()=>{
+      c.time=document.getElementById('crdTime').value||c.time;
+      c.dur=+document.getElementById('crdDur').value||c.dur;
+      c.place=document.getElementById('crdPlace').value||c.place;
+      c.cap=+document.getElementById('crdCap').value||c.cap;
+      c.group=document.getElementById('crdGroup').value||null;
+      c.price=+document.getElementById('crdPrice').value||0;
+      c.desc=document.getElementById('crdDesc').value.trim();
+      if(c.recur==='once'){ const d=document.getElementById('crdDate'); if(d&&d.value){ c.date=d.value; c.day=(new Date(d.value+'T00:00:00').getDay()+6)%7; } }
+      else { const dd=document.getElementById('crdDay'); if(dd) c.day=+dd.value; c.date=null; }
+      if(window.PF?.user && window.__pf_clubId && PF.saveCreneau && typeof c.id==='string' && c.id.length>20){
+        PF.saveCreneau({ id:c.id, club_id:window.__pf_clubId, disc:c.disc, title:c.title, day:c.day, time:c.time,
+          dur:c.dur, place:c.place, cap:c.cap, coach:c.coach, price:c.price,
+          description:c.desc||'', group_id:c.group||null, recur:c.recur||'weekly', date:c.date||null })
+          .catch(e=>console.warn('[PF] saveCreneau', e));
+      }
+      document.getElementById('crDetailOverlay').classList.remove('open');
+      renderCreneaux(); renderClubStats();
+      toast('Créneau mis à jour');
+    };
+  }
+}
+document.getElementById('crdClose').onclick=()=>document.getElementById('crDetailOverlay').classList.remove('open');
+document.getElementById('crDetailOverlay').addEventListener('click',e=>{ if(e.target.id==='crDetailOverlay') e.target.classList.remove('open'); });
+document.querySelectorAll('#crdTabs .crd-tab').forEach(b=>b.onclick=()=>{ crdTab=b.dataset.t; renderCreneauDetail(); });
 
 // création de créneau
 const creneauOverlay=document.getElementById('creneauOverlay');
@@ -5652,9 +5811,10 @@ function renderRefs(){
   const row=wrap.closest('.b-refs-row');
   if(builderState.disc==='hyrox'){ if(row) row.style.display='none'; wrap.innerHTML=''; return; }
   if(row) row.style.display='';
+  const rpeOnly = builderState.activeRefs.length===1 && builderState.activeRefs[0]==='rpe';
   wrap.innerHTML = refsForDisc(builderState.disc).map(k=>
     `<span class="b-ref-chip ${builderState.activeRefs.includes(k)?'on':''}" data-ref="${k}">${REF_LABEL[k]}</span>`
-  ).join('');
+  ).join('') + `<span class="b-ref-chip nosensor ${rpeOnly?'on':''}" id="bNoSensor" title="Athlète sans montre GPS ni capteur : toutes les cibles passent en ressenti RPE 1-10">⌚ Sans capteur — tout en RPE</span>`;
   wrap.querySelectorAll('.b-ref-chip').forEach(ch=>{
     ch.onclick=()=>{
       const k=ch.dataset.ref;
@@ -5664,6 +5824,25 @@ function renderRefs(){
       renderRefs(); renderBlocks();
     };
   });
+  const ns=document.getElementById('bNoSensor');
+  if(ns) ns.onclick=()=>{
+    const on = !(builderState.activeRefs.length===1 && builderState.activeRefs[0]==='rpe');
+    if(on){
+      // toute la séance en RPE : références réduites à RPE et chaque ligne en cible exacte RPE
+      builderState.activeRefs=['rpe'];
+      builderState.blocks.forEach(blk=>blk.lines.forEach(ln=>{
+        if(ln.type==='station') return;
+        ln.mode='exact';
+        ln.exact={kind:'rpe', rpe: ln.exact&&ln.exact.kind==='rpe'?(ln.exact.rpe||ln.rpe||6):(ln.rpe||rpeFromPct(ln.pct||70)), tol:0};
+      }));
+      toast('Séance en RPE uniquement — parfaite sans montre ni capteur');
+    } else {
+      builderState.activeRefs=defaultActiveRefs(builderState.disc);
+      builderState.blocks.forEach(blk=>blk.lines.forEach(ln=>{ if(ln.type!=='station') ln.mode='zone'; }));
+      toast('Retour aux références % (FTP/VMA/CSS…)');
+    }
+    renderRefs(); renderBlocks();
+  };
 }
 
 /* — rendu des blocs — */
