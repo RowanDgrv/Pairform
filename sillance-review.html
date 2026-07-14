@@ -1175,6 +1175,18 @@ table.cbill td{padding:10px 9px;border-bottom:1px solid var(--line)}
 .cconnect{display:flex;align-items:center;justify-content:space-between;gap:14px;border:1px solid var(--line);background:var(--panel-2);border-radius:12px;padding:13px 15px;margin-bottom:14px}
 .cconnect-s{font-size:11.5px;color:var(--muted);margin-top:3px;max-width:560px}
 .coach-connect{border:1px solid var(--line);background:var(--panel-2);border-radius:12px;padding:12px 13px}
+/* guide de démarrage coach (onboarding première fois) */
+.startguide{border:1px solid rgba(70,194,216,.35);background:linear-gradient(135deg,rgba(70,194,216,.10),rgba(157,123,255,.05));border-radius:12px;padding:13px 14px;margin-bottom:16px}
+.sg-head{display:flex;justify-content:space-between;align-items:center}
+.sg-head b{font-size:13.5px}
+.sg-x{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1}
+.sg-x:hover{color:var(--text)}
+.sg-sub{font-size:11.5px;color:var(--muted);margin:2px 0 9px}
+.sg-steps{margin:0 0 11px;padding-left:18px;font-size:12px;color:var(--soft);line-height:1.5}
+.sg-steps li{margin:5px 0}
+.sg-steps li b{color:var(--text);font-weight:600}
+.sg-cta{width:100%;background:var(--accent);color:#04121a;border:none;border-radius:8px;padding:9px;font-weight:700;font-size:12.5px;cursor:pointer}
+.sg-cta:hover{filter:brightness(1.06)}
 .coach-connect .cc-s{font-size:11px;color:var(--muted);margin:3px 0 7px}
 .coach-connect .cc-price{font-size:11.5px;color:var(--soft);margin-bottom:9px}
 .coach-connect .cc-price small{color:var(--muted)}
@@ -3022,9 +3034,24 @@ function readinessAdvice(s){
 /* ---- sidebar dynamique selon le mode ---- */
 const AI_ADDON_PRICE = 12; // €/mois — add-on Assistant IA (voir plan financier)
 const sidebarContent = document.getElementById('sidebarContent');
+function coachGuideHTML(){
+  if(localStorage.getItem('sil_coach_guide')==='off') return '';
+  return `
+      <div class="startguide" id="startGuide">
+        <div class="sg-head"><b><i class="ic ic-lightbulb"></i> Par où commencer</b><button class="sg-x" id="sgClose" title="Masquer">✕</button></div>
+        <p class="sg-sub">4 étapes pour lancer ton coaching.</p>
+        <ol class="sg-steps">
+          <li><b>Crée tes séances</b> : ta bibliothèque, ou un cycle complet d'un coup.</li>
+          <li><b>Ajoute un athlète</b> : invite-le par e-mail, il voit son plan.</li>
+          <li><b>Connecte sa montre</b> : Garmin, Coros ou .FIT, ses séances remontent analysées.</li>
+          <li><b>Planifie sa semaine</b> : glisse tes séances sur le calendrier.</li>
+        </ol>
+        <button class="sg-cta" id="sgCta">Créer ma première séance</button>
+      </div>`;
+}
 function renderSidebar(){
   if(mode==='coach'){
-    sidebarContent.innerHTML = `
+    sidebarContent.innerHTML = coachGuideHTML() + `
       <h2>Bibliothèque</h2>
       <p class="hint">Glissez une séance sur un jour →</p>
       <button class="create-btn" id="createSessionBtn">+ Créer une séance</button>
@@ -3065,6 +3092,8 @@ function renderSidebar(){
       </div>`;
     buildTemplates(document.getElementById('tplList'));
     document.getElementById('createSessionBtn').addEventListener('click', ()=> openBuilder(null, null));
+    var _sgClose=document.getElementById('sgClose'); if(_sgClose) _sgClose.onclick=function(){ localStorage.setItem('sil_coach_guide','off'); renderSidebar(); };
+    var _sgCta=document.getElementById('sgCta'); if(_sgCta) _sgCta.onclick=function(){ openBuilder(null,null); };
     buildCycles(document.getElementById('cycleList'));
     document.getElementById('createCycleBtn').addEventListener('click', ()=> openCycleBuilder(null));
     /* Assistant IA — essai 14 jours (checkout Stripe connecté, déverrouillage en démo) */
