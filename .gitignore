@@ -6,6 +6,18 @@
 __*.html
 .DS_Store
 
+# Fichiers de travail (résidus de merge, planches d'exploration)
+*.orig
+sillance-logo-*.html
+
+# Docs internes (stratégie, todos, plan financier) — hors dépôt public
+GO-LIVE-SILLANCE.md
+LANCEMENT-30J.md
+REBRAND-SILLANCE.md
+SILLANCE-AI-ADDON-PLAN.md
+SILLANCE-LE-NOM.md
+TON-A-FAIRE-SIMPLE.md
+
 # Secrets (sécurité — au cas où)
 .env
 .env.*
