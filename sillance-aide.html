@@ -66,12 +66,14 @@
     <a href="#planifier">Planifier dans le calendrier</a>
     <a href="#adherence">Suivre l'adhérence</a>
     <div class="lbl">Club</div>
+    <a href="#creer-groupe">Créer un groupe</a>
     <a href="#deplacer-athlete">Déplacer un adhérent de groupe</a>
-    <a href="#creneau">Créer un créneau</a>
+    <a href="#creneau">Créer un créneau &amp; inviter</a>
     <div class="lbl">Athlète</div>
     <a href="#checkin">Faire son check-in</a>
     <a href="#connecter-montre">Connecter une montre</a>
     <a href="#import-fit">Importer un fichier .FIT</a>
+    <a href="#ajouter-chaussure">Ajouter des chaussures</a>
   </nav>
 
   <!-- CONTENU -->
@@ -127,8 +129,28 @@
     <!-- ============ CLUB ============ -->
     <div class="role-h">Espace club</div>
 
+    <section class="tuto" id="creer-groupe">
+      <h2><span class="no">04</span> Créer un groupe</h2>
+      <p class="lead">Organise tes licenciés par niveau ou objectif (jeunes, compétition, Ironman, Hyrox…).</p>
+      <ol class="steps">
+        <li>Active le rôle <b>Club</b>, puis ouvre l'onglet <b>Groupes</b>.</li>
+        <li>Clique <span class="hlword">+ Créer un groupe</span>.</li>
+        <li>Donne-lui un <b>nom</b>, une couleur, et une description si tu veux.</li>
+        <li>Dans <b>Athlètes du groupe</b>, coche les adhérents à y placer.</li>
+        <li>Clique <span class="hlword">Enregistrer le groupe</span>.</li>
+      </ol>
+      <figure>
+        <img src="./aide-img/groupe-creer.png" alt="Bouton « + Créer un groupe » encadré dans l'onglet Groupes" loading="lazy">
+        <figcaption><span class="dot">●</span> Étape 2 : « + Créer un groupe », en haut de l'onglet Groupes.</figcaption>
+      </figure>
+      <figure>
+        <img src="./aide-img/groupe-modal.png" alt="Fenêtre de création de groupe : nom, athlètes à cocher, bouton Enregistrer encadrés" loading="lazy">
+        <figcaption><span class="dot">●</span> Étapes 3 à 5 : nom, couleur, athlètes à cocher, puis « Enregistrer le groupe ».</figcaption>
+      </figure>
+    </section>
+
     <section class="tuto" id="deplacer-athlete">
-      <h2><span class="no">04</span> Déplacer un adhérent d'un groupe à l'autre</h2>
+      <h2><span class="no">05</span> Déplacer un adhérent d'un groupe à l'autre</h2>
       <p class="lead">Un adhérent appartient à un seul groupe. Pour le déplacer, on le rattache au groupe d'arrivée.</p>
       <ol class="steps">
         <li>Active le rôle <b>Club</b>, puis ouvre l'onglet <b>Groupes</b>.</li>
@@ -147,26 +169,32 @@
     </section>
 
     <section class="tuto" id="creneau">
-      <h2><span class="no">05</span> Créer un créneau (récurrent)</h2>
-      <p class="lead">Un créneau collectif où les adhérents s'inscrivent eux-mêmes.</p>
+      <h2><span class="no">06</span> Créer un créneau et y inviter les athlètes</h2>
+      <p class="lead">Un créneau collectif, récurrent, avec ses athlètes déjà invités.</p>
       <ol class="steps">
         <li>Rôle <b>Club</b>, onglet <b>Créneaux</b>, clique <span class="hlword">+ Créer un créneau</span>.</li>
-        <li>Choisis la discipline, l'intitulé, le jour et l'heure, le lieu et la capacité.</li>
-        <li>Coche <b>Chaque semaine</b> pour un créneau récurrent (sinon, une séance ponctuelle datée).</li>
-        <li>Assigne-le à un <b>groupe</b> si son contenu ne doit être visible que par ce groupe.</li>
-        <li>Enregistre : les adhérents s'inscrivent seuls, tu vois la présence en direct.</li>
+        <li>Choisis la discipline, l'intitulé, le jour et l'heure, le lieu et la capacité. Le créneau se répète <b>chaque semaine</b>.</li>
+        <li>Renseigne le <b>contenu de la séance</b> : il sera visible par les inscrits.</li>
+        <li>Dans <span class="hlword">Groupe (contenu réservé)</span>, choisis un groupe pour que seul ce groupe voie le contenu (ou laisse « Tout le club »).</li>
+        <li>Coche <span class="hlword">Inviter tout le groupe</span> pour <b>ajouter d'un coup tous les athlètes</b> du groupe : ils n'ont plus qu'à confirmer leur présence en un clic.</li>
+        <li>Clique <span class="hlword">Publier le créneau</span>.</li>
       </ol>
       <figure>
         <img src="./aide-img/creneau.png" alt="Bouton « + Créer un créneau » encadré dans l'onglet Créneaux" loading="lazy">
-        <figcaption><span class="dot">●</span> « + Créer un créneau », au-dessus de la liste des créneaux existants.</figcaption>
+        <figcaption><span class="dot">●</span> Étape 1 : « + Créer un créneau », au-dessus de la liste des créneaux existants.</figcaption>
       </figure>
+      <figure>
+        <img src="./aide-img/creneau-inviter.png" alt="Fenêtre du créneau : choix du groupe, « Inviter tout le groupe » et « Publier » encadrés" loading="lazy">
+        <figcaption><span class="dot">●</span> Étapes 4 à 6 : le groupe, « Inviter tout le groupe » pour ajouter les athlètes, puis « Publier ».</figcaption>
+      </figure>
+      <div class="tip"><b>Suivre les présences.</b> Un clic sur un créneau existant ouvre sa fiche, onglet <b>Participants</b> : tu vois qui a confirmé et qui reste à relancer.</div>
     </section>
 
     <!-- ============ ATHLÈTE ============ -->
     <div class="role-h">Espace athlète</div>
 
     <section class="tuto" id="checkin">
-      <h2><span class="no">06</span> Faire son check-in du matin</h2>
+      <h2><span class="no">07</span> Faire son check-in du matin</h2>
       <p class="lead">Trente secondes chaque matin pour que le coach adapte le plan.</p>
       <ol class="steps">
         <li>Active le rôle <b>Athlète</b>. Le panneau <b>Check-in du jour</b> est à gauche.</li>
@@ -181,7 +209,7 @@
     </section>
 
     <section class="tuto" id="connecter-montre">
-      <h2><span class="no">07</span> Connecter une montre</h2>
+      <h2><span class="no">08</span> Connecter une montre</h2>
       <p class="lead">Fais remonter tes activités dans Sillance automatiquement.</p>
       <ol class="steps">
         <li>En rôle <b>Athlète</b>, va au panneau <b>Synchronisation</b> (bas du panneau de gauche).</li>
@@ -196,7 +224,7 @@
     </section>
 
     <section class="tuto" id="import-fit">
-      <h2><span class="no">08</span> Importer un fichier .FIT</h2>
+      <h2><span class="no">09</span> Importer un fichier .FIT</h2>
       <p class="lead">Pas de montre connectée ? Importe le fichier exporté de ta montre.</p>
       <ol class="steps">
         <li>Dans le panneau <b>Synchronisation</b>, clique <span class="hlword">Importer un fichier</span>.</li>
@@ -207,6 +235,23 @@
         <img src="./aide-img/import-fit.png" alt="Bouton « Importer un fichier » encadré dans le panneau Synchronisation" loading="lazy">
         <figcaption><span class="dot">●</span> « Importer un fichier » accepte les formats .FIT, .TCX et .GPX.</figcaption>
       </figure>
+    </section>
+
+    <section class="tuto" id="ajouter-chaussure">
+      <h2><span class="no">10</span> Ajouter des chaussures</h2>
+      <p class="lead">Ajoute tes chaussures pour suivre leur usure et être alerté avant que l'amorti ne se dégrade.</p>
+      <ol class="steps">
+        <li>En rôle <b>Athlète</b>, va à la section <b>Mon matériel</b> et clique <b>+ Ajouter un équipement</b>.</li>
+        <li>Laisse le type sur <b>Chaussures de course</b>.</li>
+        <li><span class="hlword">Cherche ton modèle</span> dans le catalogue, ou <span class="hlword">parcours par marque</span> (Nike, Asics, Hoka…). La durée de vie se remplit automatiquement selon le modèle.</li>
+        <li>Indique les <b>km déjà parcourus</b> et, si tu veux, le prix d'achat (pour suivre ton coût au kilomètre).</li>
+        <li>Clique <span class="hlword">Ajouter</span> : la paire rejoint ta bibliothèque, avec son suivi d'usure.</li>
+      </ol>
+      <figure>
+        <img src="./aide-img/ajouter-chaussure.png" alt="Fenêtre d'ajout d'équipement : recherche de modèle, marques et bouton Ajouter encadrés" loading="lazy">
+        <figcaption><span class="dot">●</span> Cherche ton modèle ou parcours le catalogue par marque, puis « Ajouter ».</figcaption>
+      </figure>
+      <div class="tip"><b>Modèle absent du catalogue ?</b> Saisis son nom librement dans le champ <b>Nom / modèle</b> et ajuste la durée de vie à la main.</div>
     </section>
 
   </main>
