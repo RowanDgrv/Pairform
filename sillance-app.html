@@ -1216,6 +1216,31 @@ table.cbill td{padding:10px 9px;border-bottom:1px solid var(--line)}
 .ck-dispo textarea{width:100%;box-sizing:border-box;margin-top:8px;background:var(--panel-2);border:1px solid var(--line-strong);color:var(--text);border-radius:8px;padding:8px 10px;font-size:12px;font-family:inherit;resize:vertical;min-height:44px}
 .ap-dispo{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--fc);white-space:nowrap}
 .ap-dispo .ic{width:10px;height:10px}
+/* attribution multi-athlètes : séance ou cycle vers un groupe / plusieurs athlètes (coach) */
+.tpl{position:relative}
+.tpl-assign{position:absolute;top:6px;right:6px;width:24px;height:24px;display:none;align-items:center;justify-content:center;background:var(--panel-2);border:1px solid var(--line-strong);border-radius:6px;color:var(--muted);cursor:pointer;padding:0}
+.tpl:hover .tpl-assign{display:flex}
+.tpl-assign:hover{color:var(--accent);border-color:var(--accent)}
+.tpl-assign .ic{width:12px;height:12px}
+.cycle-card .cy-multi{margin-top:5px;width:100%;padding:5px;border-radius:7px;font-size:11px;font-weight:600;border:1px solid var(--line-strong);background:transparent;color:var(--muted);transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.cycle-card .cy-multi:hover{border-color:var(--accent);color:var(--accent)}
+.cycle-card .cy-multi .ic{width:11px;height:11px}
+.asg-modal{max-width:460px}
+.asg-date{display:flex;align-items:center;gap:10px;margin:14px 0 10px;font-size:12.5px;color:var(--soft)}
+.asg-date input{background:var(--panel-2);border:1px solid var(--line-strong);color:var(--text);border-radius:8px;padding:7px 10px;font-family:var(--font-data);font-size:12px}
+.asg-groups{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}
+.asg-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border:1px solid var(--line-strong);border-radius:999px;background:var(--panel-2);color:var(--soft);font-size:11.5px;font-weight:600;cursor:pointer;transition:.15s}
+.asg-chip .dotc{width:8px;height:8px;border-radius:50%;background:var(--gc)}
+.asg-chip.on{border-color:var(--gc);color:var(--text)}
+.asg-list{max-height:250px;overflow-y:auto;border:1px solid var(--line);border-radius:10px;margin-top:8px}
+.asg-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
+.asg-row:last-child{border-bottom:none}
+.asg-row:hover{background:var(--panel-2)}
+.asg-row input{accent-color:var(--accent);flex:none}
+.asg-grp{margin-left:auto;font-size:10px;color:var(--muted);border:1px solid var(--line-strong);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.asg-all{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12px;color:var(--soft);cursor:pointer}
+.asg-all input{accent-color:var(--accent)}
+.asg-go{width:100%;margin-top:14px}
 /* table d'adhérence (suivi de mes athlètes) */
 .adh-open-btn{width:100%;margin-bottom:16px;background:var(--panel-2);border:1px solid var(--line-strong);color:var(--text);display:flex;align-items:center;justify-content:center;gap:8px}
 .adh-open-btn:hover{border-color:var(--accent)}
@@ -3011,7 +3036,7 @@ function fmtDur(min){ const h=Math.floor(min/60), m=min%60; return h?`${h}h${Str
    remplace la démo via setCoachAthletes().
    ============================================================ */
 const COACH_ROSTER = [
- {id:'a1', name:'Léa Fontan',     ini:'LF', color:'#46C2D8', checkin:{sommeil:8,fatigue:3,motivation:8}, race:{name:'Gorillaman · Sprint',   days:22}, drop:0,    comp:1.0,
+ {id:'a1', name:'Léa Fontan',     ini:'LF', color:'#46C2D8', checkin:{sommeil:8,fatigue:3,motivation:8}, race:{name:'Gorillaman · Sprint',   days:22}, group:'g3', drop:0,    comp:1.0,
   gear:[
     {id:'g1', type:'shoe', name:'Nike Pegasus 40', km:612, max:900, price:130, cat:'daily', comm:870, notified:[540]},
     {id:'g2', type:'shoe', name:'Saucony Endorphin Speed 4', km:284, max:650, price:180, cat:'tempo', comm:630, notified:[]},
@@ -3023,16 +3048,16 @@ const COACH_ROSTER = [
     {id:'g5', type:'shoe', name:'Adidas Boston 12', km:723, max:700, price:150, cat:'tempo', comm:660, notified:[420,595,700]},
     {id:'g6', type:'shoe', name:'Adidas Ultraboost Light', km:214, max:850, price:180, cat:'daily', comm:800, notified:[]},
   ]},
- {id:'a3', name:'Chloé Vasseur',  ini:'CV', color:'#8E7FD0', checkin:{sommeil:7,fatigue:4,motivation:8}, race:{name:'HYROX Bordeaux',        days:35}, drop:0.10, comp:0.95,
+ {id:'a3', name:'Chloé Vasseur',  ini:'CV', color:'#8E7FD0', checkin:{sommeil:7,fatigue:4,motivation:8}, race:{name:'HYROX Bordeaux',        days:35}, group:'g6', drop:0.10, comp:0.95,
   gear:[
     {id:'g7', type:'shoe', name:'Puma Deviate Nitro 3', km:405, max:700, price:160, cat:'tempo', comm:650, notified:[420]},
   ]},
- {id:'a4', name:'Théo Rambert',   ini:'TR', color:'#DD5C72', checkin:{sommeil:6,fatigue:5,motivation:6,dispo:'blesse',dispoNote:'Douleur tibia droit depuis lundi, 4/10 en courant'}, race:{name:'Semi de Blagnac',       days:14}, drop:0.25, comp:0.70,
+ {id:'a4', name:'Théo Rambert',   ini:'TR', color:'#DD5C72', checkin:{sommeil:6,fatigue:5,motivation:6,dispo:'blesse',dispoNote:'Douleur tibia droit depuis lundi, 4/10 en courant'}, race:{name:'Semi de Blagnac',       days:14}, group:'g3', drop:0.25, comp:0.70,
   gear:[
     {id:'g8', type:'shoe', name:'Asics Novablast 5', km:648, max:750, price:150, cat:'tempo', comm:710, notified:[450,638]},
     {id:'g9', type:'bike', name:'BMC Roadmachine', km:2150, max:20000, price:2400, cat:null, comm:null, notified:[]},
   ]},
- {id:'a5', name:'Emma Laurens',   ini:'EL', color:'#35C58C', checkin:{sommeil:9,fatigue:2,motivation:9}, race:{name:'70.3 Aix-en-Provence',  days:98}, drop:0.30, comp:1.0,
+ {id:'a5', name:'Emma Laurens',   ini:'EL', color:'#35C58C', checkin:{sommeil:9,fatigue:2,motivation:9}, race:{name:'70.3 Aix-en-Provence',  days:98}, group:'g4', drop:0.30, comp:1.0,
   gear:[]},
  {id:'a6', name:'Sofiane Kerbal', ini:'SK', color:'#FF8A3D', checkin:{sommeil:4,fatigue:8,motivation:4,dispo:'malade',dispoNote:'Rhume, gorge prise — nuit hachée'}, race:{name:'10 km de Toulouse',     days:9},  drop:0.15, comp:0.35,
   gear:[]},
@@ -3931,11 +3956,13 @@ function tplCard(t, z){
   el.dataset.disc=t.disc;
   el.style.setProperty('--c', D.color);
   el.innerHTML = `<div class="t">${t.title}<span class="zb" style="color:${ZONE_COLORS[z]}">${z}</span></div>
-                  <div class="m">${t.dur}min · ${t.tss} TSS</div>`;
+                  <div class="m">${t.dur}min · ${t.tss} TSS</div>
+                  <button class="tpl-assign" title="Attribuer à plusieurs athlètes" aria-label="Attribuer cette séance à plusieurs athlètes"><i class="ic ic-users"></i></button>`;
   el.addEventListener('dragstart', e=>{
     e.dataTransfer.setData('text/plain', JSON.stringify({type:'tpl', id:t.id}));
   });
   el.addEventListener('click', ()=> openModal({...t, id:null}, null));
+  el.querySelector('.tpl-assign').addEventListener('click', e=>{ e.stopPropagation(); openAssign('tpl', t); });
   return el;
 }
 
@@ -3968,8 +3995,10 @@ function buildCycles(container){
     el.innerHTML=`<div class="t">${c.name}</div>
       <div class="m">${c.weeks} semaines · ${cycleCount(c)} séances</div>
       <button class="cy-apply"><i class="ic ic-calendar"></i> Ajouter à l'athlète</button>
+      <button class="cy-multi"><i class="ic ic-users"></i> Attribuer à plusieurs</button>
       <button class="cy-del" aria-label="Supprimer le cycle"><i class="ic ic-x"></i></button>`;
     el.querySelector('.cy-apply').addEventListener('click', e=>{ e.stopPropagation(); applyCycle(c, null); });
+    el.querySelector('.cy-multi').addEventListener('click', e=>{ e.stopPropagation(); openAssign('cycle', c); });
     el.querySelector('.cy-del').addEventListener('click', e=>{
       e.stopPropagation();
       const i=CYCLES.findIndex(x=>x.id===c.id); if(i>-1) CYCLES.splice(i,1);
@@ -3980,29 +4009,141 @@ function buildCycles(container){
   });
 }
 
-/* pose le cycle sur le calendrier de l'athlète, à partir du lundi
-   de la semaine choisie (défaut : lundi prochain) */
-function applyCycle(c, startIso){
+/* développe un cycle en liste {key, t} à partir du lundi de la semaine choisie */
+function cycleEntries(c, startIso){
   const start = startIso ? new Date(startIso+'T00:00:00') : nextMonday();
   const mon = addDays(start, -((start.getDay()+6)%7));
-  let n=0;
+  const out = [];
   for(let w=0; w<c.weeks; w++) for(let d=0; d<7; d++){
     (c.plan[w+'-'+d]||[]).forEach(tid=>{
       const t = TEMPLATES.find(x=>x.id===tid); if(!t) return;
-      const key = iso(addDays(mon, w*7+d));
+      out.push({ key: iso(addDays(mon, w*7+d)), t });
+    });
+  }
+  return { mon, out };
+}
+
+/* pose le cycle sur le calendrier de l'athlète, à partir du lundi
+   de la semaine choisie (défaut : lundi prochain) */
+function applyCycle(c, startIso){
+  const { mon, out } = cycleEntries(c, startIso);
+  out.forEach(({key, t})=>{
+    const s = {...t, id:'s'+(uid++), done:false};
+    (planning[key] ||= []).push(s);
+    if(window.PF?.user){
+      PF.scheduleSession(currentAthleteId || PF.user.id, key, { disc:s.disc, title:s.title, dur:s.dur,
+        dist:s.dist||0, tss:s.tss, zone:s.zone, blocks:(s.blocksV2&&s.blocksV2.blocks)||[] })
+        .then(saved=>{ if(saved) s.id=saved.id; })
+        .catch(e=> console.warn('[PF] scheduleSession échoué :', e));
+    }
+  });
+  weekOffset = Math.round((mon - mondayOf(0))/(7*864e5));
+  render();
+  toast(`Cycle « ${c.name} » posé : ${out.length} séances sur ${c.weeks} semaines`);
+}
+
+/* ============================================================
+   ATTRIBUTION MULTI-ATHLÈTES (coach)
+   ------------------------------------------------------------
+   Pose une séance ou un cycle sur le calendrier de plusieurs
+   athlètes d'un coup : cases à cocher sur le roster + raccourcis
+   « groupe du club » (sélectionne les athlètes du groupe).
+   Démo : les poses sont mémorisées par athlète (ASSIGN_EXTRA) et
+   réappliquées à chaque bascule. Réel : PF.scheduleSession par
+   athlète, le planning affiché est rechargé du cloud à la bascule.
+   ============================================================ */
+const ASSIGN_EXTRA = {};   // {athleteId: {dateKey: [sessions]}}
+
+function doAssign(kind, obj, dateIso, targets){
+  const entries = kind==='cycle' ? cycleEntries(obj, dateIso).out : [{ key: dateIso, t: obj }];
+  const curId = rosterIsReal ? currentAthleteId : (ROSTER[selectedAthleteIdx] && ROSTER[selectedAthleteIdx].id);
+  // démo : figer le plan de référence AVANT la pose, sinon une attribution faite
+  // avant la première bascule entrerait dans BASE_PLANNING (dupliquée pour
+  // l'athlète courant, héritée par tous les autres)
+  if(!rosterIsReal && !BASE_PLANNING) BASE_PLANNING = JSON.parse(JSON.stringify(planning));
+  targets.forEach(a=>{
+    entries.forEach(({key, t})=>{
       const s = {...t, id:'s'+(uid++), done:false};
-      (planning[key] ||= []).push(s); n++;
-      if(window.PF?.user){
-        PF.scheduleSession(currentAthleteId || PF.user.id, key, { disc:s.disc, title:s.title, dur:s.dur,
+      if(rosterIsReal && window.PF?.user){
+        PF.scheduleSession(a.id, key, { disc:s.disc, title:s.title, dur:s.dur,
           dist:s.dist||0, tss:s.tss, zone:s.zone, blocks:(s.blocksV2&&s.blocksV2.blocks)||[] })
           .then(saved=>{ if(saved) s.id=saved.id; })
           .catch(e=> console.warn('[PF] scheduleSession échoué :', e));
+      } else {
+        ((ASSIGN_EXTRA[a.id] ||= {})[key] ||= []).push(s);
       }
+      if(a.id===curId) (planning[key] ||= []).push(s);
     });
+  });
+  if(kind==='cycle' && targets.some(a=>a.id===curId)){
+    weekOffset = Math.round((cycleEntries(obj, dateIso).mon - mondayOf(0))/(7*864e5));
   }
-  weekOffset = Math.round((mon - mondayOf(0))/(7*864e5));
   render();
-  toast(`Cycle « ${c.name} » posé : ${n} séances sur ${c.weeks} semaines`);
+  const nA = targets.length;
+  toast(kind==='cycle'
+    ? `Cycle « ${obj.name} » posé pour ${nA} athlète${nA>1?'s':''} : ${entries.length} séances chacun`
+    : `Séance « ${obj.title} » attribuée à ${nA} athlète${nA>1?'s':''}`);
+}
+
+function openAssign(kind, obj){
+  const isCycle = kind==='cycle';
+  const defDate = isCycle ? iso(nextMonday()) : iso(addDays(new Date(), 1));
+  const groups = (typeof CLUB_GROUPS!=='undefined' ? CLUB_GROUPS : []).filter(g=> ROSTER.some(a=>a.group===g.id));
+  const rows = ROSTER.map((a,i)=>{
+    const g = a.group && typeof clubGroup==='function' ? clubGroup(a.group) : null;
+    return `<label class="asg-row"><input type="checkbox" data-idx="${i}" ${a.group?`data-grp="${a.group}"`:''}>
+      <span class="ap-av" style="--ac:${a.color}">${a.ini}</span><span>${a.name}</span>
+      ${g?`<span class="asg-grp" style="color:${g.color}">${g.name}</span>`:''}</label>`;
+  }).join('');
+  const el=document.createElement('div'); el.className='adh-overlay';
+  el.innerHTML=`<div class="adh-modal asg-modal" role="dialog" aria-label="Attribuer à plusieurs athlètes">
+    <button class="adh-close" aria-label="Fermer">✕</button>
+    <h3>Attribuer « ${isCycle?obj.name:obj.title} »</h3>
+    <p class="adh-sub">${isCycle
+      ? `Pose ce cycle (${obj.weeks} semaines, ${cycleCount(obj)} séances) sur le calendrier de plusieurs athlètes d'un coup. Les cibles en % des références s'adaptent au niveau de chacun.`
+      : `Pose cette séance sur le calendrier de plusieurs athlètes d'un coup. Les cibles en % des références s'adaptent au niveau de chacun.`}</p>
+    <div class="asg-date"><span>${isCycle?'Semaine du':'Le'}</span><input type="date" id="asgDate" value="${defDate}"></div>
+    ${groups.length?`<div class="asg-groups">${groups.map(g=>{
+      const n=ROSTER.filter(a=>a.group===g.id).length;
+      return `<button class="asg-chip" data-g="${g.id}" style="--gc:${g.color}"><span class="dotc"></span>${g.name} · ${n}</button>`;
+    }).join('')}</div>`:''}
+    <div class="asg-list">${rows || `<div style="padding:18px;text-align:center;color:var(--muted);font-size:12.5px">Aucun athlète lié — invite ton premier athlète pour lui attribuer des séances.</div>`}</div>
+    ${rows?`<label class="asg-all"><input type="checkbox" id="asgAll"> Tout sélectionner</label>
+    <button class="btn asg-go" id="asgGo" disabled>Attribuer</button>`:''}
+  </div>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('open'));
+  const close=()=>{ el.classList.remove('open'); setTimeout(()=>el.remove(),180); };
+  el.querySelector('.adh-close').onclick=close;
+  el.addEventListener('click', e=>{ if(e.target===el) close(); });
+  document.addEventListener('keydown', function esc(ev){ if(ev.key==='Escape'){ close(); document.removeEventListener('keydown',esc); } });
+  if(!rows) return;
+  const boxes=[...el.querySelectorAll('.asg-row input')];
+  const go=el.querySelector('#asgGo'), all=el.querySelector('#asgAll');
+  const sync=()=>{
+    const n=boxes.filter(b=>b.checked).length;
+    go.disabled=!n;
+    go.textContent = n ? `Attribuer à ${n} athlète${n>1?'s':''}` : 'Attribuer';
+    all.checked = n===boxes.length;
+    el.querySelectorAll('.asg-chip').forEach(ch=>{
+      const m=boxes.filter(b=>b.dataset.grp===ch.dataset.g);
+      ch.classList.toggle('on', m.length>0 && m.every(b=>b.checked));
+    });
+  };
+  boxes.forEach(b=> b.addEventListener('change', sync));
+  all.addEventListener('change', ()=>{ boxes.forEach(b=> b.checked=all.checked); sync(); });
+  el.querySelectorAll('.asg-chip').forEach(ch=> ch.onclick=()=>{
+    const m=boxes.filter(b=>b.dataset.grp===ch.dataset.g);
+    const allOn=m.length && m.every(b=>b.checked);
+    m.forEach(b=> b.checked=!allOn);
+    sync();
+  });
+  go.onclick=()=>{
+    const targets=boxes.filter(b=>b.checked).map(b=>ROSTER[+b.dataset.idx]);
+    if(!targets.length) return;
+    doAssign(kind, obj, el.querySelector('#asgDate').value || defDate, targets);
+    close();
+  };
 }
 
 function openCycleBuilder(existing){
@@ -4700,6 +4841,10 @@ function applyDemoAthlete(i){
       (planning[k] ||= []).push(c);
     }
   }
+  // séances/cycles attribués en masse à CET athlète (openAssign) : réappliqués
+  // après la reconstruction, sinon ils disparaîtraient à chaque bascule
+  const extra = ASSIGN_EXTRA[a.id];
+  if(extra) for(const k of Object.keys(extra)) (planning[k] ||= []).push(...extra[k]);
   Object.assign(checkin, a.checkin);
   // dispo : ne pas laisser traîner celle de l'athlète précédent si absente
   checkin.dispo = a.checkin.dispo || 'ok';
