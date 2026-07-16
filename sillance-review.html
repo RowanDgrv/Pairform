@@ -1744,8 +1744,26 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 .ln-del:hover{color:var(--run);border-color:var(--run)}
 .bk-addline{margin:6px 8px 8px;display:flex;gap:6px;flex-wrap:wrap}
 /* lignes Hyrox */
-.ln-hyrox{grid-template-columns:18px 1.4fr 90px 110px 30px !important}
+.ln-hyrox{grid-template-columns:18px 1.4fr 90px 110px auto !important}
 @media (max-width:640px){.ln-hyrox{grid-template-columns:18px 1fr 1fr !important}}
+/* commentaire du coach par intervalle */
+.ln-actions{display:flex;gap:5px;align-items:center;justify-content:flex-end}
+.ln-cmt{width:26px;height:26px;border:1px solid var(--line);border-radius:7px;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center;flex:none}
+.ln-cmt .ic{width:13px;height:13px}
+.ln-cmt:hover{color:var(--swim);border-color:var(--swim)}
+.ln-cmt.has{color:var(--swim);border-color:color-mix(in srgb,var(--swim) 55%,transparent);background:color-mix(in srgb,var(--swim) 12%,transparent)}
+.ln-note{grid-column:1/-1;margin-top:4px}
+.ln-note .lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 4px 2px;display:flex;align-items:center;gap:5px}
+.ln-note .lbl .ic{width:11px;height:11px}
+.ln-note textarea{width:100%;box-sizing:border-box;background:var(--panel);border:1px solid var(--line-strong);color:var(--text);border-radius:7px;padding:7px 9px;font-size:12px;font-family:inherit;resize:vertical;min-height:34px}
+/* consignes coach par intervalle — vue athlète (modal) */
+.sn-block{margin:14px 0;border:1px solid color-mix(in srgb,var(--swim) 30%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--swim) 7%,transparent);padding:12px 14px}
+.sn-head{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--swim);font-weight:700;display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.sn-head .ic{width:13px;height:13px}
+.sn-item{display:flex;gap:10px;padding:6px 0;border-top:1px solid var(--line)}
+.sn-item:first-of-type{border-top:none}
+.sn-when{flex:none;min-width:120px;font-family:var(--font-data);font-size:11px;color:var(--soft);padding-top:1px}
+.sn-txt{font-size:13px;color:var(--text);line-height:1.45}
 .hx-station{font-weight:600}
 .hx-target{display:flex;align-items:center;gap:5px}
 .hx-target input{width:60px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--text);
@@ -4589,6 +4607,31 @@ function openRpeModal(s){
 /* ---- modal ---- */
 const overlay = document.getElementById('overlay');
 const modal = document.getElementById('modal');
+/* libellé court d'un intervalle pour situer un commentaire (vue athlète) */
+function lineLabel(ln){
+  if(ln.type==='station'){ const st=hyroxStation(ln.station)||HYROX_STATIONS[0]; return st.name; }
+  const T=LINE_TYPES[ln.type];
+  const amt = (ln.metric==='dist') ? `${ln.dist||0} m` : `${(ln.dur&&ln.dur.m)||0}'`;
+  return `${T?T.l:'Intervalle'} · ${amt}`;
+}
+/* section "Consignes du coach par intervalle" : liste les intervalles porteurs
+   d'une note. Additif — n'apparaît que si au moins un commentaire existe. */
+function sessionNotesHTML(s){
+  if(!s.blocksV2 || !s.blocksV2.blocks) return '';
+  const items=[];
+  s.blocksV2.blocks.forEach((blk,bi)=>{
+    blk.lines.forEach(ln=>{
+      if(ln.note && ln.note.trim()){
+        const lbl = lineLabel(ln);
+        const pre = (blk.series>1?`${blk.series}× `:'') + (blk.title && !lbl.startsWith(blk.title) ? blk.title+' — ' : '');
+        items.push(`<div class="sn-item"><div class="sn-when">${dispoSafe(pre+lbl)}</div><div class="sn-txt">${dispoSafe(ln.note.trim())}</div></div>`);
+      }
+    });
+  });
+  if(!items.length) return '';
+  return `<div class="sn-block"><div class="sn-head"><i class="ic ic-message-circle"></i> Consignes du coach par intervalle</div>${items.join('')}</div>`;
+}
+
 function openModal(s){
   const D = DISC[s.disc];
   modal.style.setProperty('--c', D.color);
@@ -4602,6 +4645,7 @@ function openModal(s){
       <div class="cell"><div class="k">Intensité</div><div class="v">${s.zone}</div></div>
     </div>
     <p class="desc">${s.desc||'Séance planifiée.'}</p>
+    ${sessionNotesHTML(s)}
     ${(()=>{ const n=nutritionForSession(s); return `
       <div class="nutri-block nutri-pre">
         <div class="nutri-head"><i class="ic ic-utensils"></i> Avant la séance</div>
@@ -6352,6 +6396,21 @@ function renderBlocks(){
   updateBuilderSummary();
 }
 
+/* bouton commentaire + suppression, et la rangée de note repliable (coach).
+   La note vit sur ln.note ; ln._noteOpen contrôle l'affichage pendant l'édition. */
+function lnActionsHTML(ln, delLabel){
+  const has = !!(ln.note && ln.note.trim());
+  const open = (ln._noteOpen===undefined) ? has : ln._noteOpen;
+  return `<div class="ln-actions">
+      <button class="ln-cmt ${has?'has':''}" data-act="togglenote" title="Commentaire du coach" aria-label="Ajouter un commentaire"><i class="ic ic-message-circle"></i></button>
+      <button class="ln-del" data-act="delline" aria-label="${delLabel}"><i class="ic ic-x"></i></button>
+    </div>
+    ${open?`<div class="ln-note">
+      <div class="lbl"><i class="ic ic-message-circle"></i> Commentaire pour l'athlète</div>
+      <textarea data-f="note" rows="2" placeholder="Ex. garde les épaules basses, cadence 90…">${dispoSafe(ln.note||'')}</textarea>
+    </div>`:''}`;
+}
+
 function lineHTML(blk, ln){
   // ----- ligne HYROX (station) -----
   if(builderState.disc==='hyrox' || ln.type==='station'){
@@ -6368,7 +6427,7 @@ function lineHTML(blk, ln){
         <input type="number" min="0" max="5000" value="${ln.target||0}" data-hx="target"><span>${unitLbl}</span>
       </div>
       ${weightField}
-      <button class="ln-del" data-act="delline" aria-label="Supprimer la station"><i class="ic ic-x"></i></button>
+      ${lnActionsHTML(ln, 'Supprimer la station')}
     </div>`;
   }
 
@@ -6413,7 +6472,7 @@ function lineHTML(blk, ln){
       </div>
       ${intHTML}
     </div>
-    <button class="ln-del" data-act="delline" aria-label="Supprimer la ligne"><i class="ic ic-x"></i></button>
+    ${lnActionsHTML(ln, 'Supprimer la ligne')}
   </div>`;
 }
 
@@ -6455,6 +6514,17 @@ function wireBlocks(){
     bkEl.querySelectorAll('.ln').forEach(lnEl=>{
       const ln=blk.lines.find(x=>x.lid===lnEl.dataset.lid);
       lnEl.querySelector('[data-act="delline"]').onclick=()=>{ if(blk.lines.length>1){ blk.lines=blk.lines.filter(x=>x.lid!==ln.lid); renderBlocks(); } };
+      // commentaire du coach : ouvre/ferme la note ; la saisie se lie à ln.note
+      const cmt=lnEl.querySelector('[data-act="togglenote"]');
+      if(cmt) cmt.onclick=()=>{
+        const has=!!(ln.note && ln.note.trim());
+        const open=(ln._noteOpen===undefined)?has:ln._noteOpen;
+        ln._noteOpen=!open;   // montre/masque l'éditeur sans jamais effacer la note
+        renderBlocks();
+        if(ln._noteOpen){ const ta=document.querySelector(`.ln[data-lid="${ln.lid}"] [data-f="note"]`); if(ta){ ta.focus(); ta.setSelectionRange(ta.value.length,ta.value.length); } }
+      };
+      const nta=lnEl.querySelector('[data-f="note"]');
+      if(nta) nta.addEventListener('input', ()=>{ ln.note=nta.value; });
       // bascule temps ⇄ distance
       const msw=lnEl.querySelector('[data-act="metricswitch"]');
       if(msw) msw.onclick=()=>{ ln.metric = (ln.metric==='dist')?'time':'dist'; ln._metricTouched=true; renderBlocks(); };
