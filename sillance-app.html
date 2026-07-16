@@ -1775,6 +1775,32 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 .sn-item:first-of-type{border-top:none}
 .sn-when{flex:none;min-width:120px;font-family:var(--font-data);font-size:11px;color:var(--soft);padding-top:1px}
 .sn-txt{font-size:13px;color:var(--text);line-height:1.45}
+/* éditeur de zones de travail personnalisées (coach) */
+.zed-modal{max-width:560px}
+.zed-model{margin-top:16px;border:1px solid var(--line);border-radius:12px;padding:13px 14px;background:var(--panel-2)}
+.zed-mhead{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.zed-mname{font-weight:700;font-size:13px;color:var(--text)}
+.zed-mtag{font-family:var(--font-data);font-size:10px;color:var(--muted);border:1px solid var(--line-strong);border-radius:6px;padding:2px 7px}
+.zed-mtag.custom{color:var(--swim);border-color:color-mix(in srgb,var(--swim) 45%,transparent)}
+.zed-reset{margin-left:auto;background:transparent;border:none;color:var(--muted);font-size:11px;cursor:pointer;text-decoration:underline;font-family:inherit}
+.zed-reset:hover{color:var(--run)}
+.zed-bar{display:flex;height:9px;border-radius:5px;overflow:hidden;margin-bottom:10px;border:1px solid var(--line)}
+.zed-bar i{display:block;height:100%}
+.zed-row{display:grid;grid-template-columns:14px 1fr 66px 74px 26px;gap:8px;align-items:center;margin-bottom:6px}
+.zed-dot{width:11px;height:11px;border-radius:3px}
+.zed-name{background:var(--panel);border:1px solid var(--line-strong);color:var(--text);border-radius:7px;padding:6px 9px;font-size:12.5px;font-family:inherit}
+.zed-lo{font-family:var(--font-data);font-size:11px;color:var(--muted);text-align:right}
+.zed-hiwrap{display:flex;align-items:center;gap:3px}
+.zed-hi{width:52px;background:var(--panel);border:1px solid var(--line-strong);color:var(--text);border-radius:7px;padding:6px 7px;font-size:12px;font-family:var(--font-data);text-align:right}
+.zed-hiwrap span{font-size:11px;color:var(--muted)}
+.zed-drow{width:24px;height:24px;border:1px solid var(--line);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;display:grid;place-items:center}
+.zed-drow:hover{color:var(--run);border-color:var(--run)}
+.zed-drow .ic{width:11px;height:11px}
+.zed-add{margin-top:4px;background:transparent;border:1px dashed var(--line-strong);color:var(--soft);border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;font-family:inherit;width:100%}
+.zed-add:hover{border-color:var(--swim);color:var(--swim)}
+.zed-note{font-size:11.5px;color:var(--muted);margin-top:4px}
+/* sélecteur de zone dans le builder */
+.ln-zonesel{font-family:var(--font-ui);font-size:11px;font-weight:600;border:1px solid var(--lz,var(--line-strong));background:color-mix(in srgb,var(--lz,var(--muted)) 12%,transparent);color:var(--lz,var(--soft));border-radius:6px;padding:2px 5px;cursor:pointer;max-width:150px}
 .hx-station{font-weight:600}
 .hx-target{display:flex;align-items:center;gap:5px}
 .hx-target input{width:60px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--text);
@@ -2979,6 +3005,50 @@ const INTENSITY_MODELS = {
   fc:   {disc:'all', label:'% FC max', unit:'bpm', ref:()=>ATHLETE_REF.fcMax,
          zones:[['Z1',0,60],['Z2',60,70],['Z3',70,80],['Z4',80,90],['Z5',90,100]]}
 };
+
+/* ============================================================
+   ZONES DE TRAVAIL PERSONNALISÉES PAR ATHLÈTE (#5 retour coach)
+   ------------------------------------------------------------
+   Par défaut : les zones de INTENSITY_MODELS (partagées). Le coach
+   peut redéfinir, par athlète et par modèle (FTP, VMA, FC…), ses
+   propres zones (nom + borne haute %). Stockées par athlète
+   (localStorage + hook backend PF.saveAthleteZones). Utilisées partout
+   où une zone est nommée (builder, analyse). La borne basse d'une zone
+   = la borne haute de la précédente. Les modèles en allure (inversés :
+   seuilRun, css) gardent les zones standard pour l'instant.
+   ============================================================ */
+const CUSTOM_ZONES = {};   // { athleteId: { modelKey: [[nom, lo, hi], ...] } }
+function zoneAthleteId(){
+  if(typeof mode!=='undefined' && mode==='coach' && typeof currentAthleteId!=='undefined' && currentAthleteId) return currentAthleteId;
+  return (window.PF && PF.user && PF.user.id) || '_self';
+}
+function zonesFor(modelKey, aid){
+  aid = aid || zoneAthleteId();
+  const c = CUSTOM_ZONES[aid] && CUSTOM_ZONES[aid][modelKey];
+  if(c && c.length) return c;
+  return (INTENSITY_MODELS[modelKey] && INTENSITY_MODELS[modelKey].zones) || [];
+}
+function hasCustomZones(modelKey, aid){
+  aid = aid || zoneAthleteId();
+  return !!(CUSTOM_ZONES[aid] && CUSTOM_ZONES[aid][modelKey] && CUSTOM_ZONES[aid][modelKey].length);
+}
+const ZONE_RAMP = ['#2FD9FF','#39E6A3','#FFD43D','#FFB13D','#FF7A3D','#FF5470','#E0457A'];
+function zoneColorAt(i, total){
+  if(total<=1) return ZONE_RAMP[1];
+  const idx = Math.round((i/(total-1))*(ZONE_RAMP.length-1));
+  return ZONE_RAMP[Math.max(0,Math.min(ZONE_RAMP.length-1, idx))];
+}
+function loadCustomZones(){
+  try{ const raw=localStorage.getItem('sil_custom_zones'); if(raw) Object.assign(CUSTOM_ZONES, JSON.parse(raw)); }catch(e){}
+}
+function persistCustomZones(aid){
+  try{ localStorage.setItem('sil_custom_zones', JSON.stringify(CUSTOM_ZONES)); }catch(e){}
+  if(window.PF && PF.user && PF.saveAthleteZones){
+    try{ PF.saveAthleteZones(aid||zoneAthleteId(), CUSTOM_ZONES[aid||zoneAthleteId()]||{})
+      .catch(e=>console.warn('[PF] saveAthleteZones',e)); }catch(e){}
+  }
+}
+loadCustomZones();
 
 /* Convertit un % de référence en cible affichable selon l'unité */
 function computeTarget(modelKey, pct){
@@ -4694,6 +4764,126 @@ function openRpeModal(s){
 /* ---- modal ---- */
 const overlay = document.getElementById('overlay');
 const modal = document.getElementById('modal');
+/* ============================================================
+   ÉDITEUR DE ZONES DE TRAVAIL — coach (#5 retour coach)
+   Le coach ouvre l'éditeur pour l'athlète suivi, redéfinit ses zones
+   par modèle (nom + borne haute %). Enregistre par athlète.
+   ============================================================ */
+let ZED = null;   // brouillon d'édition { aid, name, models:{key:[[nom,lo,hi],...]} }
+
+function editableZoneModels(){
+  const out=[];
+  for(const [k,m] of Object.entries(INTENSITY_MODELS)){
+    if(m.invert) continue;                    // allure (seuilRun/css) : zones standard pour l'instant
+    let hasRef=false; try{ hasRef=!!m.ref(); }catch(e){}
+    if(hasRef || k==='ftp' || k==='vma' || k==='fc') out.push(k);
+  }
+  return out.length ? out : ['ftp','vma','fc'];
+}
+/* renormalise les bornes : lo = hi précédent, hi croissant, borné 0..150 */
+function zedNormalize(zones){
+  let prev=0;
+  zones.forEach((z,i)=>{
+    z[1]=prev;
+    z[2]=Math.max(prev+1, Math.min(150, +z[2]||prev+1));
+    if(i===zones.length-1) z[2]=Math.max(z[2],120);
+    prev=z[2];
+  });
+  return zones;
+}
+function zedModelHTML(key){
+  const m=INTENSITY_MODELS[key];
+  const zones=ZED.models[key];
+  const isCustom = hasCustomZones(key, ZED.aid);
+  const total=zones.length, span=zones[total-1][2]||120;
+  const bar = zones.map((z,i)=>`<i style="width:${((z[2]-z[1])/span*100).toFixed(1)}%;background:${zoneColorAt(i,total)}"></i>`).join('');
+  const rows = zones.map((z,i)=>`
+    <div class="zed-row" data-i="${i}">
+      <span class="zed-dot" style="background:${zoneColorAt(i,total)}"></span>
+      <input class="zed-name" value="${dispoSafe(z[0])}" data-zf="name" aria-label="Nom de la zone">
+      <span class="zed-lo">de ${z[1]}%</span>
+      <span class="zed-hiwrap">→ <input class="zed-hi" type="number" min="1" max="150" value="${z[2]}" data-zf="hi" aria-label="Borne haute"><span>%</span></span>
+      <button class="zed-drow" data-zdel="${i}" aria-label="Supprimer la zone" ${total<=1?'disabled style=opacity:.3':''}><i class="ic ic-x"></i></button>
+    </div>`).join('');
+  return `<div class="zed-model" data-model="${key}">
+    <div class="zed-mhead">
+      <span class="zed-mname">${m.label}</span>
+      <span class="zed-mtag ${isCustom?'custom':''}">${isCustom?'personnalisé':'standard'}</span>
+      <button class="zed-reset" data-zreset="${key}">Réinitialiser</button>
+    </div>
+    <div class="zed-bar">${bar}</div>
+    ${rows}
+    <button class="zed-add" data-zadd="${key}">+ Ajouter une zone</button>
+  </div>`;
+}
+function zedRenderModel(key, root){
+  const sec=root.querySelector(`.zed-model[data-model="${key}"]`);
+  if(sec) sec.outerHTML = zedModelHTML(key);
+  zedWireModel(key, root);
+}
+function zedWireModel(key, root){
+  const sec=root.querySelector(`.zed-model[data-model="${key}"]`);
+  if(!sec) return;
+  const zones=ZED.models[key];
+  sec.querySelectorAll('.zed-name').forEach((inp,i)=> inp.addEventListener('input', ()=>{ zones[i][0]=inp.value; }));
+  sec.querySelectorAll('.zed-hi').forEach((inp,i)=> inp.addEventListener('change', ()=>{
+    zones[i][2]=+inp.value; zedNormalize(zones); zedRenderModel(key, root);
+  }));
+  sec.querySelectorAll('[data-zdel]').forEach(b=> b.onclick=()=>{
+    if(zones.length<=1) return; zones.splice(+b.dataset.zdel,1); zedNormalize(zones); zedRenderModel(key, root);
+  });
+  sec.querySelector('[data-zadd]').onclick=()=>{
+    const last=zones[zones.length-1];
+    zones.push(['Nouvelle zone', last[2], Math.min(150,last[2]+10)]); zedNormalize(zones); zedRenderModel(key, root);
+  };
+  sec.querySelector('[data-zreset]').onclick=()=>{
+    ZED.models[key]=JSON.parse(JSON.stringify(INTENSITY_MODELS[key].zones));
+    delete (CUSTOM_ZONES[ZED.aid]||{})[key];
+    zedRenderModel(key, root);
+  };
+}
+function openZoneEditor(){
+  const aid=zoneAthleteId();
+  const name=(typeof ROSTER!=='undefined' && ROSTER[selectedAthleteIdx] && ROSTER[selectedAthleteIdx].name)
+    || (typeof ATHLETE_NAME!=='undefined'?ATHLETE_NAME:'cet athlète');
+  const models=editableZoneModels();
+  ZED={ aid, name, models:{} };
+  models.forEach(k=> ZED.models[k]=JSON.parse(JSON.stringify(zonesFor(k, aid))));
+  const el=document.createElement('div'); el.className='adh-overlay';
+  el.innerHTML=`<div class="adh-modal zed-modal" role="dialog" aria-label="Zones de travail">
+    <button class="adh-close" aria-label="Fermer">✕</button>
+    <h3>Zones de travail — ${dispoSafe(name)}</h3>
+    <p class="adh-sub">Adapte les zones de chaque athlète (test lactate, ressenti terrain…). Elles sont utilisées dans la création de séance et l'analyse. La borne basse d'une zone suit la borne haute de la précédente.</p>
+    <div id="zedModels">${models.map(zedModelHTML).join('')}</div>
+    <p class="zed-note">Les zones en allure (natation CSS, allure seuil course) gardent le modèle standard pour l'instant.</p>
+    <button class="btn asg-go" id="zedSave" style="margin-top:16px">Enregistrer les zones</button>
+  </div>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('open'));
+  const root=el.querySelector('#zedModels');
+  models.forEach(k=> zedWireModel(k, root));
+  const close=()=>{ el.classList.remove('open'); setTimeout(()=>el.remove(),180); };
+  el.querySelector('.adh-close').onclick=close;
+  el.addEventListener('click', e=>{ if(e.target===el) close(); });
+  document.addEventListener('keydown', function esc(ev){ if(ev.key==='Escape'){ close(); document.removeEventListener('keydown',esc); } });
+  el.querySelector('#zedSave').onclick=()=>{
+    CUSTOM_ZONES[aid] = CUSTOM_ZONES[aid] || {};
+    models.forEach(k=>{
+      const z=zedNormalize(ZED.models[k]);
+      // identique au défaut → on ne stocke rien (reste "standard")
+      const def=JSON.stringify(INTENSITY_MODELS[k].zones);
+      if(JSON.stringify(z)===def) delete CUSTOM_ZONES[aid][k];
+      else CUSTOM_ZONES[aid][k]=z;
+    });
+    if(!Object.keys(CUSTOM_ZONES[aid]).length) delete CUSTOM_ZONES[aid];
+    persistCustomZones(aid);
+    // rafraîchir le builder seulement s'il est réellement ouvert (builderState posé)
+    if(typeof renderBlocks==='function' && typeof builderState!=='undefined' && builderState && document.getElementById('bBlocks') && document.getElementById('bBlocks').children.length) renderBlocks();
+    toast('Zones de travail enregistrées');
+    close();
+  };
+}
+
 /* libellé court d'un intervalle pour situer un commentaire (vue athlète) */
 function lineLabel(ln){
   if(ln.type==='station'){ const st=hyroxStation(ln.station)||HYROX_STATIONS[0]; return st.name; }
@@ -5012,6 +5202,7 @@ function renderCoachBand(){
         <div class="cb-name">${a.name}</div>
         ${a.race?`<div class="cb-race"><i class="ic ic-flag"></i>${a.race.name} <b>J–${a.race.days}</b></div>`:''}
         <button class="cb-bilan" id="bilanBtn" title="Exporter le bilan de l'athlète en PDF"><i class="ic ic-download"></i> Bilan PDF</button>
+        <button class="cb-bilan" id="zonesBtn" title="Personnaliser les zones de travail de l'athlète"><i class="ic ic-target"></i> Zones</button>
       </div>
     </div>
     <div class="cb-forme">
@@ -5035,6 +5226,7 @@ function renderCoachBand(){
     </div>
     <div class="cb-flags">${flags.join('')}</div>`;
   const _bb=document.getElementById('bilanBtn'); if(_bb) _bb.onclick=()=>exportBilan(a.name);
+  const _zb=document.getElementById('zonesBtn'); if(_zb) _zb.onclick=()=>openZoneEditor();
 }
 
 (function initAthPicker(){
@@ -6007,6 +6199,13 @@ window.__pf_app = {
   getCurrentAthleteId(){ return currentAthleteId; },
   // Masque l'analyse/records de démo pour un compte confirmé sans activité réelle.
   setActivityState,
+  // Injecte les zones de travail perso d'un athlète (chargées du cloud).
+  setAthleteZones(athleteId, zones){
+    if(!athleteId) return;
+    if(zones && Object.keys(zones).length) CUSTOM_ZONES[athleteId] = zones;
+    else delete CUSTOM_ZONES[athleteId];
+    if(typeof renderBlocks==='function' && typeof builderState!=='undefined' && builderState && document.getElementById('bBlocks') && document.getElementById('bBlocks').children.length) renderBlocks();
+  },
 };
 
 /* écran d'accueil testeur (le bouton a aussi un onclick inline de secours) */
@@ -6544,12 +6743,21 @@ function lineHTML(blk, ln){
       return tgt? `<span>${tgt}</span>`:'';
     }).join('');
     const zn = zoneForPct(ln.model, ln.pct);
+    // sélecteur de zone de travail (utilise les zones perso de l'athlète) :
+    // choisir une zone place le % au milieu de sa plage
+    const zList = zonesFor(ln.model);
+    const zIdx = zList.findIndex(z=>z[0]===zn);
+    const zCol = zIdx>=0 ? zoneColorAt(zIdx, zList.length) : 'var(--muted)';
+    const zoneSel = `<select class="ln-zonesel" data-f="zonesel" style="--lz:${zCol}" title="Choisir la zone de travail">
+        ${zList.map((z,i)=>`<option value="${i}" ${i===zIdx?'selected':''}>${dispoSafe(z[0])}</option>`).join('')}
+        ${zIdx<0?`<option value="-1" selected>${zn||'—'}</option>`:''}
+      </select>`;
     intHTML = `
       <div class="ln-zone-row">
         <select class="ln-zone" data-f="model" title="Référence de calcul">${models.map(k=>`<option value="${k}" ${k===ln.model?'selected':''}>${REF_LABEL[k]}</option>`).join('')}</select>
         <div class="ln-pct"><input type="range" min="40" max="130" value="${ln.pct}" data-f="pct"><input type="number" class="pvn" min="40" max="130" value="${ln.pct}" data-f="pctn" aria-label="Intensité en %"><span class="pv-unit">%</span></div>
       </div>
-      <div class="ln-targets">${targets}<span class="zn">${zn}</span></div>`;
+      <div class="ln-targets">${targets}${zoneSel}</div>`;
   } else {
     intHTML = `<div class="ln-exact">${exactInputsHTML(ln.exact)}</div>`;
   }
@@ -6670,6 +6878,10 @@ function wireBlocks(){
           }
           else if(f==='durm'){ ln.dur.m=+inp.value; updateBuilderSummary(); }
           else if(f==='dist'){ ln.dist=+inp.value||0; updateBuilderSummary(); }
+          else if(f==='zonesel'){
+            const zList=zonesFor(ln.model); const z=zList[+inp.value];
+            if(z){ const mid=Math.round((z[1]+z[2])/2); ln.pct=Math.max(40,Math.min(130,mid)); ln.rpe=rpeFromPct(ln.pct); renderBlocks(); }
+          }
         });
         if(f==='pct'||f==='pctn') inp.addEventListener('change', ()=> renderBlocks());
       });
@@ -6708,7 +6920,8 @@ function resetExact(kind){
 
 function zoneForPct(modelKey, pct){
   const m = INTENSITY_MODELS[modelKey]; if(!m) return '';
-  for(const z of m.zones){ const [name,a,bnd]=z; const lo=Math.min(a,bnd),hi=Math.max(a,bnd); if(pct>=lo&&pct<=hi) return name; }
+  const zones = zonesFor(modelKey);   // perso athlète si défini, sinon défaut
+  for(const z of zones){ const [name,a,bnd]=z; const lo=Math.min(a,bnd),hi=Math.max(a,bnd); if(pct>=lo&&pct<=hi) return name; }
   return pct>110?'au-dessus':'';
 }
 function lineMinutes(ln){
