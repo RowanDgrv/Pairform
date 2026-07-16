@@ -847,7 +847,11 @@ body[data-athview="home"] .today-panel{display:block}
 .pb .new{font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--ink);background:var(--good);border-radius:99px;padding:2px 7px}
 
 /* ---------- RPE post-séance ---------- */
-.rpe-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin:14px 0}
+.rpe-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin:8px 0}
+.rpe-lbl{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);font-weight:700;display:flex;align-items:center;gap:7px}
+.rpe-lbl .ic{width:13px;height:13px;color:var(--accent)}
+.rpe-opt{margin-left:auto;font-size:9.5px;letter-spacing:.1em;color:var(--muted);border:1px solid var(--line-strong);border-radius:5px;padding:1px 6px;font-weight:600}
+.mus-chip{font-family:var(--font-data);font-weight:700}
 .rpe-grid button{
   aspect-ratio:1;border-radius:9px;border:1px solid var(--line);background:var(--panel-2);
   color:var(--text);font-family:var(--font-data);font-weight:700;font-size:13px;transition:.15s;
@@ -4675,7 +4679,7 @@ function sessionCard(s, dateKey){
   el.draggable = (mode==='coach');
   el.innerHTML = `
     <div class="t">${s.title}</div>
-    <div class="m"><span>${fmtDur(s.dur)}</span>${s.dist?`<span>${s.dist} km</span>`:''}<span>${s.tss} TSS</span><span>${s.zone}</span>${s.done&&s.rpe?`<span class="rpe-chip" style="color:${rpeColor(s.rpe)}">RPE ${s.rpe}</span>`:''}</div>
+    <div class="m"><span>${fmtDur(s.dur)}</span>${s.dist?`<span>${s.dist} km</span>`:''}<span>${s.tss} TSS</span><span>${s.zone}</span>${s.done&&s.rpe?`<span class="rpe-chip" style="color:${rpeColor(s.rpe)}">RPE ${s.rpe}</span>`:''}${s.done&&s.rpeMuscle?`<span class="mus-chip" style="color:${rpeColor(s.rpeMuscle)}" title="Effort musculaire"><i class="ic ic-dumbbell" style="width:10px;height:10px;vertical-align:-1px"></i>${s.rpeMuscle}</span>`:''}</div>
     ${sessionProfileHTML(s)}
     ${vid?`<span class="video-chip">${vid.title}</span>`:''}
     ${s.done?'<span class="done-chip"><i class="ic ic-check"></i></span>':''}
@@ -4717,34 +4721,45 @@ function rpeColor(n){
 }
 function openRpeModal(s){
   const D = DISC[s.disc];
-  let rpe = null;
+  let rpe = null, rpeMuscle = null;
   modal.style.setProperty('--c', D.color);
   modal.innerHTML = `
     <button class="close" aria-label="Fermer"><i class="ic ic-x"></i></button>
     <span class="badge">${discIcon(D)} ${D.label}</span>
     <h3>Bien joué ! C'était comment ?</h3>
-    <p class="desc">Ton ressenti (RPE) aide ton coach à doser les prochaines séances — sois honnête, pas héroïque.</p>
-    <div class="rpe-grid">${Array.from({length:10},(_,i)=>`<button data-r="${i+1}" style="--rc:${rpeColor(i+1)}">${i+1}</button>`).join('')}</div>
+    <p class="desc">Ton ressenti aide ton coach à doser les prochaines séances — sois honnête, pas héroïque.</p>
+    <div class="rpe-lbl"><i class="ic ic-zap"></i> Effort cardio / respiratoire</div>
+    <div class="rpe-grid" id="rpeCardio">${Array.from({length:10},(_,i)=>`<button data-r="${i+1}" style="--rc:${rpeColor(i+1)}">${i+1}</button>`).join('')}</div>
     <div class="rpe-scale"><span>Très facile</span><span>À fond</span></div>
+    <div class="rpe-lbl" style="margin-top:14px"><i class="ic ic-dumbbell"></i> Effort musculaire (jambes) <span class="rpe-opt">facultatif</span></div>
+    <div class="rpe-grid" id="rpeMuscle">${Array.from({length:10},(_,i)=>`<button data-m="${i+1}" style="--rc:${rpeColor(i+1)}">${i+1}</button>`).join('')}</div>
+    <div class="rpe-scale"><span>Jambes fraîches</span><span>Jambes détruites</span></div>
     <textarea class="rpe-note" placeholder="Un mot pour ton coach ? (sensations, douleurs, conditions…)"></textarea>
     <button class="btn" id="rpeSave" disabled style="opacity:.5">Valider la séance <i class="ic ic-check"></i></button>`;
   overlay.classList.add('open');
   const save = modal.querySelector('#rpeSave');
-  modal.querySelectorAll('.rpe-grid button').forEach(b=>{
+  modal.querySelectorAll('#rpeCardio button').forEach(b=>{
     b.onclick = ()=>{
-      modal.querySelectorAll('.rpe-grid button').forEach(x=>x.classList.remove('sel'));
+      modal.querySelectorAll('#rpeCardio button').forEach(x=>x.classList.remove('sel'));
       b.classList.add('sel'); rpe = +b.dataset.r;
       save.disabled=false; save.style.opacity=1;
+    };
+  });
+  modal.querySelectorAll('#rpeMuscle button').forEach(b=>{
+    b.onclick = ()=>{
+      modal.querySelectorAll('#rpeMuscle button').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel'); rpeMuscle = +b.dataset.m;
     };
   });
   save.onclick = ()=>{
     if(!rpe) return;
     s.done = true; s.rpe = rpe;
+    if(rpeMuscle) s.rpeMuscle = rpeMuscle;
     const note = modal.querySelector('.rpe-note').value.trim();
     if(note) s.note = note;
     // Persistance backend (si connecté) — non bloquant.
     if(window.PF?.user && s.id){
-      PF.markSessionDone(s.id, { done:true, rpe })
+      PF.markSessionDone(s.id, { done:true, rpe, rpeMuscle })
         .catch(e=> console.warn('[PF] markSessionDone échoué :', e));
     }
     closeModal(); render();
@@ -4929,7 +4944,7 @@ function openModal(s){
         <div class="nutri-txt">${n.pre}</div>
         ${n.during?`<div class="nutri-during">⏱ Pendant : ${n.during}</div>`:''}
       </div>`; })()}
-    ${s.done&&s.rpe?`<div class="fb-block"><div class="k">Feedback athlète</div>Ressenti <b style="color:${rpeColor(s.rpe)}">RPE ${s.rpe}/10</b>${s.note?` — «&nbsp;${s.note}&nbsp;»`:''}</div>`:''}
+    ${s.done&&s.rpe?`<div class="fb-block"><div class="k">Feedback athlète</div>Cardio <b style="color:${rpeColor(s.rpe)}">RPE ${s.rpe}/10</b>${s.rpeMuscle?` · Musculaire <b style="color:${rpeColor(s.rpeMuscle)}">${s.rpeMuscle}/10</b>`:''}${s.note?` — «&nbsp;${s.note}&nbsp;»`:''}</div>`:''}
     ${(()=>{ const n=nutritionForSession(s); return `
       <div class="nutri-block nutri-post">
         <div class="nutri-head"><i class="ic ic-utensils"></i> Après la séance · récupération</div>
@@ -5069,8 +5084,12 @@ function applyDemoAthlete(i){
       const c = {...s};
       if(i>0 && k < todayK && c.done){
         c.done = rnd() < a.comp;
-        if(c.done){ c.rpe = Math.max(2, Math.min(10, (s.rpe||5) + Math.round((rnd()-0.5)*2))); }
-        else { c.rpe = null; }
+        if(c.done){
+          c.rpe = Math.max(2, Math.min(10, (s.rpe||5) + Math.round((rnd()-0.5)*2)));
+          // effort musculaire : plus marqué en course/renfo/Hyrox qu'à vélo/nat
+          const musBias = (c.disc==='run'||c.disc==='strength'||c.disc==='hyrox') ? 1 : -1;
+          c.rpeMuscle = Math.max(2, Math.min(10, c.rpe + musBias + Math.round((rnd()-0.5)*2)));
+        } else { c.rpe = null; c.rpeMuscle = null; }
       }
       (planning[k] ||= []).push(c);
     }
