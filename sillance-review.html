@@ -1796,10 +1796,11 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 .ln-cmt .ic{width:13px;height:13px}
 .ln-cmt:hover{color:var(--swim);border-color:var(--swim)}
 .ln-cmt.has{color:var(--swim);border-color:color-mix(in srgb,var(--swim) 55%,transparent);background:color-mix(in srgb,var(--swim) 12%,transparent)}
-.ln-note{grid-column:1/-1;margin-top:4px}
-.ln-note .lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 4px 2px;display:flex;align-items:center;gap:5px}
-.ln-note .lbl .ic{width:11px;height:11px}
-.ln-note textarea{width:100%;box-sizing:border-box;background:var(--panel);border:1px solid var(--line-strong);color:var(--text);border-radius:7px;padding:7px 9px;font-size:12px;font-family:inherit;resize:vertical;min-height:34px}
+.ln-note{grid-column:1/-1;margin-top:5px;display:flex;align-items:center;gap:7px;padding-left:2px}
+.ln-note>.ic{width:12px;height:12px;color:var(--muted);flex:none}
+.ln-note-in{flex:1;box-sizing:border-box;background:var(--panel);border:1px solid var(--line-strong);color:var(--text);border-radius:7px;padding:6px 10px;font-size:12px;font-family:inherit}
+.ln-note-in::placeholder{color:var(--muted);opacity:.7}
+.ln-note-in:focus{border-color:var(--accent);outline:none}
 /* consignes coach par intervalle — vue athlète (modal) */
 .sn-block{margin:14px 0;border:1px solid color-mix(in srgb,var(--swim) 30%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--swim) 7%,transparent);padding:12px 14px}
 .sn-head{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--swim);font-weight:700;display:flex;align-items:center;gap:7px;margin-bottom:9px}
@@ -1915,6 +1916,16 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 .chart-card .sub{font-family:var(--font-data);font-size:11px;color:var(--muted);margin-bottom:8px}
 .chart-card .big{font-family:var(--font-data);font-size:24px;font-weight:700;position:absolute;top:16px;right:18px}
 .chart-card svg{width:100%;height:auto;display:block}
+/* graphe de charge : séries cochables + défilement horizontal sur l'année */
+.ls-toggles{display:flex;flex-wrap:wrap;gap:7px;margin:2px 0 12px}
+.ls-tog{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px solid var(--line-strong);background:var(--panel-2);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;user-select:none}
+.ls-tog .sw{width:11px;height:11px;border-radius:3px;background:var(--ls-c);flex:none}
+.ls-tog.on{color:var(--text);border-color:var(--ls-c);background:color-mix(in srgb,var(--ls-c) 12%,transparent)}
+.ls-tog:not(.on) .sw{opacity:.35}
+.ls-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+.ls-scroll svg{width:auto;max-width:none;height:320px}
+.ls-scroll::-webkit-scrollbar{height:8px}
+.ls-scroll::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:4px}
 .legend{display:flex;gap:14px;flex-wrap:wrap;padding:6px 0 8px}
 .legend span{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
 .legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
@@ -2166,6 +2177,13 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     <p class="sub">Vitesse, fréquence cardiaque, volume et charge d'entraînement de l'athlète — mis à jour à chaque activité synchronisée.</p>
 
     <div class="charts">
+      <div class="chart-card c12">
+        <h3>Charge cumulée &amp; signaux <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— sur toute l'année du calendrier</span></h3>
+        <div class="sub">charge hebdo empilée par discipline · défile sur l'année · coche les signaux à afficher · survole une semaine pour le détail</div>
+        <div class="ls-toggles" id="loadStackToggles"></div>
+        <div class="ls-scroll" id="loadStackScroll"><svg id="loadStackChart" role="img" aria-label="Charge cumulée par discipline, fatigue, risque de blessure et forme"></svg></div>
+      </div>
+
       <div class="chart-card c5">
         <h3>Courbe lactate — vélo</h3>
         <div class="sub">test terrain · lactate (mmol/L) vs puissance</div>
@@ -2214,20 +2232,6 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
           <span><i style="background:var(--swim)"></i>Fitness</span>
           <span><i style="background:var(--run)"></i>Fatigue</span>
           <span><i style="background:var(--good)"></i>Zone de forme optimale</span>
-        </div>
-      </div>
-
-      <div class="chart-card c12">
-        <h3>Charge cumulée &amp; signaux <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— charge par sport · risque de blessure · forme</span></h3>
-        <div class="sub">charge hebdo empilée par discipline · survole une semaine pour tous les signaux (charge, volume, ACWR, forme)</div>
-        <svg id="loadStackChart" viewBox="0 0 940 320" role="img" aria-label="Charge cumulée par discipline, risque de blessure et forme"></svg>
-        <div class="legend" id="loadStackLegend">
-          <span><i style="background:var(--swim)"></i>Natation</span>
-          <span><i style="background:var(--bike)"></i>Vélo</span>
-          <span><i style="background:var(--run)"></i>Course</span>
-          <span><i style="background:#8E7FD0"></i>Renfo</span>
-          <span><i style="background:var(--bike);border-radius:2px;height:3px;width:14px"></i>Risque (ACWR)</span>
-          <span style="color:var(--muted)">Forme (TSB) &amp; volume : au survol</span>
         </div>
       </div>
 
@@ -6910,16 +6914,15 @@ function renderBlocks(){
 /* bouton commentaire + suppression, et la rangée de note repliable (coach).
    La note vit sur ln.note ; ln._noteOpen contrôle l'affichage pendant l'édition. */
 function lnActionsHTML(ln, delLabel){
-  const has = !!(ln.note && ln.note.trim());
-  const open = (ln._noteOpen===undefined) ? has : ln._noteOpen;
+  // Le champ commentaire est TOUJOURS visible sous chaque intervalle (récup,
+  // travail, repos…) — le coach peut y laisser une consigne pour l'athlète.
   return `<div class="ln-actions">
-      <button class="ln-cmt ${has?'has':''}" data-act="togglenote" title="Commentaire du coach" aria-label="Ajouter un commentaire"><i class="ic ic-message-circle"></i></button>
       <button class="ln-del" data-act="delline" aria-label="${delLabel}"><i class="ic ic-x"></i></button>
     </div>
-    ${open?`<div class="ln-note">
-      <div class="lbl"><i class="ic ic-message-circle"></i> Commentaire pour l'athlète</div>
-      <textarea data-f="note" rows="2" placeholder="Ex. garde les épaules basses, cadence 90…">${dispoSafe(ln.note||'')}</textarea>
-    </div>`:''}`;
+    <div class="ln-note">
+      <i class="ic ic-message-circle"></i>
+      <input type="text" class="ln-note-in" data-f="note" placeholder="Commentaire pour l'athlète (facultatif)…" value="${dispoSafe(ln.note||'')}">
+    </div>`;
 }
 
 function lineHTML(blk, ln){
@@ -8563,74 +8566,115 @@ hrChart();
 })();
 
 /* ============================================================
-   CHARGE CUMULÉE & SIGNAUX (#4 retour coach — graphe additif)
+   CHARGE CUMULÉE & SIGNAUX (#4 retour coach)
    ------------------------------------------------------------
-   Barres empilées = charge hebdo par discipline (charges qu'on
-   additionne). Ligne = ACWR (charge aiguë 7j / chronique 4 sem =
-   risque de blessure) avec zones. Survol = curseur commun qui lit
-   TOUS les signaux d'un coup : charge, volume horaire, ACWR, forme
-   (TSB). Additif : n'altère pas les graphes existants.
+   Barres empilées = charge hebdo par discipline, construite depuis
+   LE CALENDRIER (planning) sur toute l'année → défilement horizontal.
+   Séries cochables : Charge (barres), Fatigue (ATL), Risque (ACWR),
+   Forme (TSB). Les lignes ATL/TSB montrent la tendance (valeurs au
+   survol) ; l'ACWR garde une échelle fixe avec seuil 1.5. Curseur
+   commun qui lit tous les signaux d'un coup.
    ============================================================ */
-(function drawLoadStack(){
-  const svg=document.getElementById('loadStackChart'); if(!svg) return;
-  const {weeks,distSwim,distBike,distRun,ctl,atl}=STRAVA_DEMO;
-  const n=weeks.length;
-  // charge hebdo par discipline (proxy TSS : facteurs par sport)
-  const swim=distSwim.map(k=>Math.round(k*7));
-  const bike=distBike.map(k=>Math.round(k*1));
-  const run =distRun.map(k=>Math.round(k*6));
-  const strg=weeks.map((_,i)=> 30 + (i%3)*10);          // renfo (synthétique démo)
-  const total=weeks.map((_,i)=> swim[i]+bike[i]+run[i]+strg[i]);
-  const hours=weeks.map((_,i)=> distSwim[i]/3 + distBike[i]/30 + distRun[i]/11 + strg[i]/60);
-  const tsb=weeks.map((_,i)=> ctl[i]-atl[i]);
-  const acwr=weeks.map((_,i)=>{ const from=Math.max(0,i-3); const chron=total.slice(from,i+1).reduce((a,b)=>a+b,0)/(i-from+1); return chron? total[i]/chron : 1; });
+const LOAD_COLS={swim:'#46C2D8',bike:'#D9962F',run:'#DD5C72',strength:'#8E7FD0'};
+const loadStackShow={ charge:true, fatigue:false, risque:true, forme:true };
+function weekMonday(d){ return addDays(d, -((d.getDay()+6)%7)); }
 
-  const W=940,H=320,P={l:46,r:52,t:20,b:38};
-  const maxL=Math.max(...total)*1.14;
+/* Agrège la charge par semaine depuis le calendrier (planning). Complète les
+   semaines sans données par un historique démo déterministe pour donner une
+   année à défiler ; en usage réel, tout vient du planning. */
+function buildLoadWeeks(){
+  const DISCS=['swim','bike','run','strength'];
+  const real={}, hoursReal={};
+  for(const k in planning){
+    const d=new Date(k+'T00:00:00'); if(isNaN(d)) continue;
+    const wk=iso(weekMonday(d));
+    (real[wk] || (real[wk]={swim:0,bike:0,run:0,strength:0}));
+    (planning[k]||[]).forEach(s=>{ const disc=DISCS.includes(s.disc)?s.disc:'bike';
+      real[wk][disc]+=(s.tss||0); hoursReal[wk]=(hoursReal[wk]||0)+(s.dur||0)/60; });
+  }
+  const realKeys=Object.keys(real).sort();
+  const lastMon = realKeys.length ? new Date(realKeys[realKeys.length-1]+'T00:00:00') : weekMonday(new Date());
+  const weeks=[];
+  for(let i=51;i>=0;i--){
+    const mon=addDays(lastMon,-i*7), wk=iso(mon);
+    let load,hours;
+    if(real[wk]){ load={...real[wk]}; hours=hoursReal[wk]||0; }
+    else { const t=51-i, base=270+95*Math.sin(t/8)+((t*37)%55);
+      load={swim:Math.round(base*0.12),bike:Math.round(base*0.5),run:Math.round(base*0.3),strength:Math.round(base*0.08)}; hours=base/45; }
+    weeks.push({wk,mon,label:(mon.getDate()+'/'+(mon.getMonth()+1)),load,hours,
+      total:load.swim+load.bike+load.run+load.strength});
+  }
+  let ctl=0,atl=0;
+  weeks.forEach(w=>{ const daily=w.total/7; ctl+=(daily-ctl)*(1-Math.exp(-7/42)); atl+=(daily-atl)*(1-Math.exp(-7/7));
+    w.ctl=Math.round(ctl); w.atl=Math.round(atl); w.tsb=Math.round(ctl-atl); });
+  weeks.forEach((w,i)=>{ const from=Math.max(0,i-3); const ch=weeks.slice(from,i+1).reduce((a,b)=>a+b.total,0)/(i-from+1); w.acwr=ch?w.total/ch:1; });
+  return weeks;
+}
+
+function drawLoadStack(){
+  const svg=document.getElementById('loadStackChart'); if(!svg) return;
+  svg.innerHTML='';
+  const weeks=buildLoadWeeks(); const n=weeks.length;
+  const colW=Math.max(26,Math.min(46,Math.round(900/n)));
+  const W=Math.max(900, n*colW+90), H=320, P={l:46,r:52,t:18,b:40};
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.setAttribute('height',H);
   const x=i=>P.l+(i+0.5)*(W-P.l-P.r)/n;
+  const maxL=Math.max(...weeks.map(w=>w.total),100)*1.14;
   const yL=v=>H-P.b-(v/maxL)*(H-P.t-P.b);
   const aMin=0.5,aMax=2.0, yR=v=>H-P.b-((v-aMin)/(aMax-aMin))*(H-P.t-P.b);
-  const bw=(W-P.l-P.r)/n*0.56;
-  const cols={swim:'#46C2D8',bike:'#D9962F',run:'#DD5C72',strg:'#8E7FD0'};
+  // échelle auto pour une série "tendance" (ATL / TSB)
+  const trendScale=(vals)=>{ const mn=Math.min(...vals),mx=Math.max(...vals),pad=(mx-mn)*0.15||1;
+    return v=> H-P.b-((v-(mn-pad))/((mx+pad)-(mn-pad)))*(H-P.t-P.b); };
+  const bw=Math.min(colW*0.6,(W-P.l-P.r)/n*0.6);
 
-  // zones de risque ACWR (échelle droite)
-  el('rect',{x:P.l,y:P.t,width:W-P.l-P.r,height:Math.max(0,yR(1.5)-P.t),fill:'rgba(255,84,112,.06)'},svg);
-  el('rect',{x:P.l,y:yR(1.3),width:W-P.l-P.r,height:Math.max(0,yR(0.8)-yR(1.3)),fill:'rgba(57,230,163,.06)'},svg);
-  el('line',{x1:P.l,x2:W-P.r,y1:yR(1.5),y2:yR(1.5),stroke:'rgba(255,84,112,.4)','stroke-dasharray':'5 4'},svg);
-
+  if(loadStackShow.risque){
+    el('rect',{x:P.l,y:P.t,width:W-P.l-P.r,height:Math.max(0,yR(1.5)-P.t),fill:'rgba(255,84,112,.06)'},svg);
+    el('rect',{x:P.l,y:yR(1.3),width:W-P.l-P.r,height:Math.max(0,yR(0.8)-yR(1.3)),fill:'rgba(57,230,163,.06)'},svg);
+    el('line',{x1:P.l,x2:W-P.r,y1:yR(1.5),y2:yR(1.5),stroke:'rgba(255,84,112,.4)','stroke-dasharray':'5 4'},svg);
+  }
   for(let g=0;g<=4;g++){ const v=maxL*g/4,yv=yL(v); el('line',{x1:P.l,x2:W-P.r,y1:yv,y2:yv,class:'gridline'},svg);
     el('text',{x:P.l-8,y:yv+3,class:'axis','text-anchor':'end'},svg).textContent=Math.round(v); }
-  [0.8,1.0,1.5,2.0].forEach(v=> el('text',{x:W-P.r+8,y:yR(v)+3,class:'axis','text-anchor':'start',fill:cols.bike},svg).textContent=v.toFixed(1));
+  if(loadStackShow.risque) [0.8,1.0,1.5,2.0].forEach(v=> el('text',{x:W-P.r+8,y:yR(v)+3,class:'axis','text-anchor':'start',fill:LOAD_COLS.bike},svg).textContent=v.toFixed(1));
 
-  let cursor=null;
+  // barres de charge empilées (une étiquette de semaine sur ~5 pour rester lisible)
+  const step=Math.ceil(n/16);
   weeks.forEach((w,i)=>{
-    const cx=x(i); let acc=0;
-    [['swim',swim],['bike',bike],['run',run],['strg',strg]].forEach(([key,arr])=>{
-      el('rect',{x:cx-bw/2,y:yL(acc+arr[i]),width:bw,height:(arr[i]/maxL)*(H-P.t-P.b),fill:cols[key],rx:2,opacity:.92},svg);
-      acc+=arr[i];
-    });
-    el('text',{x:cx,y:H-12,class:'axis','text-anchor':'middle'},svg).textContent=w;
+    if(loadStackShow.charge){ let acc=0;
+      ['swim','bike','run','strength'].forEach(key=>{ const v=w.load[key];
+        el('rect',{x:x(i)-bw/2,y:yL(acc+v),width:bw,height:(v/maxL)*(H-P.t-P.b),fill:LOAD_COLS[key],rx:1.5,opacity:.92},svg); acc+=v; }); }
+    if(i%step===0) el('text',{x:x(i),y:H-12,class:'axis','text-anchor':'middle'},svg).textContent=w.label;
   });
+  const line=(vals,yfn,color)=>{ const pts=vals.map((v,i)=>[x(i),yfn(v)]);
+    el('path',{d:smoothPath(pts),fill:'none',stroke:color,'stroke-width':2.1,opacity:.95},svg); };
+  if(loadStackShow.fatigue) line(weeks.map(w=>w.atl), trendScale(weeks.map(w=>w.atl)), '#FF5470');
+  if(loadStackShow.forme)   line(weeks.map(w=>w.tsb), trendScale(weeks.map(w=>w.tsb)), '#39E6A3');
+  if(loadStackShow.risque){ const pts=weeks.map((w,i)=>[x(i),yR(w.acwr)]);
+    el('path',{d:smoothPath(pts),fill:'none',stroke:LOAD_COLS.bike,'stroke-width':2.2},svg); }
 
-  // ligne ACWR (risque de blessure)
-  const apts=acwr.map((v,i)=>[x(i),yR(v)]);
-  el('path',{d:smoothPath(apts),fill:'none',stroke:cols.bike,'stroke-width':2.2},svg);
-  apts.forEach(p=> el('circle',{cx:p[0],cy:p[1],r:3,fill:'#0D121E',stroke:cols.bike,'stroke-width':2},svg));
-
-  // curseur commun + zones de survol (par-dessus tout)
-  cursor=el('line',{x1:0,x2:0,y1:P.t,y2:H-P.b,stroke:'rgba(255,255,255,.45)','stroke-dasharray':'3 3'},svg);
-  cursor.style.opacity=0;
+  // curseur commun + survol
+  const cursor=el('line',{x1:0,x2:0,y1:P.t,y2:H-P.b,stroke:'rgba(255,255,255,.45)','stroke-dasharray':'3 3'},svg); cursor.style.opacity=0;
   weeks.forEach((w,i)=>{
     const cx=x(i);
     const hit=el('rect',{x:cx-(W-P.l-P.r)/n/2,y:P.t,width:(W-P.l-P.r)/n,height:H-P.t-P.b,fill:'transparent'},svg);
     hit.style.cursor='crosshair';
     hit.addEventListener('mousemove',e=>{
-      if(cursor){ cursor.setAttribute('x1',cx); cursor.setAttribute('x2',cx); cursor.style.opacity=1; }
-      const risk = acwr[i]>1.5?'<span style="color:#FF5470">élevé</span>':acwr[i]<0.8?'<span style="color:#FFB13D">sous-charge</span>':'<span style="color:#39E6A3">maîtrisé</span>';
-      tipShow(e,`<b>${w}</b> · charge <b>${total[i]}</b> · <b>${hours[i].toFixed(1)} h</b><br>Nat ${swim[i]} · Vélo ${bike[i]} · Course ${run[i]} · Renfo ${strg[i]}<br>Risque ACWR <b>${acwr[i].toFixed(2)}</b> (${risk}) · Forme TSB ${tsb[i]>=0?'+':''}${tsb[i]}`);
+      cursor.setAttribute('x1',cx); cursor.setAttribute('x2',cx); cursor.style.opacity=1;
+      const risk=w.acwr>1.5?'<span style="color:#FF5470">élevé</span>':w.acwr<0.8?'<span style="color:#FFB13D">sous-charge</span>':'<span style="color:#39E6A3">maîtrisé</span>';
+      const dd=w.mon, end=addDays(dd,6);
+      tipShow(e,`<b>Sem. ${dd.getDate()}/${dd.getMonth()+1}</b> · charge <b>${w.total}</b> · <b>${w.hours.toFixed(1)} h</b><br>Nat ${w.load.swim} · Vélo ${w.load.bike} · Course ${w.load.run} · Renfo ${w.load.strength}<br>Fatigue ${w.atl} · Risque ACWR <b>${w.acwr.toFixed(2)}</b> (${risk}) · Forme ${w.tsb>=0?'+':''}${w.tsb}`);
     });
-    hit.addEventListener('mouseleave',()=>{ if(cursor) cursor.style.opacity=0; tipHide(); });
+    hit.addEventListener('mouseleave',()=>{ cursor.style.opacity=0; tipHide(); });
   });
+}
+
+/* barre de séries cochables + rendu initial (défile en fin d'année) */
+(function initLoadStack(){
+  const box=document.getElementById('loadStackToggles'); if(!box) return;
+  const items=[['charge','Charge',LOAD_COLS.bike],['fatigue','Fatigue (ATL)','#FF5470'],['risque','Risque (ACWR)',LOAD_COLS.bike],['forme','Forme (TSB)','#39E6A3']];
+  box.innerHTML=items.map(([k,l,c])=>`<button class="ls-tog ${loadStackShow[k]?'on':''}" data-ls="${k}" style="--ls-c:${c}"><span class="sw"></span>${l}</button>`).join('');
+  box.querySelectorAll('[data-ls]').forEach(b=> b.onclick=()=>{ const k=b.dataset.ls; loadStackShow[k]=!loadStackShow[k]; b.classList.toggle('on',loadStackShow[k]); drawLoadStack(); });
+  drawLoadStack();
+  const sc=document.getElementById('loadStackScroll'); if(sc) sc.scrollLeft=sc.scrollWidth;   // démarre sur les semaines récentes
 })();
 
 /* ---- Courbes lactate (course + vélo) ---- */
