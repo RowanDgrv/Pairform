@@ -1834,6 +1834,19 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 .zed-note{font-size:11.5px;color:var(--muted);margin-top:4px}
 /* sélecteur de zone dans le builder */
 .ln-zonesel{font-family:var(--font-ui);font-size:11px;font-weight:600;border:1px solid var(--lz,var(--line-strong));background:color-mix(in srgb,var(--lz,var(--muted)) 12%,transparent);color:var(--lz,var(--soft));border-radius:6px;padding:2px 5px;cursor:pointer;max-width:150px}
+/* onglets de l'éditeur de zones + zones perso libres */
+.zed-tabs{display:flex;gap:6px;margin:2px 0 4px}
+.zed-tab{flex:1;padding:8px;border:1px solid var(--line-strong);background:var(--panel-2);color:var(--muted);border-radius:9px;font-weight:600;font-size:12.5px;cursor:pointer;font-family:inherit}
+.zed-tab.on{color:var(--swim);border-color:var(--swim);background:color-mix(in srgb,var(--swim) 12%,transparent)}
+.zed-panel[hidden]{display:none}
+.zc-row{display:grid;grid-template-columns:14px 1fr 148px 116px 26px;gap:8px;align-items:center;margin-bottom:7px}
+.zc-dot{width:11px;height:11px;border-radius:3px;background:var(--swim)}
+.zc-row .zc-name,.zc-row select{background:var(--panel);border:1px solid var(--line-strong);color:var(--text);border-radius:7px;padding:7px 9px;font-size:12.5px;font-family:inherit}
+.zc-range{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+.zc-range input{width:42px;background:var(--panel);border:1px solid var(--line-strong);color:var(--text);border-radius:7px;padding:6px 6px;font-size:12px;font-family:var(--font-data);text-align:right}
+.zc-tgt{grid-column:2/-1;font-family:var(--font-data);font-size:10.5px;color:var(--swim);margin:-3px 0 5px 0}
+.zc-empty{font-size:12.5px;color:var(--muted);text-align:center;padding:16px 8px}
+.zed-panel .zed-note{margin-top:8px}
 .hx-station{font-weight:600}
 .hx-target{display:flex;align-items:center;gap:5px}
 .hx-target input{width:60px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--text);
@@ -4974,26 +4987,86 @@ function zedWireModel(key, root){
     zedRenderModel(key, root);
   };
 }
+/* toutes les références utilisables pour une zone perso (« tout ce qui existe ») */
+const ZONE_REFS = [
+  ['ftp','% FTP · vélo'], ['pma','% PMA · vélo'], ['cpBike','% Puissance critique · vélo'],
+  ['vma','% VMA · course'], ['cv','% Vitesse critique · course'], ['seuilRun','% allure seuil · course'],
+  ['css','% CSS · natation'], ['fc','% FC max']
+];
+function customZones(aid){ aid=aid||zoneAthleteId(); return (CUSTOM_ZONES[aid] && CUSTOM_ZONES[aid]._custom) || []; }
+/* aperçu de cible pour une zone perso (ex. "230 → 260 W") */
+function zcTargetHint(ref, lo, hi){
+  try{ const a=computeTarget(ref,lo), b=computeTarget(ref,hi); if(!a||!b) return '';
+    const unit=(b.match(/[^0-9.,\s]+.*$/)||[''])[0]; const bn=b.replace(/\s*[^0-9.,].*$/,'');
+    return `${a.replace(/\s*[^0-9.,].*$/,'')} → ${b}`; }catch(e){ return ''; }
+}
+function zcRowHTML(z,i){
+  return `<div class="zc-row" data-i="${i}">
+    <span class="zc-dot" style="background:${zoneColorAt(i, Math.max(1,ZED.custom.length))}"></span>
+    <input class="zc-name" value="${dispoSafe(z.name)}" data-zc="name" placeholder="Nom de la zone">
+    <select data-zc="ref">${ZONE_REFS.map(([k,l])=>`<option value="${k}" ${k===z.ref?'selected':''}>${l}</option>`).join('')}</select>
+    <span class="zc-range">de <input type="number" min="0" max="200" value="${z.lo}" data-zc="lo"> à <input type="number" min="0" max="200" value="${z.hi}" data-zc="hi"> %</span>
+    <button class="zed-drow" data-zcdel="${i}" aria-label="Supprimer"><i class="ic ic-x"></i></button>
+    <div class="zc-tgt">${zcTargetHint(z.ref,z.lo,z.hi)}</div>
+  </div>`;
+}
+function zedRenderCustom(root){
+  root.innerHTML = `<p class="zed-note">Crée tes propres zones de travail : nomme-les, choisis la référence (FTP, puissance critique, %VMA, CV, CSS, FC…) et l'intensité. Elles apparaissent dans le sélecteur de zone à la création de séance.</p>`
+    + (ZED.custom.length ? ZED.custom.map(zcRowHTML).join('') : `<div class="zc-empty">Aucune zone perso — ajoute ta première ci-dessous.</div>`)
+    + `<button class="zed-add" id="zcAdd">+ Ajouter une zone perso</button>`;
+  zedWireCustom(root);
+}
+function zedWireCustom(root){
+  root.querySelectorAll('.zc-row').forEach(rowEl=>{
+    const i=+rowEl.dataset.i; const z=ZED.custom[i];
+    rowEl.querySelectorAll('[data-zc]').forEach(inp=>{
+      const f=inp.dataset.zc;
+      inp.addEventListener(f==='ref'?'change':'input', ()=>{
+        if(f==='name') z.name=inp.value;
+        else if(f==='ref'){ z.ref=inp.value; const tgt=rowEl.querySelector('.zc-tgt'); if(tgt) tgt.textContent=zcTargetHint(z.ref,z.lo,z.hi); }
+        else { z[f]=Math.max(0,Math.min(200,+inp.value||0)); const tgt=rowEl.querySelector('.zc-tgt'); if(tgt) tgt.textContent=zcTargetHint(z.ref,z.lo,z.hi); }
+      });
+    });
+    rowEl.querySelector('[data-zcdel]').onclick=()=>{ ZED.custom.splice(i,1); zedRenderCustom(root); };
+  });
+  const add=root.querySelector('#zcAdd');
+  if(add) add.onclick=()=>{ ZED.custom.push({name:'Nouvelle zone', ref:'ftp', lo:88, hi:95}); zedRenderCustom(root); };
+}
+
 function openZoneEditor(){
   const aid=zoneAthleteId();
   const name=(typeof ROSTER!=='undefined' && ROSTER[selectedAthleteIdx] && ROSTER[selectedAthleteIdx].name)
     || (typeof ATHLETE_NAME!=='undefined'?ATHLETE_NAME:'cet athlète');
   const models=editableZoneModels();
-  ZED={ aid, name, models:{} };
+  ZED={ aid, name, models:{}, custom: JSON.parse(JSON.stringify(customZones(aid))) };
   models.forEach(k=> ZED.models[k]=JSON.parse(JSON.stringify(zonesFor(k, aid))));
   const el=document.createElement('div'); el.className='adh-overlay';
   el.innerHTML=`<div class="adh-modal zed-modal" role="dialog" aria-label="Zones de travail">
     <button class="adh-close" aria-label="Fermer">✕</button>
     <h3>Zones de travail — ${dispoSafe(name)}</h3>
-    <p class="adh-sub">Adapte les zones de chaque athlète (test lactate, ressenti terrain…). Elles sont utilisées dans la création de séance et l'analyse. La borne basse d'une zone suit la borne haute de la précédente.</p>
-    <div id="zedModels">${models.map(zedModelHTML).join('')}</div>
-    <p class="zed-note">Les zones en allure (natation CSS, allure seuil course) gardent le modèle standard pour l'instant.</p>
+    <p class="adh-sub">Adapte les zones de l'athlète (test lactate, ressenti terrain…). Elles servent à la création de séance et à l'analyse.</p>
+    <div class="zed-tabs">
+      <button class="zed-tab on" data-ztab="ref">Par référence</button>
+      <button class="zed-tab" data-ztab="custom">Zones perso</button>
+    </div>
+    <div class="zed-panel" id="zedPanelRef">
+      <div id="zedModels">${models.map(zedModelHTML).join('')}</div>
+      <p class="zed-note">La borne basse d'une zone suit la borne haute de la précédente. Les zones en allure (natation CSS, allure seuil course) gardent le modèle standard.</p>
+    </div>
+    <div class="zed-panel" id="zedPanelCustom" hidden></div>
     <button class="btn asg-go" id="zedSave" style="margin-top:16px">Enregistrer les zones</button>
   </div>`;
   document.body.appendChild(el);
   requestAnimationFrame(()=>el.classList.add('open'));
   const root=el.querySelector('#zedModels');
   models.forEach(k=> zedWireModel(k, root));
+  const customRoot=el.querySelector('#zedPanelCustom');
+  zedRenderCustom(customRoot);
+  el.querySelectorAll('.zed-tab').forEach(tab=> tab.onclick=()=>{
+    el.querySelectorAll('.zed-tab').forEach(t=>t.classList.toggle('on', t===tab));
+    el.querySelector('#zedPanelRef').hidden = tab.dataset.ztab!=='ref';
+    el.querySelector('#zedPanelCustom').hidden = tab.dataset.ztab!=='custom';
+  });
   const close=()=>{ el.classList.remove('open'); setTimeout(()=>el.remove(),180); };
   el.querySelector('.adh-close').onclick=close;
   el.addEventListener('click', e=>{ if(e.target===el) close(); });
@@ -5007,6 +5080,11 @@ function openZoneEditor(){
       if(JSON.stringify(z)===def) delete CUSTOM_ZONES[aid][k];
       else CUSTOM_ZONES[aid][k]=z;
     });
+    // zones perso libres : nettoyées (nom + bornes cohérentes) puis stockées
+    const clean = ZED.custom.map(z=>({ name:(z.name||'Zone').trim()||'Zone', ref:z.ref||'ftp',
+      lo:Math.max(0,Math.min(200,+z.lo||0)), hi:Math.max(0,Math.min(200,+z.hi||0)) }))
+      .map(z=> (z.hi<z.lo?{...z,lo:z.hi,hi:z.lo}:z));
+    if(clean.length) CUSTOM_ZONES[aid]._custom = clean; else delete CUSTOM_ZONES[aid]._custom;
     if(!Object.keys(CUSTOM_ZONES[aid]).length) delete CUSTOM_ZONES[aid];
     persistCustomZones(aid);
     // rafraîchir le builder seulement s'il est réellement ouvert (builderState posé)
@@ -6883,9 +6961,13 @@ function lineHTML(blk, ln){
     const zList = zonesFor(ln.model);
     const zIdx = zList.findIndex(z=>z[0]===zn);
     const zCol = zIdx>=0 ? zoneColorAt(zIdx, zList.length) : 'var(--muted)';
+    // zones perso compatibles avec la discipline de la séance (index d'origine gardé)
+    const custZ = customZones().map((z,ci)=>({z,ci}))
+      .filter(({z})=>{ const m=INTENSITY_MODELS[z.ref]; return m && (m.disc===builderState.disc || m.disc==='all'); });
     const zoneSel = `<select class="ln-zonesel" data-f="zonesel" style="--lz:${zCol}" title="Choisir la zone de travail">
         ${zList.map((z,i)=>`<option value="${i}" ${i===zIdx?'selected':''}>${dispoSafe(z[0])}</option>`).join('')}
         ${zIdx<0?`<option value="-1" selected>${zn||'—'}</option>`:''}
+        ${custZ.length?`<optgroup label="Zones perso">${custZ.map(({z,ci})=>`<option value="c${ci}">${dispoSafe(z.name)} · ${REF_LABEL[z.ref]||z.ref}</option>`).join('')}</optgroup>`:''}
       </select>`;
     intHTML = `
       <div class="ln-zone-row">
@@ -7014,8 +7096,14 @@ function wireBlocks(){
           else if(f==='durm'){ ln.dur.m=+inp.value; updateBuilderSummary(); }
           else if(f==='dist'){ ln.dist=+inp.value||0; updateBuilderSummary(); }
           else if(f==='zonesel'){
-            const zList=zonesFor(ln.model); const z=zList[+inp.value];
-            if(z){ const mid=Math.round((z[1]+z[2])/2); ln.pct=Math.max(40,Math.min(130,mid)); ln.rpe=rpeFromPct(ln.pct); renderBlocks(); }
+            const v=inp.value;
+            if(v && v[0]==='c'){   // zone perso : change la référence + place le %
+              const cz=customZones()[+v.slice(1)];
+              if(cz){ ln.model=cz.ref; const mid=Math.round((cz.lo+cz.hi)/2); ln.pct=Math.max(40,Math.min(130,mid)); ln.rpe=rpeFromPct(ln.pct); renderBlocks(); }
+            } else {
+              const zList=zonesFor(ln.model); const z=zList[+v];
+              if(z){ const mid=Math.round((z[1]+z[2])/2); ln.pct=Math.max(40,Math.min(130,mid)); ln.rpe=rpeFromPct(ln.pct); renderBlocks(); }
+            }
           }
         });
         if(f==='pct'||f==='pctn') inp.addEventListener('change', ()=> renderBlocks());
