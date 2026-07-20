@@ -2318,8 +2318,8 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       </div>
 
       <div class="chart-card c5">
-        <h3>Foulée, puissance &amp; raideur</h3>
-        <div class="sub">paramètres associés à l'économie de course</div>
+        <h3>Foulée &amp; puissance</h3>
+        <div class="sub">longueur de foulée · puissance (W) si le capteur la fournit</div>
         <div class="rd-tiles" id="runTilesBody"></div>
       </div>
 
@@ -8666,9 +8666,7 @@ function renderRunDynamics(){
 function renderRunTiles(){
   const box=document.getElementById('runTilesBody'); if(!box) return;
   const tiles=[['Longueur de foulée','strideLen','m','à '+RUN_DYN.cadence+' pas/min'],
-    ['Puissance de course','runPower','W','capteur type Stryd'],
-    ['Raideur de jambe','legStiff','kN/m','leg stiffness'],
-    ['Duty factor','dutyFactor','%','part du cycle au sol']];
+    ['Puissance de course','runPower','W','si capteur type Stryd']];
   box.innerHTML=tiles.map(([k,key,u,d])=>`<div class="rd-tile"><div class="k">${k}</div><div class="v">${RUN_DYN[key]}<small> ${u}</small></div><div class="d">${d}</div></div>`).join('');
 }
 function renderRunSymmetry(){
