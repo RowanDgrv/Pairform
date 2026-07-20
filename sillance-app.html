@@ -1920,6 +1920,9 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
   background:linear-gradient(180deg,var(--panel-2),var(--panel));
   padding:18px 18px 10px;overflow:hidden;position:relative;
 }
+.chart-section{grid-column:1/-1;font-family:var(--font-display,'Oswald');font-weight:600;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent2,#FF9A3D);display:flex;align-items:center;gap:12px;margin:10px 0 -4px}
+.chart-section::after{content:'';flex:1;height:1px;background:var(--line-strong)}
+.chart-section:first-child{margin-top:0}
 .chart-card.c7{grid-column:span 7}.chart-card.c5{grid-column:span 5}
 .chart-card.c6{grid-column:span 6}.chart-card.c12{grid-column:span 12}
 @media (max-width:900px){.chart-card.c7,.chart-card.c5,.chart-card.c6,.chart-card.c12{grid-column:span 12}}
@@ -2263,6 +2266,9 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
     <p class="sub">Vitesse, fréquence cardiaque, volume et charge d'entraînement de l'athlète — mis à jour à chaque activité synchronisée.</p>
 
     <div class="charts">
+      <!-- ===== Bloc 1 : suivi dans le temps (graphes synchronisés) ===== -->
+      <div class="chart-section">Suivi dans le temps</div>
+
       <div class="chart-card c12">
         <h3>Charge cumulée &amp; signaux <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— sur toute l'année du calendrier</span></h3>
         <div class="sub">charge hebdo empilée par discipline · défile sur l'année · coche les signaux à afficher · survole une semaine pour le détail</div>
@@ -2276,16 +2282,15 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
         </div>
       </div>
 
-      <div class="chart-card c5">
-        <h3>Courbe lactate — vélo</h3>
-        <div class="sub">test terrain · lactate (mmol/L) vs puissance</div>
-        <svg id="lactateBike" viewBox="0 0 460 250" role="img" aria-label="Courbe lactate vélo"></svg>
-        <div class="lactate-legend">
-          <span><i style="background:var(--bike)"></i>Lactate</span>
-          <span><i class="dot" style="background:var(--good)"></i>SV1</span>
-          <span><i class="dot" style="background:var(--run)"></i>SV2</span>
+      <div class="chart-card c12">
+        <h3>Charge & forme <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— curseur synchronisé avec FTP &amp; distance</span></h3>
+        <div class="sub">Fitness (CTL) · Fatigue (ATL) · 8 semaines</div>
+        <svg id="loadChart" viewBox="0 0 640 240" role="img" aria-label="Évolution de la charge et de la forme"></svg>
+        <div class="legend">
+          <span><i style="background:var(--swim)"></i>Fitness</span>
+          <span><i style="background:var(--run)"></i>Fatigue</span>
+          <span><i style="background:var(--good)"></i>Zone de forme optimale</span>
         </div>
-        <div class="lt-thresholds" id="ltBikeTh"></div>
       </div>
 
       <div class="chart-card c6">
@@ -2300,12 +2305,6 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
       </div>
 
       <div class="chart-card c6">
-        <h3>Zones de fréquence cardiaque</h3>
-        <div class="sub">répartition du temps · 4 dernières semaines</div>
-        <svg id="hrChart" viewBox="0 0 460 230" role="img" aria-label="Répartition des zones cardiaques"></svg>
-      </div>
-
-      <div class="chart-card c5">
         <h3>Distance hebdomadaire</h3>
         <div class="sub">par discipline · km</div>
         <svg id="distChart" viewBox="0 0 460 240" role="img" aria-label="Distance hebdomadaire par discipline"></svg>
@@ -2316,15 +2315,19 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
         </div>
       </div>
 
-      <div class="chart-card c7">
-        <h3>Charge & forme</h3>
-        <div class="sub">Fitness (CTL) · Fatigue (ATL) · 8 semaines</div>
-        <svg id="loadChart" viewBox="0 0 640 240" role="img" aria-label="Évolution de la charge et de la forme"></svg>
-        <div class="legend">
-          <span><i style="background:var(--swim)"></i>Fitness</span>
-          <span><i style="background:var(--run)"></i>Fatigue</span>
-          <span><i style="background:var(--good)"></i>Zone de forme optimale</span>
+      <!-- ===== Bloc 2 : tests & records ===== -->
+      <div class="chart-section">Tests &amp; records</div>
+
+      <div class="chart-card c12">
+        <h3>Courbe lactate — vélo</h3>
+        <div class="sub">test terrain · lactate (mmol/L) vs puissance</div>
+        <svg id="lactateBike" viewBox="0 0 460 250" role="img" aria-label="Courbe lactate vélo"></svg>
+        <div class="lactate-legend">
+          <span><i style="background:var(--bike)"></i>Lactate</span>
+          <span><i class="dot" style="background:var(--good)"></i>SV1</span>
+          <span><i class="dot" style="background:var(--run)"></i>SV2</span>
         </div>
+        <div class="lt-thresholds" id="ltBikeTh"></div>
       </div>
 
       <div class="chart-card c12">
@@ -2342,13 +2345,22 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
         <div class="legend" id="durabLegend"></div>
       </div>
 
-      <div class="chart-card c5">
+      <!-- ===== Bloc 3 : répartition & profil ===== -->
+      <div class="chart-section">Répartition &amp; profil</div>
+
+      <div class="chart-card c6">
+        <h3>Zones de fréquence cardiaque</h3>
+        <div class="sub">répartition du temps · 4 dernières semaines</div>
+        <svg id="hrChart" viewBox="0 0 460 230" role="img" aria-label="Répartition des zones cardiaques"></svg>
+      </div>
+
+      <div class="chart-card c6">
         <h3>Charge d'entraînement <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— méthode</span></h3>
         <div class="sub">comment la charge de chaque séance est calculée (estimé)</div>
         <div id="loadMixBody"></div>
       </div>
 
-      <div class="chart-card c7">
+      <div class="chart-card c12">
         <h3>Profil Hyrox</h3>
         <div class="sub">charge aérobie vs musculaire · dégradation d'allure · course sous fatigue</div>
         <div id="hyroxBody"></div>
