@@ -8531,6 +8531,24 @@ function smoothPath(pts){
 function pacefmt(v){ const m=Math.floor(v), s=Math.round((v-m)*60); return `${m}'${String(s).padStart(2,'0')}"` } /* utile pour vos futurs graphiques d'allure */
 
 /* ---- 1b. FTP & PMA — double courbe watts ---- */
+/* ============================================================
+   CURSEUR SYNCHRONISÉ entre les graphes temporels (#4 finition)
+   ------------------------------------------------------------
+   FTP&PMA, Distance hebdo et Charge&forme partagent les mêmes 8
+   semaines. Survoler une semaine sur l'un place un curseur à la même
+   semaine sur TOUS — on lit les 3 graphes d'un coup pour un instant T.
+   ============================================================ */
+const TSYNC = {
+  charts: [],
+  register(centerFn, cursor){ this.charts.push({centerFn, cursor}); },
+  hover(i){ this.charts.forEach(c=>{ const x=c.centerFn(i); if(x==null||isNaN(x)) return; c.cursor.setAttribute('x1',x); c.cursor.setAttribute('x2',x); c.cursor.style.opacity=1; }); },
+  clear(){ this.charts.forEach(c=> c.cursor.style.opacity=0); }
+};
+function tsyncCursor(svg, P, H){
+  const cur=el('line',{x1:0,x2:0,y1:P.t,y2:H-P.b,stroke:'rgba(255,255,255,.4)','stroke-dasharray':'3 3','pointer-events':'none'},svg);
+  cur.style.opacity=0; svg.addEventListener('mouseleave', ()=>TSYNC.clear()); return cur;
+}
+
 (function ftpChart(){
   const svg = document.getElementById('ftpChart');
   const W=460,H=220,P={l:44,r:14,t:16,b:28};
@@ -8555,10 +8573,11 @@ function pacefmt(v){ const m=Math.floor(v), s=Math.round((v-m)*60); return `${m}
     el('path',{d:smoothPath(pts),class:'glow-line draw',stroke:color,filter:'url(#glowF)'},svg);
     pts.forEach((p,i)=>{
       const c=el('circle',{cx:p[0],cy:p[1],r:3.5,fill:'#0D121E',stroke:color,'stroke-width':2,class:'dot'},svg);
-      c.addEventListener('mousemove',e=>tipShow(e,`<b style="color:${color}">${name} ${data[i]}W</b> · ${weeks[i]} · ${(data[i]/weightKg).toFixed(2)} W/kg`));
+      c.addEventListener('mousemove',e=>{ tipShow(e,`<b style="color:${color}">${name} ${data[i]}W</b> · ${weeks[i]} · ${(data[i]/weightKg).toFixed(2)} W/kg`); TSYNC.hover(i); });
       c.addEventListener('mouseleave',tipHide);
     });
   };
+  const cur=tsyncCursor(svg,P,H); TSYNC.register(x,cur);
   draw(pma,'#9D7BFF','PMA');
   draw(ftp,'#FFB13D','FTP');
   document.getElementById('ftpNow').textContent = ftp.at(-1)+'W';
@@ -8616,6 +8635,7 @@ hrChart();
     const t=el('text',{x:P.l-6,y:yv+3,class:'axis','text-anchor':'end'},svg);
     t.textContent=Math.round(max*g/3);
   }
+  const cur=tsyncCursor(svg,P,H); TSYNC.register(i=>x(i)+bw/2, cur);
   weeks.forEach((w,i)=>{
     let yCur=H-P.b;
     const stack=[['Course',distRun[i],'#FF5470'],['Vélo',distBike[i],'#FFB13D'],['Natation ×10',distSwim[i]*10,'#2FD9FF']];
@@ -8623,7 +8643,7 @@ hrChart();
       const hh=h(v);
       const r=el('rect',{x:x(i),y:yCur-hh,width:bw,height:Math.max(2,hh-2),rx:4,fill:c,opacity:.9},svg);
       r.style.filter=`drop-shadow(0 0 6px ${c}44)`;
-      r.addEventListener('mousemove',e=>tipShow(e,`<b style="color:${c}">${name}</b> · ${name.includes('Natation')?(v/10).toFixed(1):v} km · ${w}`));
+      r.addEventListener('mousemove',e=>{ tipShow(e,`<b style="color:${c}">${name}</b> · ${name.includes('Natation')?(v/10).toFixed(1):v} km · ${w}`); TSYNC.hover(i); });
       r.addEventListener('mouseleave',tipHide);
       yCur-=hh;
     });
@@ -8662,10 +8682,11 @@ hrChart();
     el('path',{d:smoothPath(pts),class:'glow-line draw',stroke:color,filter:'url(#glowL)'},svg);
     pts.forEach((p,i)=>{
       const c=el('circle',{cx:p[0],cy:p[1],r:3.5,fill:'#0D121E',stroke:color,'stroke-width':2,class:'dot'},svg);
-      c.addEventListener('mousemove',e=>tipShow(e,`<b style="color:${color}">${data===ctl?'Fitness':'Fatigue'} ${data[i]}</b> · ${weeks[i]} · TSB ${ctl[i]-atl[i]>=0?'+':''}${ctl[i]-atl[i]}`));
+      c.addEventListener('mousemove',e=>{ tipShow(e,`<b style="color:${color}">${data===ctl?'Fitness':'Fatigue'} ${data[i]}</b> · ${weeks[i]} · TSB ${ctl[i]-atl[i]>=0?'+':''}${ctl[i]-atl[i]}`); TSYNC.hover(i); });
       c.addEventListener('mouseleave',tipHide);
     });
   };
+  const cur=tsyncCursor(svg,P,H); TSYNC.register(x,cur);
   draw(atl,'#FF5470');
   draw(ctl,'#2FD9FF');
 })();
