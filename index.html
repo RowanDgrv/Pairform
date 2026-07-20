@@ -124,6 +124,34 @@ main,.nav,footer{position:relative;z-index:1}
 @media(max-width:880px){.steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 24px}}
 @media(max-width:520px){.steps{grid-template-columns:1fr}}
 
+/* tarifs */
+.price-coach{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;
+  border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:14px;padding:22px 26px;
+  background:linear-gradient(180deg,var(--panel),rgba(18,26,43,.35));margin-bottom:40px}
+.price-coach .kicker{display:block;margin-bottom:8px}
+.price-coach h3{font-family:var(--display);font-weight:600;font-size:22px;text-transform:uppercase}
+.price-coach p{color:var(--soft);font-size:14px;font-weight:300;margin-top:4px;max-width:52ch}
+.pc-amt{font-family:var(--display);font-weight:700;font-size:34px;white-space:nowrap;color:var(--ink)}
+.pc-amt span{font-family:var(--ui);font-size:14px;font-weight:400;color:var(--muted);margin-left:4px}
+.price{grid-column:span 4;display:flex;flex-direction:column;gap:8px;padding:28px 24px;border-radius:16px;
+  border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),rgba(18,26,43,.35))}
+.price.feature{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset,0 24px 60px -30px rgba(70,194,216,.5)}
+.price .tier{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.price.feature .tier{color:var(--accent)}
+.price .amt{font-family:var(--display);font-weight:700;font-size:38px;line-height:1;color:var(--ink);margin-top:4px}
+.price .amt .per{font-family:var(--ui);font-size:14px;font-weight:400;color:var(--muted);margin-left:4px}
+.price .cap{color:var(--soft);font-size:13px;font-weight:300;line-height:1.5}
+.price .founder{font-family:var(--mono);font-size:12.5px;color:var(--accent2);margin-top:2px}
+.price .founder b{color:var(--accent2)}
+.price ul{list-style:none;margin:12px 0 0;display:flex;flex-direction:column;gap:8px}
+.price li{position:relative;padding-left:22px;font-size:13.5px;color:var(--soft);font-weight:300;line-height:1.45}
+.price li::before{content:'';position:absolute;left:0;top:6px;width:10px;height:10px;border-radius:3px;
+  background:var(--accent);opacity:.85}
+.price-note{margin-top:34px;font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.7;
+  border-top:1px solid var(--line);padding-top:22px}
+.price-note b{color:var(--soft)}
+@media(max-width:880px){.price{grid-column:span 12}}
+
 /* cta — dégradé animé eau -> air (drift lent, coupé si reduced-motion) */
 .cta{padding:110px 0;border-top:1px solid var(--line);text-align:center;background:var(--paper);position:relative;overflow:hidden}
 .cta::before{content:"";position:absolute;inset:-45%;z-index:0;filter:blur(46px);
@@ -154,6 +182,7 @@ footer .fmono{font-family:var(--mono);letter-spacing:.04em}
     <a href="#roles">Pour qui</a>
     <a href="#how">Comment ça marche</a>
     <a href="#data">La plateforme</a>
+    <a href="#pricing">Tarifs</a>
   </div>
   <div class="nav-right">
     <a class="btn ghost" href="./sillance-app.html">Connexion</a>
@@ -232,6 +261,70 @@ footer .fmono{font-family:var(--mono);letter-spacing:.04em}
       <div class="feat"><div class="num">02</div><div><h4>Multi-capteurs</h4><p>Garmin, Coros, ou l'import de tes fichiers .FIT : la donnée de tes athlètes revient chez toi, quel que soit leur écosystème. La réponse au trou laissé par Strava.</p></div></div>
       <div class="feat"><div class="num">03</div><div><h4>Assistant IA</h4><p>Une synthèse claire de chaque séance et des recommandations concrètes, évaluées au regard de l'objectif que tu as fixé.</p></div></div>
       <div class="feat"><div class="num">04</div><div><h4>Découplage &amp; durabilité</h4><p>Les marqueurs fins de l'endurance : dérive cardiaque et puissance tenue sous fatigue. Pour affiner quand tu veux aller plus loin.</p></div></div>
+    </div>
+  </div></section>
+
+  <!-- TARIFS -->
+  <section class="section" id="pricing"><div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Tarifs</span>
+      <h2 class="h2">Des prix pensés pour durer</h2>
+      <p class="sub" style="color:var(--soft);font-weight:300;margin-top:14px">Le coach indépendant facture ses athlètes dans l'app. Les clubs prennent une licence à la saison, au nombre d'athlètes réellement suivis. <b style="color:var(--ink);font-weight:600">Entraîneurs illimités à tous les paliers.</b></p>
+    </div>
+
+    <div class="price-coach">
+      <div>
+        <span class="kicker">Coach indépendant</span>
+        <h3>Coach solo</h3>
+        <p>Planifie, analyse la donnée réelle de tes athlètes, et fais-toi payer par eux directement dans l'app.</p>
+      </div>
+      <div class="pc-amt">29 €<span>/ mois</span></div>
+    </div>
+
+    <div class="grid">
+      <div class="price">
+        <span class="tier">Club</span>
+        <div class="amt">600 €<span class="per">/ saison</span></div>
+        <div class="cap">jusqu'à 50 athlètes activés — moins d'1 €/mois par athlète</div>
+        <div class="founder"><b>Clubs fondateurs : 300 €</b> (10 premiers)</div>
+        <ul>
+          <li>Planning, adhérents, créneaux &amp; présences</li>
+          <li>Entraîneurs illimités</li>
+          <li>Analyse de la charge réservée au suivi premium</li>
+        </ul>
+      </div>
+      <div class="price feature">
+        <span class="tier">Grand club</span>
+        <div class="amt">1 350 €<span class="per">/ saison</span></div>
+        <div class="cap">jusqu'à 150 athlètes activés — 0,75 €/mois par athlète</div>
+        <div class="founder"><b>Clubs fondateurs : 675 €</b> (10 premiers)</div>
+        <ul>
+          <li>Tout le palier Club</li>
+          <li>Groupes &amp; contenus par niveau</li>
+          <li>Facturation adhérents intégrée</li>
+        </ul>
+      </div>
+      <div class="price">
+        <span class="tier">Club illimité</span>
+        <div class="amt">1 800 €<span class="per">/ saison</span></div>
+        <div class="cap">jusqu'à 300 athlètes activés — 0,50 €/mois par athlète</div>
+        <div class="founder"><b>Clubs fondateurs : 900 €</b> (10 premiers)</div>
+        <ul>
+          <li>Tout le palier Grand club</li>
+          <li>Volume adapté aux grosses structures</li>
+          <li>Accompagnement à la mise en route</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="price-note">
+      « Athlète activé » = mis dans un groupe d'entraînement (reçoit son planning) — les licenciés non suivis ne comptent pas.<br>
+      <b>Facturé une fois par saison</b> (1<sup>er</sup> septembre, par virement) · signature à tout moment = <b>gratuit jusqu'à la rentrée</b> · le tarif fondateur reste acquis tant que le club reste abonné.
+    </div>
+
+    <div class="cta-row" style="margin-top:30px">
+      <a class="btn primary" href="./sillance-club.html">Découvrir l'espace club</a>
+      <a class="btn ghost" href="./sillance-app.html">Voir la démo coach</a>
     </div>
   </div></section>
 
