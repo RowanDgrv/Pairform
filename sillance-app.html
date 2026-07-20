@@ -1940,6 +1940,33 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
 .ls-scroll svg{width:auto;max-width:none;height:320px}
 .ls-scroll::-webkit-scrollbar{height:8px}
 .ls-scroll::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:4px}
+/* biomécanique de course — dynamiques (zones à la Garmin), tuiles, symétrie */
+.rd-note{font-size:11px;color:var(--muted);margin-bottom:12px}
+.rd-metric{margin-bottom:15px}
+.rd-metric:last-child{margin-bottom:0}
+.rd-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;gap:10px}
+.rd-name{font-size:12.5px;color:var(--soft);font-weight:600}
+.rd-name em{font-style:normal;color:var(--muted);font-weight:400;font-size:10.5px;margin-left:5px}
+.rd-val{font-family:var(--font-data);font-size:16px;font-weight:700;white-space:nowrap}
+.rd-val small{font-size:11px;color:var(--muted);font-weight:400;margin-left:2px}
+.rd-bar{position:relative;height:11px;border-radius:6px;overflow:visible;display:flex}
+.rd-bar i{height:100%}
+.rd-bar i:first-child{border-radius:6px 0 0 6px}.rd-bar i:last-child{border-radius:0 6px 6px 0}
+.rd-mark{position:absolute;top:-3px;width:2.5px;height:17px;background:#fff;border-radius:2px;transform:translateX(-50%);box-shadow:0 0 0 1.5px rgba(4,8,18,.7)}
+.rd-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rd-tile{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+.rd-tile .k{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.rd-tile .v{font-family:var(--font-data);font-size:21px;font-weight:700;color:var(--text);margin-top:3px}
+.rd-tile .v small{font-size:11px;color:var(--muted);font-weight:400;margin-left:1px}
+.rd-tile .d{font-size:10.5px;color:var(--soft);margin-top:3px}
+.rd-sym{margin-bottom:14px}
+.rd-sym:last-child{margin-bottom:0}
+.rd-sym .lbl{font-size:12px;color:var(--soft);margin-bottom:5px;display:flex;justify-content:space-between;gap:8px}
+.rd-symbar{position:relative;height:13px;border-radius:7px;overflow:hidden;display:flex;background:var(--panel-2)}
+.rd-symbar .l{background:#2FD9FF;height:100%}
+.rd-symbar .r{background:#D9962F;height:100%}
+.rd-symbar .mid{position:absolute;left:50%;top:-2px;bottom:-2px;width:1.5px;background:rgba(255,255,255,.6)}
+.rd-symlbl{display:flex;justify-content:space-between;font-family:var(--font-data);font-size:10px;color:var(--muted);margin-top:3px}
 .legend{display:flex;gap:14px;flex-wrap:wrap;padding:6px 0 8px}
 .legend span{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
 .legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
@@ -2364,6 +2391,38 @@ body:not([data-athview]):not([data-clubview]) #athPanelStats{display:block}
         <h3>Profil Hyrox</h3>
         <div class="sub">charge aérobie vs musculaire · dégradation d'allure · course sous fatigue</div>
         <div id="hyroxBody"></div>
+      </div>
+
+      <!-- ===== Bloc 4 : biomécanique de course ===== -->
+      <div class="chart-section">Biomécanique — course à pied</div>
+
+      <div class="chart-card c7">
+        <h3>Dynamiques de course <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">— zones</span></h3>
+        <div class="sub">cadence · oscillation verticale · ratio vertical · contact au sol — repère par rapport aux zones de référence</div>
+        <div class="rd-note">Nécessite un capteur de dynamique de course (montre Garmin compatible, Stryd, RunScribe…). Valeurs de démonstration.</div>
+        <div id="runDynBody"></div>
+      </div>
+
+      <div class="chart-card c5">
+        <h3>Foulée, puissance &amp; raideur</h3>
+        <div class="sub">paramètres associés à l'économie de course</div>
+        <div class="rd-tiles" id="runTilesBody"></div>
+      </div>
+
+      <div class="chart-card c6">
+        <h3>Symétrie gauche / droite</h3>
+        <div class="sub">équilibre entre les deux jambes · proche de 50/50 = mieux</div>
+        <div id="runSymBody"></div>
+      </div>
+
+      <div class="chart-card c6">
+        <h3>Tendance cadence &amp; contact au sol</h3>
+        <div class="sub">8 dernières semaines · cadence ↑ et GCT ↓ = foulée plus efficace</div>
+        <svg id="runTrendChart" viewBox="0 0 460 220" role="img" aria-label="Tendance cadence et temps de contact au sol"></svg>
+        <div class="legend">
+          <span><i style="background:#2FD9FF"></i>Cadence (pas/min)</span>
+          <span><i style="background:#DD5C72"></i>Contact au sol (ms)</span>
+        </div>
       </div>
 
     </div>
@@ -8662,6 +8721,82 @@ hrChart();
     const t=el('text',{x:x(i)+bw/2,y:H-9,class:'axis','text-anchor':'middle'},svg);
     t.textContent=w;
   });
+})();
+
+/* ============================================================
+   BIOMÉCANIQUE DE COURSE — dynamiques de foulée (#élite)
+   ------------------------------------------------------------
+   Métriques issues d'un capteur de dynamique de course (Garmin
+   Running Dynamics, Stryd, RunScribe…). En prod : lues du .FIT /
+   de l'API. Ici valeurs de démonstration cohérentes (coureur
+   entraîné). Zones de référence à la Garmin (repère, pas verdict).
+   ============================================================ */
+const RUN_DYN = {
+  cadence:182, strideLen:1.34, gct:214, vertOsc:7.4, vertRatio:6.9,
+  runPower:292, legStiff:10.4, dutyFactor:29.5,
+  gctBalanceL:49.4, strideBalanceL:50.3, powerBalanceL:48.9,
+  cadenceHist:[176,177,178,179,180,181,181,182],
+  gctHist:[232,230,228,226,224,221,217,214]
+};
+const RUN_ZONES = {
+  cadence:  {min:150, better:'high', zones:[['<163',163,'#FF5470'],['163-173',173,'#FFB13D'],['174-183',183,'#39E6A3'],['184-194',194,'#2FD9FF'],['≥195',210,'#9D7BFF']]},
+  vertOsc:  {min:5,   better:'low',  zones:[['<6.4',6.4,'#9D7BFF'],['6.5-8.1',8.1,'#2FD9FF'],['8.2-10.1',10.1,'#39E6A3'],['10.2-11.8',11.8,'#FFB13D'],['>11.8',14,'#FF5470']]},
+  vertRatio:{min:5,   better:'low',  zones:[['<6.1',6.1,'#9D7BFF'],['6.1-7.4',7.4,'#2FD9FF'],['7.5-8.6',8.6,'#39E6A3'],['8.7-10.1',10.1,'#FFB13D'],['>10.1',13,'#FF5470']]},
+  gct:      {min:180, better:'low',  zones:[['<208',208,'#9D7BFF'],['208-240',240,'#2FD9FF'],['241-273',273,'#39E6A3'],['274-305',305,'#FFB13D'],['>305',330,'#FF5470']]}
+};
+function renderRunDynamics(){
+  const box=document.getElementById('runDynBody'); if(!box) return;
+  const metrics=[['Cadence','cadence','pas/min'],['Oscillation verticale','vertOsc','cm'],
+    ['Ratio vertical','vertRatio','%'],['Temps de contact au sol','gct','ms']];
+  box.innerHTML=metrics.map(([name,key,unit])=>{
+    const z=RUN_ZONES[key], val=RUN_DYN[key];
+    const sMin=z.min, sMax=z.zones[z.zones.length-1][1];
+    let prev=sMin;
+    const segs=z.zones.map(([,max,col])=>{ const w=(max-prev)/(sMax-sMin)*100; prev=max; return `<i style="width:${w}%;background:${col}"></i>`; }).join('');
+    const markPct=Math.max(1,Math.min(99,(val-sMin)/(sMax-sMin)*100));
+    const curZone=z.zones.find(zz=>val<=zz[1])||z.zones[z.zones.length-1];
+    return `<div class="rd-metric">
+      <div class="rd-top"><span class="rd-name">${name}<em>${z.better==='low'?'↓ = mieux':'↑ = mieux'}</em></span>
+        <span class="rd-val" style="color:${curZone[2]}">${val}<small>${unit}</small></span></div>
+      <div class="rd-bar">${segs}<span class="rd-mark" style="left:${markPct}%"></span></div>
+    </div>`;
+  }).join('');
+}
+function renderRunTiles(){
+  const box=document.getElementById('runTilesBody'); if(!box) return;
+  const tiles=[['Longueur de foulée','strideLen','m','à '+RUN_DYN.cadence+' pas/min'],
+    ['Puissance de course','runPower','W','capteur type Stryd'],
+    ['Raideur de jambe','legStiff','kN/m','leg stiffness'],
+    ['Duty factor','dutyFactor','%','part du cycle au sol']];
+  box.innerHTML=tiles.map(([k,key,u,d])=>`<div class="rd-tile"><div class="k">${k}</div><div class="v">${RUN_DYN[key]}<small> ${u}</small></div><div class="d">${d}</div></div>`).join('');
+}
+function renderRunSymmetry(){
+  const box=document.getElementById('runSymBody'); if(!box) return;
+  const rows=[['Temps de contact au sol',RUN_DYN.gctBalanceL],['Longueur de foulée',RUN_DYN.strideBalanceL],['Puissance',RUN_DYN.powerBalanceL]];
+  box.innerHTML=rows.map(([name,l])=>{ const r=100-l, dev=Math.abs(50-l);
+    const st=dev<0.8?['équilibré','var(--good)']:dev<1.8?['léger déséquilibre','var(--bike)']:['à surveiller','var(--run)'];
+    return `<div class="rd-sym"><div class="lbl"><span>${name}</span><span style="color:${st[1]}">${st[0]}</span></div>
+      <div class="rd-symbar"><span class="l" style="width:${l}%"></span><span class="r" style="width:${r}%"></span><span class="mid"></span></div>
+      <div class="rd-symlbl"><span>G ${l.toFixed(1)}%</span><span>${r.toFixed(1)}% D</span></div></div>`;
+  }).join('');
+}
+renderRunDynamics(); renderRunTiles(); renderRunSymmetry();
+(function drawRunTrend(){
+  const svg=document.getElementById('runTrendChart'); if(!svg) return;
+  const {weeks}=STRAVA_DEMO, cad=RUN_DYN.cadenceHist, gct=RUN_DYN.gctHist;
+  const W=460,H=220,P={l:38,r:40,t:16,b:28};
+  const x=i=>P.l+i*(W-P.l-P.r)/(weeks.length-1);
+  const cMin=Math.min(...cad)-3,cMax=Math.max(...cad)+3, gMin=Math.min(...gct)-6,gMax=Math.max(...gct)+6;
+  const yC=v=>H-P.b-(v-cMin)/(cMax-cMin)*(H-P.t-P.b);
+  const yG=v=>H-P.b-(v-gMin)/(gMax-gMin)*(H-P.t-P.b);
+  for(let g=0;g<=3;g++){ const yv=P.t+(H-P.t-P.b)*g/3; el('line',{x1:P.l,x2:W-P.r,y1:yv,y2:yv,class:'gridline'},svg); }
+  weeks.forEach((w,i)=> el('text',{x:x(i),y:H-9,class:'axis','text-anchor':'middle'},svg).textContent=w);
+  const draw=(data,yfn,color,name,unit)=>{ const pts=data.map((v,i)=>[x(i),yfn(v)]);
+    el('path',{d:smoothPath(pts),fill:'none',stroke:color,'stroke-width':2.2},svg);
+    pts.forEach((p,i)=>{ const c=el('circle',{cx:p[0],cy:p[1],r:3,fill:'#0D121E',stroke:color,'stroke-width':2},svg);
+      c.addEventListener('mousemove',e=>tipShow(e,`<b style="color:${color}">${name} ${data[i]} ${unit}</b> · ${weeks[i]}`)); c.addEventListener('mouseleave',tipHide); }); };
+  draw(cad,yC,'#2FD9FF','Cadence','pas/min');
+  draw(gct,yG,'#DD5C72','Contact au sol','ms');
 })();
 
 /* ---- 4. Charge & forme — double courbe + bande optimale ---- */
