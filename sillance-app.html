@@ -1662,6 +1662,7 @@ body[data-analysis="open"]:not([data-athview="stats"]) .analysis-bar{display:fle
 .an-section{margin-top:20px}
 .an-sec-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px}
 .an-sec-head h4{font-family:var(--font-display);font-size:14px;font-weight:700}
+.an-sub-h{font-family:var(--font-display);font-size:12.5px;font-weight:700;color:var(--soft);margin-bottom:6px}
 .an-hint{font-size:11px;color:var(--muted)}
 .an-legend{display:flex;gap:14px}
 .an-legend span{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
@@ -2828,6 +2829,19 @@ body.ath-stats-off .analytics::after{content:'Statistiques masquées — coche l
       <div class="an-sec-head"><h4>Profil d'altitude · D+</h4></div>
       <svg id="anElev" viewBox="0 0 720 150" role="img" aria-label="Profil d'altitude"></svg>
     </div>
+    <div class="an-section" id="anBiomechWrap">
+      <div class="an-sec-head"><h4>Biomécanique <span class="an-hint">dynamiques de course, si la montre les fournit</span></h4></div>
+      <div class="an-sub-sec">
+        <h5 class="an-sub-h">Fréquence de foulée</h5>
+        <svg id="anCadence" viewBox="0 0 720 150" role="img" aria-label="Fréquence de foulée" style="display:none"></svg>
+        <p class="hint" id="anCadenceNA">Pas de données de cadence disponibles sur cette activité.</p>
+      </div>
+      <div class="an-sub-sec" style="margin-top:18px">
+        <h5 class="an-sub-h">Longueur de foulée</h5>
+        <svg id="anStepLen" viewBox="0 0 720 150" role="img" aria-label="Longueur de foulée" style="display:none"></svg>
+        <p class="hint" id="anStepLenNA">Pas de données de longueur de foulée disponibles sur cette activité (nécessite une montre avec capteur de dynamiques de course — Coros, Garmin… — via import .FIT).</p>
+      </div>
+    </div>
     <div class="an-section" id="anDecoupleWrap">
       <div class="an-sec-head"><h4>Découplage <span class="an-hint" id="anDecoupleHint">efficacité cardiaque sur la durée</span></h4></div>
       <div class="an-dc-kpi" id="anDecoupleKpi"></div>
@@ -2837,6 +2851,10 @@ body.ath-stats-off .analytics::after{content:'Statistiques masquées — coche l
     <div class="an-section" id="anAiWrap">
       <div class="an-sec-head"><h4><i class="ic ic-brain"></i> Assistant IA <span class="an-hint">résumé &amp; recommandations</span></h4></div>
       <div id="anAiBody"></div>
+    </div>
+    <div class="an-section">
+      <div class="an-sec-head"><h4>Allure &amp; FC par lap <span class="an-hint">vue graphique</span></h4></div>
+      <div class="lap-chart" id="anLapChart"></div>
     </div>
     <div class="an-section">
       <div class="an-sec-head"><h4>Détail par lap</h4><span class="an-hint" id="anLapHint"></span></div>
@@ -7940,7 +7958,11 @@ function openAnalysis(s){
   // profil d'altitude (masqué en natation)
   document.getElementById('anElevWrap').style.display = isSwim?'none':'';
   if(!isSwim) drawElevation(data);
+  // biomécanique (cadence/foulée) — n'affiche que si le fichier réel fournit ces champs
+  drawCadence(data);
+  drawStepLen(data);
   // laps
+  renderLapChart(data);
   renderLaps(data, isSwim);
   // impact des conditions (chaleur, vent, D+) — course & vélo
   renderImpact(s, data);
@@ -8574,7 +8596,7 @@ function attachCursor(key){
 
 /* synchronise le curseur vertical sur les 3 graphes à l'index i */
 function syncCursor(i){
-  ['speed','hr','elev','power','decouple'].forEach(k=>{
+  ['speed','hr','elev','power','decouple','cadence','steplen'].forEach(k=>{
     const C=AN_CHARTS[k]; if(!C||!C.line) return;
     const x=C.xs(i), p=C.pts[i];
     C.line.setAttribute('x1',x); C.line.setAttribute('x2',x); C.line.style.opacity='1';
@@ -8582,7 +8604,7 @@ function syncCursor(i){
   });
 }
 function hideAnCursor(){
-  ['speed','hr','elev','power','decouple'].forEach(k=>{ const C=AN_CHARTS[k]; if(C&&C.line){ C.line.style.opacity='0'; C.dot.style.opacity='0'; } });
+  ['speed','hr','elev','power','decouple','cadence','steplen'].forEach(k=>{ const C=AN_CHARTS[k]; if(C&&C.line){ C.line.style.opacity='0'; C.dot.style.opacity='0'; } });
   const tip=document.getElementById('anTip'); if(tip) tip.style.opacity='0';
 }
 /* tooltip avec toutes les valeurs au point i (temps exact + vitesse + FC + alt) */
@@ -8600,6 +8622,8 @@ function showAnTip(evt, i){
   if(hr) html+=`<div style="color:var(--run);font-weight:700">${hr.label(p)}</div>`;
   if(el) html+=`<div style="color:var(--bike)">${Math.round(p.alt)} m · pente ${p.grade>0?'+':''}${p.grade.toFixed(1)}%</div>`;
   const dcc=AN_CHARTS.decouple; if(dcc&&p._dr) html+=`<div style="color:var(--accent)">éff. ${dcc.label(p)}</div>`;
+  const cad=AN_CHARTS.cadence; if(cad&&p._cadReal) html+=`<div style="color:var(--accent)">${cad.label(p)}</div>`;
+  const stl=AN_CHARTS.steplen; if(stl&&p.stepLen) html+=`<div style="color:var(--strength)">${stl.label(p)}</div>`;
   tip.innerHTML=html;
   const x=(evt.clientX!==undefined?evt.clientX:evt.touches[0].clientX)+14;
   const y=(evt.clientY!==undefined?evt.clientY:evt.touches[0].clientY)+14;
@@ -8628,6 +8652,53 @@ function drawElevation(data){
   svg.insertAdjacentHTML('beforeend',`<text x="${W-P.r}" y="${H-6}" fill="var(--muted)" font-size="9" font-family="var(--font-data)" text-anchor="end">D+ total ${data.dplus} m</text>`);
   AN_CHARTS.elev = {svg, pts, W, H, P, xs, y:(p)=>y(p.alt), color:'var(--bike)', label:(p)=>`${Math.round(p.alt)} m`};
   attachCursor('elev');
+}
+
+/* — Biomécanique (fréquence de foulée, longueur de foulée) —
+   N'invente rien : si le fichier importé/synchronisé ne contient pas ces
+   champs (pas de capteur de dynamiques de course sur la montre), on affiche
+   un message clair au lieu d'un graphe vide ou de données estimées. */
+function drawCadence(data){
+  const svg=document.getElementById('anCadence'), na=document.getElementById('anCadenceNA');
+  const pts=data.pts;
+  if(!pts.some(p=>p.cad>0)){ svg.style.display='none'; na.style.display=''; delete AN_CHARTS.cadence; return; }
+  na.style.display='none'; svg.style.display=''; svg.innerHTML='';
+  const unit = data.disc==='run' ? 'pas/min' : 'rpm';
+  pts.forEach(p=>{ p._cadReal = data.disc==='run' ? (p.cad||0)*2 : (p.cad||0); });
+  const W=720,H=150,P={l:44,r:14,t:10,b:20};
+  const xs=i=>P.l+i/(pts.length-1)*(W-P.l-P.r);
+  const vals=pts.map(p=>p._cadReal).filter(v=>v>0);
+  const vMax=Math.max(...vals)+8, vMin=Math.max(0,Math.min(...vals)-8);
+  const y=v=>H-P.b-(v-vMin)/(vMax-vMin)*(H-P.t-P.b);
+  let path='';
+  pts.forEach((p,i)=>{ const x=xs(i),yy=y(p._cadReal||vMin); path+=(i?'L':'M')+x+' '+yy; });
+  const area=path+`L${xs(pts.length-1)} ${H-P.b}L${P.l} ${H-P.b}Z`;
+  svg.insertAdjacentHTML('beforeend',`<path d="${area}" fill="var(--accent)" opacity="0.12"/>`);
+  svg.insertAdjacentHTML('beforeend',`<path d="${path}" fill="none" stroke="var(--accent)" stroke-width="1.8"/>`);
+  [vMin,vMax].forEach(v=>{ svg.insertAdjacentHTML('beforeend',`<text x="${P.l-6}" y="${y(v)+3}" fill="var(--muted)" font-size="9" font-family="var(--font-data)" text-anchor="end">${Math.round(v)}</text>`); });
+  svg.insertAdjacentHTML('beforeend',`<text x="${W-P.r}" y="11" fill="var(--muted)" font-size="9" font-family="var(--font-data)" text-anchor="end">${unit}</text>`);
+  AN_CHARTS.cadence = {svg, pts, W, H, P, xs, y:(p)=>y(p._cadReal||vMin), color:'var(--accent)', label:(p)=>`${Math.round(p._cadReal)} ${unit}`};
+  attachCursor('cadence');
+}
+function drawStepLen(data){
+  const svg=document.getElementById('anStepLen'), na=document.getElementById('anStepLenNA');
+  const pts=data.pts;
+  if(!pts.some(p=>p.stepLen>0)){ svg.style.display='none'; na.style.display=''; delete AN_CHARTS.steplen; return; }
+  na.style.display='none'; svg.style.display=''; svg.innerHTML='';
+  const W=720,H=150,P={l:44,r:14,t:10,b:20};
+  const xs=i=>P.l+i/(pts.length-1)*(W-P.l-P.r);
+  const vals=pts.map(p=>p.stepLen).filter(v=>v>0);
+  const vMax=Math.max(...vals)+0.15, vMin=Math.max(0,Math.min(...vals)-0.15);
+  const y=v=>H-P.b-(v-vMin)/(vMax-vMin)*(H-P.t-P.b);
+  let path='';
+  pts.forEach((p,i)=>{ const x=xs(i),yy=y(p.stepLen||vMin); path+=(i?'L':'M')+x+' '+yy; });
+  const area=path+`L${xs(pts.length-1)} ${H-P.b}L${P.l} ${H-P.b}Z`;
+  svg.insertAdjacentHTML('beforeend',`<path d="${area}" fill="var(--strength)" opacity="0.14"/>`);
+  svg.insertAdjacentHTML('beforeend',`<path d="${path}" fill="none" stroke="var(--strength)" stroke-width="1.8"/>`);
+  [vMin,vMax].forEach(v=>{ svg.insertAdjacentHTML('beforeend',`<text x="${P.l-6}" y="${y(v)+3}" fill="var(--muted)" font-size="9" font-family="var(--font-data)" text-anchor="end">${v.toFixed(2)}m</text>`); });
+  svg.insertAdjacentHTML('beforeend',`<text x="${W-P.r}" y="11" fill="var(--muted)" font-size="9" font-family="var(--font-data)" text-anchor="end">m</text>`);
+  AN_CHARTS.steplen = {svg, pts, W, H, P, xs, y:(p)=>y(p.stepLen||vMin), color:'var(--strength)', label:(p)=>`${p.stepLen?.toFixed(2)} m foulée`};
+  attachCursor('steplen');
 }
 
 /* ---- Détail par lap façon Nolio : colonnes cochables. Vélo = temps, distance,
@@ -8682,6 +8753,52 @@ function injectLapCss(){
 function lapColSet(disc){
   try{ const s=JSON.parse(localStorage.getItem('pf_lapcols_'+disc)||'null'); if(s) return new Set(s); }catch(e){}
   return new Set(LAP_COLS.filter(c=>colApplies(c.app,disc)&&c.def).map(c=>c.key));
+}
+/* Vue graphique du détail par lap (barres allure/vitesse + FC, un groupe par
+   lap) — complète le tableau "Détail par lap" par un visuel en un coup d'œil.
+   Réutilise les mêmes laps déjà calculés (buildLaps / genSessionData), aucun
+   nouveau découpage. */
+function injectLapChartCss(){
+  if(document.getElementById('pf-lapchart-css')) return;
+  const st=document.createElement('style'); st.id='pf-lapchart-css';
+  st.textContent=`
+  .lap-chart{display:flex;gap:10px;align-items:flex-end;padding:14px 2px 0;overflow-x:auto}
+  .lch-col{flex:1;min-width:60px;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .lch-bars{display:flex;gap:4px;align-items:flex-end;height:140px;width:100%;justify-content:center}
+  .lch-bar{width:16px;border-radius:5px 5px 2px 2px;transition:height .2s;min-height:4px}
+  .lch-bar.sp{background:var(--accent)}
+  .lch-bar.sp.hard{background:var(--run)}
+  .lch-bar.hr{background:rgba(255,84,112,.55)}
+  .lch-vals{display:flex;flex-direction:column;align-items:center;font-family:var(--font-data);font-size:11px;gap:2px;text-align:center}
+  .lch-sp{color:var(--accent);font-weight:700;white-space:nowrap}
+  .lch-hr{color:var(--run)}
+  .lch-hr small{color:var(--muted);font-family:var(--font-ui,inherit)}
+  .lch-n{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}`;
+  document.head.appendChild(st);
+}
+function renderLapChart(data){
+  const box=document.getElementById('anLapChart'); if(!box) return;
+  injectLapChartCss();
+  const laps=data.laps, disc=data.disc;
+  if(!laps || !laps.length){ box.innerHTML='<p class="hint">Pas assez de laps pour un visuel.</p>'; return; }
+  const speedLbl=l=> disc==='bike' ? l.avgSpeed.toFixed(1)+' km/h' : (disc==='swim' ? paceFromSpeed2(l.avgSpeed)+'/100m' : paceFromSpeed(l.avgSpeed)+'/km');
+  const maxSpeed=Math.max(...laps.map(l=>l.avgSpeed), 0.001);
+  const maxHr=Math.max(...laps.map(l=>l.avgHr||0), 1);
+  box.innerHTML=laps.map(l=>{
+    const spH=Math.max(6, Math.round((l.avgSpeed/maxSpeed)*100));
+    const hrH=l.avgHr ? Math.max(6, Math.round((l.avgHr/maxHr)*100)) : 4;
+    return `<div class="lch-col">
+      <div class="lch-bars">
+        <div class="lch-bar sp ${l.hard?'hard':''}" style="height:${spH}%" title="Allure/vitesse — lap ${l.n}"></div>
+        <div class="lch-bar hr" style="height:${hrH}%" title="FC moyenne — lap ${l.n}"></div>
+      </div>
+      <div class="lch-vals">
+        <span class="lch-sp">${speedLbl(l)}</span>
+        <span class="lch-hr">${l.avgHr || '—'}<small> bpm</small></span>
+      </div>
+      <div class="lch-n">Lap ${l.n} · ${l.dist.toFixed(2)} km</div>
+    </div>`;
+  }).join('');
 }
 function renderLaps(data, isSwim){
   const box=document.getElementById('anLaps'); const disc=data.disc; injectLapCss();
