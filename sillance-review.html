@@ -1297,6 +1297,7 @@ table.cbill td{padding:10px 9px;border-bottom:1px solid var(--line)}
 .adh-pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:99px;border:1px solid;white-space:nowrap}
 @media(max-width:560px){.adh-sub{max-width:none}}
 .coach-connect .cc-s{font-size:11px;color:var(--muted);margin:3px 0 7px}
+.cc-soon{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line-strong);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:middle}
 .coach-connect .cc-price{font-size:11.5px;color:var(--soft);margin-bottom:9px}
 .coach-connect .cc-price small{color:var(--muted)}
 .coach-connect .cc-price a{color:var(--accent);text-decoration:none}
@@ -1941,6 +1942,15 @@ body[data-analysis="open"]:not([data-athview="stats"]) .analysis-bar{display:fle
 .stats-tab.active{color:#04121a;background:var(--accent);box-shadow:0 4px 14px rgba(70,194,216,.35)}
 .stats-group[hidden]{display:none}
 /* filtres GROUPÉS par catégorie (choisir ce qu'on affiche) */
+.ath-stats-toggle{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:2px 0 16px;padding:10px 14px;
+  border:1px solid var(--line);border-radius:11px;background:var(--panel-2);font-size:13px;cursor:pointer}
+.ath-stats-toggle input{accent-color:var(--accent)}
+.ath-stats-toggle small{flex-basis:100%;color:var(--muted);font-size:11px;font-weight:300}
+body:not([data-athview]) #athStatsToggleWrap{display:none}
+body.ath-stats-off .analytics .chart-filter,
+body.ath-stats-off .analytics .charts{display:none}
+body.ath-stats-off .analytics::after{content:'Statistiques masquées — coche la case ci-dessus pour les réafficher.';
+  display:block;color:var(--muted);font-size:12.5px;padding:10px 0 4px}
 .chart-filter{display:flex;flex-direction:column;gap:10px;margin:0 0 18px}
 .cf-cat{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .cf-cat-lbl{font-family:var(--font-data);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);font-weight:700;min-width:150px;flex:none}
@@ -2209,6 +2219,12 @@ body[data-analysis="open"]:not([data-athview="stats"]) .analysis-bar{display:fle
     </div>
     <p class="sub">Vitesse, fréquence cardiaque, volume et charge d'entraînement de l'athlète — mis à jour à chaque activité synchronisée.</p>
 
+    <label class="ath-stats-toggle" id="athStatsToggleWrap">
+      <input type="checkbox" id="athStatsToggle" checked>
+      <span>Afficher mes statistiques détaillées</span>
+      <small>Décoche si ça fait trop d'informations — tu peux revenir dessus à tout moment.</small>
+    </label>
+
     <div class="chart-filter" id="chartFilter" aria-label="Choisir les graphiques à afficher"></div>
 
     <div class="charts stats-group" data-group="charge">
@@ -2389,7 +2405,7 @@ body[data-analysis="open"]:not([data-athview="stats"]) .analysis-bar{display:fle
         <div class="vl-eyebrow"><span class="vl-dot"></span>Technique</div>
         <h2>Bibliothèque <span>vidéo</span></h2>
         <p class="vl-sub">Éducatifs, gammes et gestes techniques, filtrés par sport. Les vidéos liées à tes séances apparaissent au survol dans ton programme.</p>
-        <div class="vl-count"><b id="vlCount">0</b> vidéos · <span id="vlCountDisc">Natation</span></div>
+        <div class="vl-count"><b id="vlCount">0</b> vidéos · <span id="vlCountDisc">Natation</span> · <span class="cc-soon">Contenu en cours d'ajout</span></div>
       </div>
       <div class="vl-search">
         <input type="search" id="vlSearch" placeholder="Rechercher (rattrapé, gammes, squat…)" aria-label="Rechercher une vidéo">
@@ -3463,6 +3479,7 @@ function renderSidebar(){
   if(mode==='coach'){
     sidebarContent.innerHTML = coachGuideHTML() + `
       <button class="btn adh-open-btn" id="adhOpen"><i class="ic ic-users"></i> Suivi de mes athlètes</button>
+      <button class="btn adh-open-btn" id="inviteAthOpen" style="margin-top:8px"><i class="ic ic-user-plus"></i> Inviter un athlète</button>
       <h2>Bibliothèque</h2>
       <p class="hint">Glissez une séance sur un jour →</p>
       <button class="create-btn" id="createSessionBtn">+ Créer une séance</button>
@@ -3485,15 +3502,9 @@ function renderSidebar(){
              ${coachTiersHTML()}
              <button class="cc-btn" id="coachSubscribeBtn" style="margin-top:10px">S'abonner — ${COACH_TIERS.find(t=>t.id===selectedCoachTier).price} €/mois</button>`}
       </div>
-      <div class="coach-connect" style="margin-top:14px">
-        <div class="cc-t"><b><i class="ic ic-brain"></i> Assistant IA coach</b></div>
-        ${aiUnlocked()
-          ? `<div class="cc-s" style="color:#39e6a3"><i class="ic ic-check"></i> Actif — chaque séance réalisée est analysée : respect du plan, dérive cardiaque, découplage FC, zones.</div>
-             <button class="cc-btn" id="aiManageBtn">Gérer dans les paramètres</button>`
-          : `<div class="cc-s">Vérifie automatiquement que chaque séance réalisée respecte ce qui était prévu : zones cibles, dérive cardiaque, découplage FC.</div>
-             <div class="cc-price"><b>Essai 14 jours</b><small> puis ${AI_ADDON_PRICE} €/mois</small></div>
-             <button class="cc-btn" id="aiTrialBtn">Commencer l'essai 14 jours</button>
-             <div class="cc-s" style="font-size:10.5px;opacity:.75;margin-top:6px">Débit automatique à la fin de l'essai, sauf révocation de l'accès.</div>`}
+      <div class="coach-connect" style="margin-top:14px;opacity:.7">
+        <div class="cc-t"><b><i class="ic ic-brain"></i> Assistant IA coach</b> <span class="cc-soon">Bientôt disponible</span></div>
+        <div class="cc-s">Vérifiera automatiquement que chaque séance réalisée respecte ce qui était prévu : zones cibles, dérive cardiaque, découplage FC. En finalisation, disponible très prochainement.</div>
       </div>
       <div class="coach-connect" style="margin-top:14px">
         <div class="cc-t"><b><i class="ic ic-credit-card"></i> Fais-toi payer</b></div>
@@ -3507,6 +3518,7 @@ function renderSidebar(){
     var _sgClose=document.getElementById('sgClose'); if(_sgClose) _sgClose.onclick=function(){ localStorage.setItem('sil_coach_guide','off'); renderSidebar(); };
     var _sgCta=document.getElementById('sgCta'); if(_sgCta) _sgCta.onclick=function(){ openBuilder(null,null); };
     var _adhOpen=document.getElementById('adhOpen'); if(_adhOpen) _adhOpen.onclick=openAdherence;
+    var _invAthOpen=document.getElementById('inviteAthOpen'); if(_invAthOpen) _invAthOpen.onclick=openInviteAthlete;
     buildCycles(document.getElementById('cycleList'));
     document.getElementById('createCycleBtn').addEventListener('click', ()=> openCycleBuilder(null));
     /* Assistant IA — essai 14 jours (checkout Stripe connecté, déverrouillage en démo) */
@@ -5433,6 +5445,66 @@ function openCoachInvoices(){
     wire();
   }
 }
+/* Invite un athlète par lien (copie / WhatsApp / email si Resend configuré).
+   Backend déjà en place (invite-athlete + accept-invite, token dans l'URL
+   ?invite=...) — ceci est l'UI qui le déclenche, elle manquait totalement. */
+function openInviteAthlete(){
+  const formHTML=()=>`<div class="adh-modal" role="dialog" aria-label="Inviter un athlète">
+    <button class="adh-close" aria-label="Fermer">✕</button>
+    <h3>Inviter un athlète</h3>
+    <p class="adh-sub">Entre son e-mail : Sillance lui envoie un lien (par e-mail si possible, sinon tu le partages toi-même par WhatsApp, SMS…). Il crée son compte ou se connecte, et vous êtes reliés automatiquement.</p>
+    <div class="invite-linkrow">
+      <input type="email" id="invAthEmail" placeholder="email@athlete.fr" autocomplete="email">
+      <button class="cc-btn" id="invAthSend">Envoyer l'invitation</button>
+    </div>
+    <div id="invAthResult"></div>
+  </div>`;
+  const el=document.createElement('div'); el.className='adh-overlay';
+  el.innerHTML=formHTML();
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('open'));
+  const close=()=>{ el.classList.remove('open'); setTimeout(()=>el.remove(),180); };
+  const wireClose=()=>{
+    el.querySelector('.adh-close').onclick=close;
+    el.addEventListener('click', e=>{ if(e.target===el) close(); });
+    document.addEventListener('keydown', function esc(ev){ if(ev.key==='Escape'){ close(); document.removeEventListener('keydown',esc); } });
+  };
+  wireClose();
+  const showResult=(inviteUrl, emailed, email)=>{
+    const msg = emailed
+      ? `<div class="cc-s" style="color:#39e6a3;margin-bottom:8px"><i class="ic ic-check"></i> Email envoyé à ${email}. Garde ce lien de secours au cas où :</div>`
+      : `<div class="cc-s" style="margin-bottom:8px">Copie ce lien et envoie-le toi-même (WhatsApp, SMS…) :</div>`;
+    document.getElementById('invAthResult').innerHTML = `${msg}
+      <div class="invite-linkrow"><input type="text" id="invAthLink" readonly value="${inviteUrl}"></div>
+      <div class="invite-share">
+        <button class="invite-copy cc-btn" id="invAthCopy">Copier le lien</button>
+        <button class="invite-wa" id="invAthWa">WhatsApp</button>
+      </div>`;
+    document.getElementById('invAthCopy').onclick=()=>{
+      const inp=document.getElementById('invAthLink'); inp.select();
+      try{ navigator.clipboard.writeText(inp.value); }catch(e){ document.execCommand && document.execCommand('copy'); }
+      toast('Lien copié');
+    };
+    document.getElementById('invAthWa').onclick=()=>{
+      const msgWa=`Rejoins-moi sur Sillance pour ton suivi d'entraînement : ${inviteUrl}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msgWa)}`, '_blank');
+    };
+  };
+  document.getElementById('invAthSend').onclick=async ()=>{
+    const email=document.getElementById('invAthEmail').value.trim();
+    if(!email || !email.includes('@')){ toast('Entre un e-mail valide'); return; }
+    if(window.PF?.user){
+      try{
+        const {inviteUrl, emailed} = await PF.inviteAthlete(email);
+        showResult(inviteUrl, emailed, email);
+      }catch(e){ console.warn('[PF] inviteAthlete:',e); toast('Invitation impossible pour le moment'); }
+    } else {
+      const demoUrl = `${location.origin}${location.pathname}?invite=demo-${Date.now()}`;
+      showResult(demoUrl, false, email);
+      toast('Démo — connecte-toi pour envoyer une vraie invitation');
+    }
+  };
+}
 function renderAthPicker(){
   const btn=document.getElementById('apBtn'), menu=document.getElementById('apMenu');
   if(!btn || !menu) return;
@@ -6168,7 +6240,7 @@ function renderClubAthletes(filter){
         <div class="club-ath-m">membre depuis ${a.since} · ${nbInscr} créneau${nbInscr>1?'x':''}</div>
         ${g?`<span class="club-ath-grp" style="background:${g.color}">${g.name}</span>`:''}
         <span class="club-ath-offer co-${a.offer}" data-aid="${a.id}" title="Cliquer pour changer de formule">${clubOffer(a.offer).name}${a.offer==='coach'&&a.coach?` · ${a.coach}`:''}</span>
-        <span class="club-ath-vid ${a.videos?'on':''}" data-vaid="${a.id}" title="Débloquer les vidéos d'exercices pour cet athlète (facturé par athlète)"><i class="ic ic-film"></i> Vidéos${a.videos?' <i class="ic ic-check"></i>':''}</span>
+        <span class="club-ath-vid ${a.videos?'on':''}" data-vaid="${a.id}" title="Bientôt disponible — contenu vidéo en cours d'ajout"><i class="ic ic-film"></i> Vidéos <span class="cc-soon" style="margin-left:4px">Bientôt</span></span>
         <span class="club-ath-cal" data-caid="${a.id}" title="Ouvrir le calendrier d'entraînement de cet athlète"><i class="ic ic-calendar"></i> Calendrier</span>
         ${minorChip(a)}
       </div>
@@ -6186,13 +6258,7 @@ function renderClubAthletes(filter){
     }
   });
   box.querySelectorAll('.club-ath-vid').forEach(el=>el.onclick=()=>{
-    const a=CLUB_ATHLETES.find(x=>x.id===el.dataset.vaid); if(!a) return;
-    a.videos=!a.videos;
-    renderClubAthletes(filter);
-    toast(a.videos?`Vidéos activées pour ${a.name}`:`Vidéos coupées pour ${a.name}`);
-    if(window.PF?.user){
-      PF.setAthleteVideos(a.id, a.videos).catch(e=>{console.warn('videos',e);toast('Option vidéos indisponible (démo)');});
-    }
+    toast('Bibliothèque vidéo bientôt disponible — contenu en cours d\'ajout');
   });
   box.querySelectorAll('.club-ath-minor').forEach(el=>el.onclick=()=> openConsent(el.dataset.maid, filter));
   box.querySelectorAll('.club-ath-cal').forEach(el=>el.onclick=()=>{
@@ -8822,6 +8888,20 @@ function renderRunSymmetry(){
   }).join('');
 }
 renderRunDynamics(); renderRunTiles(); renderRunSymmetry();
+/* Bascule "Afficher mes statistiques détaillées" (athlète seul, pas le coach) :
+   pour les athlètes qui trouvent la section Analyse trop chargée, un seul
+   interrupteur masque tout (graphiques + filtres), persisté localStorage. */
+(function initAthStatsToggle(){
+  const cb=document.getElementById('athStatsToggle'); if(!cb) return;
+  const KEY='sil_ath_stats_show';
+  const show = localStorage.getItem(KEY) !== 'off';
+  cb.checked = show;
+  document.body.classList.toggle('ath-stats-off', !show);
+  cb.onchange=()=>{
+    localStorage.setItem(KEY, cb.checked ? 'on' : 'off');
+    document.body.classList.toggle('ath-stats-off', !cb.checked);
+  };
+})();
 /* Filtres d'analyse GROUPÉS par catégorie (Charge & puissance / Physio /
    Biomécanique / Hyrox) → l'utilisateur coche ce qu'il affiche. Persisté. */
 (function initChartFilter(){
