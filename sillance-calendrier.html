@@ -1167,6 +1167,8 @@ table.cbill td{padding:10px 9px;border-bottom:1px solid var(--line)}
 .csub-tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;flex:1;min-width:280px}
 .csub-tier{border:1px solid var(--line);border-radius:11px;background:var(--panel-2);padding:11px 12px;position:relative}
 .csub-tier.cur{border-color:var(--accent);box-shadow:0 0 0 1px rgba(70,194,216,.3)}
+.csub-tier[role="button"]{cursor:pointer;transition:border-color .12s}
+.csub-tier[role="button"]:hover{border-color:var(--accent)}
 .csub-badge{position:absolute;top:-8px;left:11px;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--accent);color:#04121a;padding:2px 7px;border-radius:99px}
 .csub-name{font-family:var(--font-display);font-size:14px;font-weight:600}
 .csub-cap{font-size:10.5px;color:var(--muted);margin-top:1px}
@@ -3479,9 +3481,9 @@ function renderSidebar(){
         ${window.__pf_subscribed
           ? `<div class="cc-s" style="color:#39e6a3"><i class="ic ic-check"></i> Ton abonnement Sillance est actif. Merci !</div>
              <button class="cc-btn" id="coachManageBtn">Gérer mon abonnement</button>`
-          : `<div class="cc-s">Débloque ton espace coach complet.</div>
-             <div class="cc-price"><b>29 €</b><small>/mois</small></div>
-             <button class="cc-btn" id="coachSubscribeBtn">S'abonner à Sillance</button>`}
+          : `<div class="cc-s">Débloque ton espace coach complet — choisis le palier selon ton nombre d'athlètes.</div>
+             ${coachTiersHTML()}
+             <button class="cc-btn" id="coachSubscribeBtn" style="margin-top:10px">S'abonner — ${COACH_TIERS.find(t=>t.id===selectedCoachTier).price} €/mois</button>`}
       </div>
       <div class="coach-connect" style="margin-top:14px">
         <div class="cc-t"><b><i class="ic ic-brain"></i> Assistant IA coach</b></div>
@@ -3522,9 +3524,10 @@ function renderSidebar(){
     };
     const cib=document.getElementById('coachInvoicesBtn');
     if(cib) cib.onclick=()=> openCoachInvoices();
+    wireCoachTiers(sidebarContent);
     const csb=document.getElementById('coachSubscribeBtn');
     if(csb) csb.onclick=()=>{
-      if(window.PF?.user){ toast('Redirection vers le paiement…'); PF.startCheckout('coach').catch(e=>{console.warn(e);toast('Paiement indisponible');}); }
+      if(window.PF?.user){ toast('Redirection vers le paiement…'); PF.startCheckout('coach', selectedCoachTier).catch(e=>{console.warn(e);toast('Paiement indisponible');}); }
       else toast('Connecte ton espace coach pour t\'abonner');
     };
     const cmb=document.getElementById('coachManageBtn');
@@ -5793,6 +5796,29 @@ const CLUB_OFFERS = [
 ];
 const clubOffer = id => CLUB_OFFERS.find(o=>o.id===id) || CLUB_OFFERS[0];
 const COACH_OFFER = { name:'Suivi coaching', price:99 };
+
+/* Abonnement Sillance du COACH (SaaS pour utiliser l'app) : 3 paliers selon
+   le nombre d'athlètes coachés, auto-déclarés (pas de compteur bloquant). */
+const COACH_TIERS = [
+  {id:1, name:'1 à 10 athlètes',  price:19},
+  {id:2, name:'11 à 30 athlètes', price:29},
+  {id:3, name:'31+ athlètes',     price:49},
+];
+let selectedCoachTier = (ROSTER && ROSTER.length > 30) ? 3 : (ROSTER && ROSTER.length > 10) ? 2 : 1;
+function coachTiersHTML(){
+  return `<div class="csub-tiers">
+    ${COACH_TIERS.map(t=>`<div class="csub-tier ${t.id===selectedCoachTier?'cur':''}" data-tier="${t.id}" role="button" tabindex="0">
+      ${t.id===selectedCoachTier?'<span class="csub-badge">Sélectionné</span>':''}
+      <div class="csub-name">${t.name}</div>
+      <div class="csub-price">${t.price} €<small>/mois</small></div>
+    </div>`).join('')}
+  </div>`;
+}
+function wireCoachTiers(root){
+  root.querySelectorAll('.csub-tier').forEach(el=>{
+    el.onclick=()=>{ selectedCoachTier=+el.dataset.tier; renderSidebar(); };
+  });
+}
 
 /* Abonnement Sillance du CLUB (ce que le club paie à la plateforme).
    Assiette = « athlètes activés » = adhérents placés dans un groupe.

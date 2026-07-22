@@ -125,14 +125,6 @@ main,.nav,footer{position:relative;z-index:1}
 @media(max-width:520px){.steps{grid-template-columns:1fr}}
 
 /* tarifs */
-.price-coach{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;
-  border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:14px;padding:22px 26px;
-  background:linear-gradient(180deg,var(--panel),rgba(18,26,43,.35));margin-bottom:40px}
-.price-coach .kicker{display:block;margin-bottom:8px}
-.price-coach h3{font-family:var(--display);font-weight:600;font-size:22px;text-transform:uppercase}
-.price-coach p{color:var(--soft);font-size:14px;font-weight:300;margin-top:4px;max-width:52ch}
-.pc-amt{font-family:var(--display);font-weight:700;font-size:34px;white-space:nowrap;color:var(--ink)}
-.pc-amt span{font-family:var(--ui);font-size:14px;font-weight:400;color:var(--muted);margin-left:4px}
 .price{grid-column:span 4;display:flex;flex-direction:column;gap:8px;padding:28px 24px;border-radius:16px;
   border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),rgba(18,26,43,.35))}
 .price.feature{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset,0 24px 60px -30px rgba(70,194,216,.5)}
@@ -272,13 +264,26 @@ footer .fmono{font-family:var(--mono);letter-spacing:.04em}
       <p class="sub" style="color:var(--soft);font-weight:300;margin-top:14px">Le coach indépendant facture ses athlètes dans l'app. Les clubs prennent une licence à la saison, au nombre d'athlètes réellement suivis. <b style="color:var(--ink);font-weight:600">Entraîneurs illimités à tous les paliers.</b></p>
     </div>
 
-    <div class="price-coach">
-      <div>
-        <span class="kicker">Coach indépendant</span>
-        <h3>Coach solo</h3>
-        <p>Planifie, analyse la donnée réelle de tes athlètes, et fais-toi payer par eux directement dans l'app.</p>
+    <div class="sec-head" style="margin-top:0">
+      <span class="kicker">Coach indépendant</span>
+      <p class="sub" style="color:var(--soft);font-weight:300;margin-top:6px">Planifie, analyse la donnée réelle de tes athlètes, et fais-toi payer par eux directement dans l'app. Le palier suit ton nombre d'athlètes coachés, pas ton chiffre d'affaires.</p>
+    </div>
+    <div class="grid" style="margin-bottom:44px">
+      <div class="price">
+        <span class="tier">Coach solo</span>
+        <div class="amt">19 €<span class="per">/ mois</span></div>
+        <div class="cap">1 à 10 athlètes coachés</div>
       </div>
-      <div class="pc-amt">29 €<span>/ mois</span></div>
+      <div class="price feature">
+        <span class="tier">Coach solo</span>
+        <div class="amt">29 €<span class="per">/ mois</span></div>
+        <div class="cap">11 à 30 athlètes coachés</div>
+      </div>
+      <div class="price">
+        <span class="tier">Coach solo</span>
+        <div class="amt">49 €<span class="per">/ mois</span></div>
+        <div class="cap">31+ athlètes coachés</div>
+      </div>
     </div>
 
     <div class="grid">
