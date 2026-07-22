@@ -56,6 +56,8 @@ main,.nav,footer{position:relative;z-index:1}
 .brand{display:flex;align-items:center;gap:9px;font-family:var(--display);font-weight:700;font-size:22px}
 .brand .orb{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
 .brand b{color:var(--accent)}
+.beta-badge{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--accent2);
+  border:1px solid var(--accent2);border-radius:99px;padding:2px 9px;margin-left:2px;vertical-align:middle;text-transform:uppercase}
 .nav-links{display:flex;gap:26px;margin-left:28px;font-size:14px;color:var(--soft)}
 .nav-links a:hover{color:var(--ink)}
 .nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
@@ -169,7 +171,7 @@ footer .fmono{font-family:var(--mono);letter-spacing:.04em}
 <body>
 
 <nav class="nav"><div class="wrap">
-  <a class="brand" href="#top"><svg class="brandmark" width="22" height="22" viewBox="0 0 96 96" fill="none" aria-hidden="true" style="vertical-align:middle"><defs><linearGradient id="lmFuse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9A3D"/><stop offset="1" stop-color="#46C2D8"/></linearGradient></defs><path d="M76 48 C56 34 36 28 8 24" stroke="#FF9A3D" stroke-width="10" stroke-linecap="round"/><path d="M76 48 C56 62 36 68 8 72" stroke="#46C2D8" stroke-width="10" stroke-linecap="round"/><circle cx="76" cy="48" r="11" fill="url(#lmFuse)"/><path d="M31 48 A7.5 7.5 0 0 1 46 48 Z" fill="#FF9A3D"/><path d="M46 48 A7.5 7.5 0 0 1 31 48 Z" fill="#46C2D8"/></svg><span class="wm">Sill<b>ance</b></span></a>
+  <a class="brand" href="#top"><svg class="brandmark" width="22" height="22" viewBox="0 0 96 96" fill="none" aria-hidden="true" style="vertical-align:middle"><defs><linearGradient id="lmFuse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF9A3D"/><stop offset="1" stop-color="#46C2D8"/></linearGradient></defs><path d="M76 48 C56 34 36 28 8 24" stroke="#FF9A3D" stroke-width="10" stroke-linecap="round"/><path d="M76 48 C56 62 36 68 8 72" stroke="#46C2D8" stroke-width="10" stroke-linecap="round"/><circle cx="76" cy="48" r="11" fill="url(#lmFuse)"/><path d="M31 48 A7.5 7.5 0 0 1 46 48 Z" fill="#FF9A3D"/><path d="M46 48 A7.5 7.5 0 0 1 31 48 Z" fill="#46C2D8"/></svg><span class="wm">Sill<b>ance</b></span><span class="beta-badge">Bêta</span></a>
   <div class="nav-links">
     <a href="#roles">Pour qui</a>
     <a href="#how">Comment ça marche</a>
@@ -262,6 +264,7 @@ footer .fmono{font-family:var(--mono);letter-spacing:.04em}
       <span class="kicker">Tarifs</span>
       <h2 class="h2">Des prix pensés pour durer</h2>
       <p class="sub" style="color:var(--soft);font-weight:300;margin-top:14px">Le coach indépendant facture ses athlètes dans l'app. Les clubs prennent une licence à la saison, au nombre d'athlètes réellement suivis. <b style="color:var(--ink);font-weight:600">Entraîneurs illimités à tous les paliers.</b></p>
+      <p class="sub" style="color:var(--muted);font-weight:300;font-size:12.5px;margin-top:10px">Sillance est en bêta — paiement disponible dans quelques jours, le temps de finaliser notre immatriculation.</p>
     </div>
 
     <div class="sec-head" style="margin-top:0">
